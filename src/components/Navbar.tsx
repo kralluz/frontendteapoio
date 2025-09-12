@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
           className="navbar-brand"
           onClick={closeMenu}
         >
-          🚀 React Template
+          🧩TEApoio
         </Link>
         
         <button 
