@@ -1,28 +1,122 @@
+/* Sidebar Drawer Styles */
+.sidebar-drawer-toggle {
+  position: fixed;
+  top: 90px;
+  left: 24px;
+  z-index: 1201;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.13);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebar-drawer-toggle:hover {
+  background: #f3f3fa;
+}
+.sidebar-drawer-icon {
+  font-size: 1.7rem;
+  color: #764ba2;
+  font-weight: bold;
+}
+
+.sidebar-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.18);
+  z-index: 1200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.sidebar-drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 300px;
+  background: #fff;
+  box-shadow: 2px 0 16px rgba(102, 126, 234, 0.13);
+  z-index: 1202;
+  transform: translateX(-100%);
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+}
+.sidebar-drawer.open {
+  transform: translateX(0);
+}
+.sidebar-drawer-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #764ba2;
+  margin: 12px 16px 0 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.sidebar-drawer-close:hover {
+  color: #667eea;
+}
+
+@media (max-width: 900px) {
+  .sidebar-drawer-toggle {
+    top: 76px;
+    left: 10px;
+    width: 38px;
+    height: 38px;
+  }
+  .sidebar-drawer {
+    width: 90vw;
+    min-width: 0;
+    max-width: 400px;
+  }
+}
 /* Layout centralizado do Dashboard */
 .dashboard-bg {
   min-height: 100vh;
   background: #f6f7fb;
 }
 
-.dashboard-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 0;
-  min-height: 100vh;
-}
-
 .dashboard-greeting {
   width: 100%;
-  max-width: 420px;
+  max-width: 600px;
   margin-bottom: 32px;
 }
-.dashboard-title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 6px;
+.dashboard-actions {
+  display: flex;
+  gap: 18px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 32px;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.dashboard-feed {
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 40px;
 }
 .dashboard-subtitle {
   color: #888;
@@ -86,7 +180,7 @@
 }
 .insta-post-image {
   width: 100%;
-  height: 220px;
+  height: 420px;
   background: #f3f3f3;
   display: flex;
   align-items: center;
@@ -139,14 +233,14 @@
   color: #aaa;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .dashboard-greeting,
   .dashboard-actions,
   .dashboard-feed {
     max-width: 98vw;
   }
   .insta-post-image {
-    height: 160px;
+    height: 200px;
   }
 }
 /* Card estilo rede social */

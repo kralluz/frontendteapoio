@@ -14,7 +14,16 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        {/* Saudação só no Dashboard/feed */}
+        <Navbar
+          greeting={window.location.pathname === '/' || window.location.pathname === '/dashboard' ? (
+            <>
+              <span className="navbar-greeting-title">Bem-vindo, João!</span>
+              <br />
+              <span className="navbar-greeting-sub">Seu hub de recursos e atividades para apoio ao TEA.</span>
+            </>
+          ) : undefined}
+        />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />

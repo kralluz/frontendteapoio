@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DashboardSidebar from './DashboardSidebar';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
@@ -7,8 +8,13 @@ interface NavItem {
   label: string;
 }
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  greeting?: React.ReactNode;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ greeting }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
   const navItems: NavItem[] = [
@@ -32,14 +38,30 @@ const Navbar: React.FC = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* Botão para abrir a gaveta do menu lateral */}
+        <button
+          className="sidebar-drawer-toggle"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Abrir menu lateral"
+        >
+          <span className="sidebar-drawer-icon">☰</span>
+        </button>
+        {/* Gaveta do menu lateral */}
+        <div className={`sidebar-drawer-backdrop${sidebarOpen ? ' open' : ''}`} onClick={() => setSidebarOpen(false)} />
+        <div className={`sidebar-drawer${sidebarOpen ? ' open' : ''}`}>
+          <button className="sidebar-drawer-close" onClick={() => setSidebarOpen(false)} aria-label="Fechar menu lateral">×</button>
+          <DashboardSidebar />
+        </div>
         <Link 
           to="/" 
           className="navbar-brand"
           onClick={closeMenu}
         >
-          🧩TEApoio
+          TEApoio
         </Link>
-        
+        {greeting && (
+          <div className="navbar-greeting-inline">{greeting}</div>
+        )}
         <button 
           className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
           onClick={toggleMenu}
@@ -50,7 +72,6 @@ const Navbar: React.FC = () => {
           <span></span>
           <span></span>
         </button>
-        
         <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
           <ul className="navbar-nav">
             {navItems.map((item: NavItem) => (

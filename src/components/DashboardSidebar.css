@@ -1,0 +1,146 @@
+.dashboard-sidebar {
+  width: 260px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.10);
+  padding: 28px 18px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-right: 32px;
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+.sidebar-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.sidebar-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  margin-bottom: 4px;
+}
+.sidebar-username {
+  font-weight: 600;
+  color: #764ba2;
+  font-size: 1.1rem;
+}
+.sidebar-profile-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 18px;
+  font-size: 0.98rem;
+  font-weight: 500;
+  margin-top: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebar-profile-btn:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.sidebar-menu {
+  margin-bottom: 10px;
+}
+.sidebar-menu-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 6px;
+}
+.sidebar-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sidebar-menu a {
+  color: #764ba2;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 4px 0;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.sidebar-menu a:hover {
+  background: #f3f3fa;
+  color: #667eea;
+}
+
+.sidebar-stats {
+  margin-bottom: 10px;
+}
+.sidebar-stats-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 8px;
+}
+.sidebar-stats-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+.legend-accessos {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: #667eea;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+.legend-atividades {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: #764ba2;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+
+.sidebar-filter {
+  margin-top: 10px;
+}
+.sidebar-filter-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 6px;
+}
+.sidebar-filter-btns {
+  display: flex;
+  gap: 8px;
+}
+.sidebar-filter-btns button {
+  background: #f3f3fa;
+  color: #764ba2;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.97rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.sidebar-filter-btns button:hover {
+  background: #667eea;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .dashboard-sidebar {
+    display: none;
+  }
+}
