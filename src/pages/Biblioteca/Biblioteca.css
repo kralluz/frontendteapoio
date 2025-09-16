@@ -1,0 +1,35 @@
+.biblioteca-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.biblioteca-search {
+  max-width: 400px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feature-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  padding: 24px 16px;
+}
+
+.feature-card .ant-card-title {
+  font-size: 1.1rem;
+  color: #667eea;
+}
+
+.feature-card .ant-card-actions {
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .feature-card {
+    padding: 16px 8px;
+  }
+}

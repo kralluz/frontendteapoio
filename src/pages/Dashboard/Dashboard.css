@@ -1,3 +1,240 @@
+/* Layout centralizado do Dashboard */
+.dashboard-bg {
+  min-height: 100vh;
+  background: #f6f7fb;
+}
+
+.dashboard-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 0;
+  min-height: 100vh;
+}
+
+.dashboard-greeting {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 32px;
+}
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+.dashboard-subtitle {
+  color: #888;
+  font-size: 1.05rem;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 18px;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 32px;
+}
+.dashboard-action-btn {
+  flex: 1;
+  font-size: 1.08rem;
+  min-width: 0;
+}
+
+.dashboard-feed {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+/* Novo card de post estilo Instagram */
+.insta-post-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.10);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+.insta-post-card:hover {
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.18);
+}
+.insta-post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 18px 8px 18px;
+}
+.insta-post-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.insta-post-username {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+.insta-post-type {
+  font-size: 0.85rem;
+  color: #888;
+}
+.insta-post-image {
+  width: 100%;
+  height: 220px;
+  background: #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.insta-post-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.insta-post-body {
+  padding: 16px 18px 0 18px;
+}
+.insta-post-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+}
+.insta-post-desc {
+  color: #555;
+  font-size: 0.98rem;
+  margin-bottom: 4px;
+}
+.insta-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 18px 16px 18px;
+}
+.insta-post-action-btn {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  font-size: 1rem;
+  color: #764ba2;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.insta-post-action-btn span {
+  margin-left: 4px;
+  color: #764ba2;
+  font-size: 1rem;
+}
+.insta-post-stats {
+  margin-left: auto;
+  font-size: 0.92rem;
+  color: #aaa;
+}
+
+@media (max-width: 600px) {
+  .dashboard-greeting,
+  .dashboard-actions,
+  .dashboard-feed {
+    max-width: 98vw;
+  }
+  .insta-post-image {
+    height: 160px;
+  }
+}
+/* Card estilo rede social */
+.social-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.10);
+  padding: 22px 18px 16px 18px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: box-shadow 0.2s;
+}
+.social-card:hover {
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.18);
+}
+.social-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #764ba2;
+}
+.social-card-icon {
+  font-size: 1.3rem;
+  color: #667eea;
+}
+.social-card-title {
+  flex: 1;
+  color: #333;
+}
+.social-card-body {
+  margin: 8px 0 0 0;
+}
+.social-card-desc {
+  color: #555;
+  font-size: 1rem;
+  margin: 0;
+}
+.social-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+.social-like-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: #764ba2;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  transition: color 0.2s;
+}
+.social-like-btn:hover svg {
+  stroke: #667eea;
+}
+.social-like-count {
+  font-size: 0.95rem;
+  color: #764ba2;
+}
+.social-view-btn {
+  min-width: 90px;
+  font-size: 0.95rem;
+  padding: 0 12px;
+}
+/* Botão com gradiente azul-roxo padrão */
+.dashboard-gradient-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-gradient-btn:hover, .dashboard-gradient-btn:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.18);
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
 .feature-card {
   background: #f8f9fa;
   border-radius: 10px;

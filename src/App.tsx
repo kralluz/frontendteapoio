@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Dashboard from './pages/Dashboard/Dashboard';
 import About from './pages/About/About';
 import Contact from './pages/Contact/Contact';
@@ -22,9 +23,12 @@ const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/biblioteca" element={React.createElement(require('./pages/Biblioteca/Biblioteca').default)} />
+            <Route path="/atividades" element={React.createElement(require('./pages/Atividades/Atividades').default)} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );
