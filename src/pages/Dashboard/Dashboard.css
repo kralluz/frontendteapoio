@@ -109,14 +109,14 @@
   margin-right: auto;
 }
 .dashboard-feed {
-  width: 100%;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100vw;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 40px;
   margin-bottom: 40px;
+  box-sizing: border-box;
 }
 .dashboard-subtitle {
   color: #888;
@@ -136,14 +136,7 @@
   min-width: 0;
 }
 
-.dashboard-feed {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  margin-bottom: 32px;
-}
+
 
 /* Novo card de post estilo Instagram */
 .insta-post-card {
@@ -154,6 +147,11 @@
   display: flex;
   flex-direction: column;
   transition: box-shadow 0.2s;
+  width: 100vw;
+  max-width: 750px;
+  min-width: 260px;
+  margin: 0 auto 36px auto;
+  min-height: 680px;
 }
 .insta-post-card:hover {
   box-shadow: 0 6px 24px rgba(102, 126, 234, 0.18);
@@ -180,7 +178,7 @@
 }
 .insta-post-image {
   width: 100%;
-  height: 420px;
+  height: 540px;
   background: #f3f3f3;
   display: flex;
   align-items: center;
@@ -193,7 +191,7 @@
   object-fit: cover;
 }
 .insta-post-body {
-  padding: 16px 18px 0 18px;
+  padding: 28px 24px 0 24px;
 }
 .insta-post-title {
   font-size: 1.08rem;
@@ -235,12 +233,22 @@
 
 @media (max-width: 900px) {
   .dashboard-greeting,
-  .dashboard-actions,
-  .dashboard-feed {
+  .dashboard-actions {
     max-width: 98vw;
   }
+  .dashboard-feed {
+    max-width: 100vw;
+    width: 100vw;
+    padding: 0;
+  }
+  .insta-post-card {
+    max-width: 98vw;
+    width: 100vw;
+    margin: 0 0 28px 0;
+    min-height: 380px;
+  }
   .insta-post-image {
-    height: 200px;
+    height: 210px;
   }
 }
 /* Card estilo rede social */
