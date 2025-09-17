@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Layout, Avatar, Dropdown, Menu } from 'antd';
 import { UserOutlined, MoreOutlined, HeartOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';
-import './Dashboard.css';
+import './Feed.css';
 
 // Simulação de dados de usuário
 const userAvatar = 'https://randomuser.me/api/portraits/men/32.jpg';
@@ -124,7 +124,7 @@ const feedPosts = [
 ];
 
 
-const Dashboard: React.FC = () => {
+const Feed: React.FC = () => {
   // const [filter, setFilter] = useState<'all' | 'article' | 'activity'>('all');
   // Menu de opções do post
   const postMenu = (
@@ -188,4 +188,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default Dashboard;
+export default Feed;
