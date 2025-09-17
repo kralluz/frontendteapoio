@@ -38,7 +38,7 @@ const Biblioteca: React.FC = () => {
         allowClear
         className="biblioteca-search mb-8"
         size="large"
-        onSearch={value => {/* implementar busca futura */}}
+        onSearch={() => {/* implementar busca futura */}}
       />
       <Row gutter={[24, 24]}>
         {conteudos.map(conteudo => (

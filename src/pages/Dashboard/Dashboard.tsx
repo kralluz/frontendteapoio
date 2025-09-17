@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Layout, Avatar, Dropdown, Menu } from 'antd';
 import { UserOutlined, MoreOutlined, HeartOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons';
 import 'antd/dist/reset.css';

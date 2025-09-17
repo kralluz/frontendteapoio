@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Row, Col, Input, Tag } from 'antd';
+import { Row, Col, Input, Tag } from 'antd';
 import { AppstoreOutlined } from '@ant-design/icons';
 import './Atividades.css';
 
@@ -41,7 +41,7 @@ const Atividades: React.FC = () => {
         allowClear
         className="atividades-search mb-8"
         size="large"
-        onSearch={value => {/* implementar busca futura */}}
+        onSearch={() => {/* implementar busca futura */}}
       />
       <Row gutter={[24, 24]}>
         {atividades.map(atividade => (
