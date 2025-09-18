@@ -5,10 +5,7 @@
   "main": "index.tsx",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run build:copy",
-    "build:copy": "if exist build (xcopy build\\* dist\\ /E /Y && rmdir /S /Q build) else echo Build folder not found",
-    "build:clean": "if exist dist (rmdir /S /Q dist)",
-    "build:prod": "npm run build:clean && npm run build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "type-check": "tsc --noEmit"

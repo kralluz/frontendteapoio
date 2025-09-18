@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Typography, Button } from 'antd';
 import { UserOutlined, LogoutOutlined, SettingOutlined, AppstoreOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Grid } from 'antd';
 import AppRoutes from './routes';
@@ -17,11 +16,13 @@ const user = {
 };
 
 const App: React.FC = () => {
-  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const screens = useBreakpoint();
   const [collapsed, setCollapsed] = useState(false);
+
+  // Verificar se estamos em uma rota que não deve mostrar header/sidebar
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/password-reset';
 
   const userMenuItems = [
     {
@@ -44,7 +45,6 @@ const App: React.FC = () => {
       icon: <LogoutOutlined />,
       label: 'Sair',
       onClick: () => {
-        logout();
         navigate('/login');
       },
     },
@@ -94,6 +94,15 @@ const App: React.FC = () => {
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);
   };
+
+  // Se estiver em rota de autenticação, renderizar apenas o conteúdo sem header/sidebar
+  if (isAuthRoute) {
+    return (
+      <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
+        <AppRoutes />
+      </div>
+    );
+  }
 
   // Render bottom bar for mobile
   if (!screens.md) {

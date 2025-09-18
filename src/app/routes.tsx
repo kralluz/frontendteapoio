@@ -18,6 +18,7 @@ import PerfilAutistaDetalhes from '../pages/PerfilAutista/PerfilAutistaDetalhes'
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<Biblioteca />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<Login />} />
