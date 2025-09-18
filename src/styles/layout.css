@@ -1,0 +1,19 @@
+/* Estilo para o layout principal */
+.ant-layout {
+  background: #f5f7fb !important;
+}
+
+/* Ajuste da área principal para dar espaço ao menu lateral */
+.main-content {
+  margin-left: 260px;
+  padding: 24px;
+  min-height: calc(100vh - 70px - 64px); /* altura total - navbar - footer */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+}

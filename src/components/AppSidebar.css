@@ -1,0 +1,45 @@
+.app-sidebar-menu {
+  /* Estilo base */
+  background: transparent !important;
+}
+
+.app-sidebar-menu .ant-menu-item {
+  /* Estilo dos itens */
+  margin: 8px 16px !important;
+  padding: 0 16px !important;
+  border-radius: 8px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  color: #111827 !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.app-sidebar-menu .ant-menu-item:hover {
+  /* Hover dos itens */
+  background: rgba(102, 126, 234, 0.1) !important;
+  color: #667eea !important;
+}
+
+.app-sidebar-menu .ant-menu-item-selected {
+  /* Item selecionado */
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+.app-sidebar-menu .ant-menu-item-selected .anticon {
+  /* Ícone do item selecionado */
+  color: white !important;
+}
+
+.app-sidebar-menu .anticon {
+  /* Ícones não selecionados */
+  color: #667eea !important;
+  font-size: 18px !important;
+}
+
+/* Efeitos de hover e foco */
+.app-sidebar-menu .ant-menu-item:focus-visible {
+  outline: 2px solid #667eea !important;
+  outline-offset: 2px !important;
+}

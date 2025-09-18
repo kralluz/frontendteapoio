@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Layout } from 'antd';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Feed from './pages/Feed/Feed';
@@ -9,31 +10,40 @@ import NotFound from './pages/NotFound/NotFound';
 import Login from './pages/Login/Login';
 import RegisterPage from './pages/Register/RegisterPage';
 import './App.css';
+import AppSidebar from './components/AppSidebar';
+
+const { Content } = Layout;
 
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="App">
-        {/* Navbar sem saudação personalizada */}
+      <Layout style={{ minHeight: '100vh' }}>
         <Navbar />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Feed />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/feed" element={<Feed />} />
-            <Route path="/biblioteca" element={React.createElement(require('./pages/Biblioteca/Biblioteca').default)} />
-            <Route path="/atividades" element={React.createElement(require('./pages/Atividades/Atividades').default)} />
-            <Route path="/settings" element={React.createElement(require('./pages/Settings/Settings').default)} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
+
+        <Layout style={{ marginTop: 70 }}> {/* Espaço para o navbar fixo */}
+          <AppSidebar />
+          <Content style={{ marginLeft: 260, padding: '24px', minHeight: 280 }}>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/biblioteca" element={React.createElement(require('./pages/Biblioteca/Biblioteca').default)} />
+              <Route path="/atividades" element={React.createElement(require('./pages/Atividades/Atividades').default)} />
+              <Route path="/settings" element={React.createElement(require('./pages/Settings/Settings').default)} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Content>
+        </Layout>
         <Footer />
-      </div>
+      </Layout>
     </Router>
   );
+};
+
+export default App;
 };
 
 export default App;
