@@ -9,6 +9,9 @@ import Contact from './pages/Contact/Contact';
 import NotFound from './pages/NotFound/NotFound';
 import Login from './pages/Login/Login';
 import RegisterPage from './pages/Register/RegisterPage';
+import PasswordReset from './pages/PasswordReset/PasswordReset';
+import Profile from './pages/Profile/Profile';
+
 import './App.css';
 
 const { Content } = Layout;
@@ -26,8 +29,10 @@ const App: React.FC = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/password-reset" element={<PasswordReset />} />
               <Route path="/biblioteca" element={React.createElement(require('./pages/Biblioteca/Biblioteca').default)} />
               <Route path="/atividades" element={React.createElement(require('./pages/Atividades/Atividades').default)} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={React.createElement(require('./pages/Settings/Settings').default)} />
               <Route path="*" element={<NotFound />} />
             </Routes>

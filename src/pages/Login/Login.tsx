@@ -74,6 +74,9 @@ const Login: React.FC = () => {
             marginBottom: 8
           }}
         />
+        <a href="/password-reset" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+          Esqueceu a senha?
+        </a>
         {error && (
           <div style={{ color: '#d32f2f', marginBottom: 8, textAlign: 'center' }}>{error}</div>
         )}
@@ -107,7 +110,7 @@ const Login: React.FC = () => {
           onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
           onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
         >Entrar</button>
-        <div style={{ textAlign: 'center', marginTop: 10 }}>
+        <div style={{marginTop: 10 }}>
           <a href="/register" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
             Não tem uma conta? Cadastre-se
           </a>
