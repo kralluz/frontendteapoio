@@ -26,6 +26,7 @@ const App: React.FC = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/biblioteca" element={React.createElement(require('./pages/Biblioteca/Biblioteca').default)} />
             <Route path="/atividades" element={React.createElement(require('./pages/Atividades/Atividades').default)} />
+            <Route path="/settings" element={React.createElement(require('./pages/Settings/Settings').default)} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

@@ -1,91 +1,81 @@
-import React, { useState } from 'react';
-import DashboardSidebar from './DashboardSidebar';
-import { Link, useLocation } from 'react-router-dom';
+
+import React, { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './Navbar.css';
 
-interface NavItem {
-  path: string;
-  label: string;
-}
+const user = {
+  name: 'João',
+  avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+};
 
-interface NavbarProps {
-  greeting?: React.ReactNode;
-}
+const Navbar: React.FC = () => {
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-const Navbar: React.FC<NavbarProps> = ({ greeting }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
-
-  const navItems: NavItem[] = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'Sobre' },
-    { path: '/contact', label: 'Contato' }
-  ];
-
-  const toggleMenu = (): void => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const closeMenu = (): void => {
-    setIsMenuOpen(false);
-  };
-
-  const isActiveLink = (path: string): boolean => {
-    return location.pathname === path;
-  };
+  // Fecha o menu ao clicar fora
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    if (userMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [userMenuOpen]);
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* Botão para abrir a gaveta do menu lateral */}
-        <button
-          className="sidebar-drawer-toggle"
-          onClick={() => setSidebarOpen(true)}
-          aria-label="Abrir menu lateral"
-        >
-          <span className="sidebar-drawer-icon">☰</span>
-        </button>
-        {/* Gaveta do menu lateral */}
-        <div className={`sidebar-drawer-backdrop${sidebarOpen ? ' open' : ''}`} onClick={() => setSidebarOpen(false)} />
-        <div className={`sidebar-drawer${sidebarOpen ? ' open' : ''}`}>
-          <button className="sidebar-drawer-close" onClick={() => setSidebarOpen(false)} aria-label="Fechar menu lateral">×</button>
-          <DashboardSidebar />
-        </div>
         <Link 
           to="/" 
           className="navbar-brand"
-          onClick={closeMenu}
         >
           TEApoio
         </Link>
-        {greeting && (
-          <div className="navbar-greeting-inline">{greeting}</div>
-        )}
-        <button 
-          className={`navbar-toggle ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-label="Toggle navigation"
-          type="button"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
-          <ul className="navbar-nav">
-            {navItems.map((item: NavItem) => (
-              <li key={item.path} className="nav-item">
-                <Link
-                  to={item.path}
-                  className={`nav-link ${isActiveLink(item.path) ? 'active' : ''}`}
-                  onClick={closeMenu}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* Usuário miniatura e menu */}
+        <div className="navbar-user" ref={userMenuRef} style={{ position: 'relative', marginLeft: 'auto', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+          <div
+            className="navbar-user-info"
+            onClick={() => setUserMenuOpen((open) => !open)}
+            style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+            tabIndex={0}
+            role="button"
+            aria-haspopup="true"
+            aria-expanded={userMenuOpen}
+          >
+            <img src={user.avatar} alt="Avatar" style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', border: '2px solid #764ba2', background: '#eee' }} />
+            <span style={{ color: '#764ba2', fontWeight: 600, fontSize: '1.08rem', marginLeft: 4 }}>{user.name}</span>
+          </div>
+          {userMenuOpen && (
+            <div className="navbar-user-menu" style={{ position: 'absolute', top: 48, right: 0, background: '#fff', borderRadius: 10, boxShadow: '0 2px 12px rgba(102,126,234,0.13)', minWidth: 160, zIndex: 1001, padding: '8px 0' }}>
+              <Link to="/profile" className="navbar-user-menu-item" style={{ display: 'block', padding: '10px 18px', color: '#764ba2', textDecoration: 'none', fontWeight: 500, transition: 'background 0.2s' }} onClick={() => setUserMenuOpen(false)}>
+                Perfil
+              </Link>
+              <Link to="/settings" className="navbar-user-menu-item" style={{ display: 'block', padding: '10px 18px', color: '#764ba2', textDecoration: 'none', fontWeight: 500, transition: 'background 0.2s' }} onClick={() => setUserMenuOpen(false)}>
+                Configurações
+              </Link>
+              <button
+                className="navbar-user-menu-item"
+                style={{ display: 'block', padding: '10px 18px', color: '#e53e3e', background: 'none', border: 'none', width: '100%', textAlign: 'left', fontWeight: 500, cursor: 'pointer', transition: 'background 0.2s' }}
+                onClick={() => { 
+                  setUserMenuOpen(false);
+                  logout();
+                  navigate('/login');
+                }}
+              >
+                Sair
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
