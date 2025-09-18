@@ -137,13 +137,13 @@ const Feed: React.FC = () => {
 
 
   return (
-    <Layout className="dashboard-bg">
-      <Layout.Content className="dashboard-center">
-        {/* Conteúdo principal do Dashboard */}
+    <Layout className="feed-bg">
+      <Layout.Content className="feed-center">
+        {/* Conteúdo principal do Feed */}
         <div style={{ flex: 1, minWidth: 0, width: '100%' }}>
           {/* Botões removidos conforme solicitado */}
           {/* Feed estilo Instagram */}
-          <div className="dashboard-feed">
+          <div className="feed-feed">
             {feedPosts.map(post => (
               <div className="insta-post-card" key={post.id}>
                 {/* Header do post */}
