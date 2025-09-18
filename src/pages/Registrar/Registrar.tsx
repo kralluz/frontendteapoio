@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 
-const RegisterPage = () => {
+const Registrar = () => {
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -127,4 +127,4 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default Registrar;

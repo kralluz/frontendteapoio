@@ -11,6 +11,7 @@ const userAvatar = 'https://randomuser.me/api/portraits/men/32.jpg';
 const feedPosts = [
   {
     id: 1,
+    
     user: {
       name: 'João',
       avatar: userAvatar,
