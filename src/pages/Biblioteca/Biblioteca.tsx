@@ -3,6 +3,7 @@ import {
   Card, Row, Col, Button, Tag, Avatar, Space, Typography, Input,
   message
 } from 'antd';
+import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
   EyeOutlined, BookOutlined, ClockCircleOutlined, FireOutlined,
@@ -240,14 +241,9 @@ const Biblioteca: React.FC = () => {
           {filterTags.map(filter => (
             <Button
               key={filter.key}
-              type={activeFilter === filter.key ? 'primary' : 'default'}
+              {...gradientSelectionButtonStyle(activeFilter === filter.key)}
               icon={filter.icon}
               onClick={() => setActiveFilter(filter.key)}
-              style={{
-                borderRadius: '20px',
-                height: 'auto',
-                padding: '6px 16px'
-              }}
             >
               {filter.label}
             </Button>

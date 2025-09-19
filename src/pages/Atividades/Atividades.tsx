@@ -4,6 +4,7 @@ import {
   Card, Row, Col, Button, Tag, Space, Typography,
   Input, message, Tooltip, Divider, Avatar
 } from 'antd';
+import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
   ClockCircleOutlined, UserOutlined, TeamOutlined,
@@ -286,17 +287,9 @@ const Atividades: React.FC = () => {
           {filterOptions.map(filter => (
             <Button
               key={filter.key}
-              type={activeFilter === filter.key ? 'primary' : 'default'}
+              {...gradientSelectionButtonStyle(activeFilter === filter.key)}
               icon={filter.icon}
               onClick={() => setActiveFilter(filter.key)}
-              style={{
-                borderRadius: '20px',
-                height: 'auto',
-                padding: '8px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
             >
               {filter.label}
             </Button>

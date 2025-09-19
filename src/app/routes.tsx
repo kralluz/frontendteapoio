@@ -14,6 +14,7 @@ import ArticlePage from '../pages/Article/Article';
 import AtividadePage from '../pages/Atividade/Atividade';
 import PerfilAutista from '../pages/PerfilAutista/PerfilAutista';
 import PerfilAutistaDetalhes from '../pages/PerfilAutista/PerfilAutistaDetalhes';
+import Feed from '../pages/Feed/Feed';
 
 const AppRoutes: React.FC = () => {
   return (

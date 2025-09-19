@@ -3,6 +3,7 @@ import {
   Card, Avatar, Descriptions, Statistic, Row, Col, Button, Tag, Space, Typography,
   Modal, Form, Input, Select, DatePicker, Checkbox, Divider, message
 } from 'antd';
+import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
   UserOutlined, MailOutlined, PhoneOutlined, CalendarOutlined, BookOutlined,
   HeartOutlined, EditOutlined, PlusOutlined, TeamOutlined
