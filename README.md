@@ -7,7 +7,7 @@ Um template completo para projetos React em TypeScript com React Router DOM, con
 - ⚛️ **React 18** - Versão mais recente do React
 - 🔷 **TypeScript** - Tipagem estática para maior segurança
 - 🗺️ **React Router DOM v6** - Navegação moderna entre páginas
-- 📱 **Design Responsivo** - Layout que funciona em todos os dispositivos
+- 📱 **Design Responsivo** - Layout que f unciona em todos os dispositivos
 - 🎨 **CSS Moderno** - Estilos com gradientes e animações
 - 📁 **Estrutura Organizada** - Componentes e páginas bem estruturados
 - 🔧 **Build Otimizado** - Output configurado para pasta `dist`
