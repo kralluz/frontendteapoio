@@ -217,7 +217,7 @@ const Biblioteca: React.FC = () => {
       <div style={{ marginBottom: '32px' }}>
         <Title level={2} style={{ marginBottom: '8px' }}>
           <BookOutlined style={{ marginRight: '12px' }} />
-          Biblioteca TEApoio
+          Biblioteca Lyora
         </Title>
         <Text type="secondary" style={{ fontSize: '16px' }}>
           Explore artigos, guias e recursos especializados para apoiar pessoas com TEA

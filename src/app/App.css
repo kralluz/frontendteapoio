@@ -88,3 +88,91 @@
   margin: 0;
   font-size: 1.01rem;
 }
+
+/* ================= Botões Padronizados (Gradiente) ================= */
+/* Override global dos botões Ant Design para usar gradiente consistente */
+.ant-btn,
+.ant-btn-primary,
+.ant-btn-default,
+.ant-btn-background-ghost {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 500;
+  border-radius: 8px !important;
+  transition: filter 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 6px rgba(118, 75, 162, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-btn:hover,
+.ant-btn-primary:hover,
+.ant-btn-default:hover,
+.ant-btn-background-ghost:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.ant-btn:active,
+.ant-btn-primary:active,
+.ant-btn-default:active,
+.ant-btn-background-ghost:active {
+  filter: brightness(0.95);
+  transform: translateY(0);
+}
+
+.ant-btn[disabled],
+.ant-btn-disabled,
+.ant-btn[disabled]:hover {
+  background: linear-gradient(90deg, #9fa7d9 0%, #b29ccd 100%) !important;
+  box-shadow: none;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+  opacity: 0.75;
+}
+
+/* Remover bordas/cores padrão de variantes específicas */
+.ant-btn-default:not([disabled]) {
+  box-shadow: 0 2px 6px rgba(118, 75, 162, 0.3);
+}
+
+/* Ícones dentro dos botões */
+.ant-btn .anticon {
+  margin-inline-end: 6px;
+}
+
+/* Tamanho compacto caso necessário */
+.ant-btn-sm {
+  height: 32px !important;
+  padding: 0 14px !important;
+  font-size: 13px !important;
+}
+
+.ant-btn-lg {
+  height: 48px !important;
+  padding: 0 26px !important;
+  font-size: 16px !important;
+}
+
+/* Caso existam botões ghost que você queira manter translúcidos, pode criar uma exceção específica depois */
+
+/* Exceção: Botão de toggle do Sider deve ser texto simples sem gradiente */
+.sider-toggle-btn.ant-btn {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+}
+.sider-toggle-btn.ant-btn:hover {
+  background: rgba(255,255,255,0.12) !important;
+  transform: none;
+  filter: none;
+}
+.sider-toggle-btn.ant-btn:active {
+  background: rgba(255,255,255,0.18) !important;
+  transform: none;
+  filter: none;
+}
+
