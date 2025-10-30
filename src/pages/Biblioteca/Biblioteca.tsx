@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card, Row, Col, Button, Tag, Avatar, Space, Typography, Input,
-  message
+  message, Spin
 } from 'antd';
 import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
@@ -10,11 +10,13 @@ import {
   UserOutlined, MessageOutlined, ShareAltOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { articleService, Article } from '../../services/articleService';
+import { likeService, favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
 const { Search } = Input;
 
-// Dados mock para os artigos
+// Dados mock para os artigos (fallback)
 const mockArticles = [
   {
     id: 1,
@@ -136,9 +138,28 @@ const filterTags = [
 
 const Biblioteca: React.FC = () => {
   const navigate = useNavigate();
-  const [articles, setArticles] = useState(mockArticles);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    loadArticles();
+  }, []);
+
+  const loadArticles = async () => {
+    try {
+      setLoading(true);
+      const data = await articleService.getAll();
+      setArticles(data);
+    } catch (error: any) {
+      message.error('Erro ao carregar artigos: ' + (error.response?.data?.message || error.message));
+      // Usar dados mock como fallback
+      setArticles(mockArticles as any);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Função para filtrar artigos
   const getFilteredArticles = () => {
@@ -161,42 +182,48 @@ const Biblioteca: React.FC = () => {
           break;
         case 'routine':
           filtered = filtered.filter(article => article.tags.includes('Rotina') || article.tags.includes('Organização'));
-          break;
-        case 'activities':
-          filtered = filtered.filter(article => article.tags.includes('Atividades') || article.tags.includes('Sensorial'));
-          break;
-      }
-    }
-
-    // Filtro por busca
-    if (searchText) {
-      filtered = filtered.filter(article =>
-        article.title.toLowerCase().includes(searchText.toLowerCase()) ||
-        article.excerpt.toLowerCase().includes(searchText.toLowerCase()) ||
-        article.tags.some(tag => tag.toLowerCase().includes(searchText.toLowerCase()))
-      );
-    }
-
-    return filtered;
-  };
-
   // Função para curtir/descurtir artigo
-  const handleLike = (articleId: number) => {
-    setArticles(prev => prev.map(article => {
-      if (article.id === articleId) {
-        const newIsLiked = !article.isLiked;
-        const newLikes = newIsLiked ? article.likes + 1 : article.likes - 1;
-        return { ...article, isLiked: newIsLiked, likes: newLikes };
-      }
-      return article;
-    }));
-    message.success('Ação realizada com sucesso!');
+  const handleLike = async (articleId: string) => {
+    try {
+      await likeService.toggle({ articleId });
+      await loadArticles(); // Recarregar para atualizar contadores
+      message.success('Curtida atualizada!');
+    } catch (error: any) {
+      message.error('Erro ao atualizar curtida');
+    }
   };
 
   // Função para favoritar/desfavoritar artigo
-  const handleFavorite = (articleId: number) => {
-    setArticles(prev => prev.map(article => {
-      if (article.id === articleId) {
+  const handleFavorite = async (articleId: string) => {
+    try {
+      const result = await favoriteService.toggle({ articleId });
+      message.success(result.message);
+      await loadArticles(); // Recarregar
+    } catch (error: any) {
+      message.error('Erro ao atualizar favorito');
+    }
+  };
+
+  // Função para navegar para o artigo completo
+  const handleArticleClick = (articleId: string) => {
+    navigate(`/artigo/${articleId}`);
+  };  return article;
+    }));
+    message.success('Ação realizada com sucesso!');
+  };
+  const filteredArticles = getFilteredArticles();
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Header */} === articleId) {
         return { ...article, isFavorited: !article.isFavorited };
       }
       return article;
@@ -281,46 +308,46 @@ const Biblioteca: React.FC = () => {
                       <Tag key={tag} color="geekblue">{tag}</Tag>
                     ))}
                   </Space>
-                </div>
-
-                {/* Título */}
-                <Title level={4} style={{ marginBottom: '8px', marginTop: 0 }}>
-                  {article.title}
-                </Title>
-
-                {/* Excerpt */}
-                <Paragraph
-                  ellipsis={{ rows: 3 }}
-                  style={{ marginBottom: '16px', color: '#666' }}
-                >
-                  {article.excerpt}
-                </Paragraph>
-
-                {/* Autor */}
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                  <Avatar src={article.author.avatar} size="small" style={{ marginRight: '8px' }} />
-                  <div>
-                    <Text strong style={{ fontSize: '14px' }}>{article.author.name}</Text>
-                    <br />
-                    <Text type="secondary" style={{ fontSize: '12px' }}>{article.author.role}</Text>
-                  </div>
-                </div>
-
                 {/* Estatísticas e ações */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Space>
                     <Button
                       type="text"
-                      icon={article.isLiked ? <HeartFilled style={{ color: '#ff4d4f' }} /> : <HeartOutlined />}
+                      icon={<HeartOutlined />}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleLike(article.id);
                       }}
                       style={{ padding: '4px 8px' }}
                     >
-                      {article.likes}
+                      {article._count?.likes || 0}
                     </Button>
                     <Button
+                      type="text"
+                      icon={<EyeOutlined />}
+                      style={{ padding: '4px 8px', color: '#666' }}
+                    >
+                      0
+                    </Button>
+                    <Button
+                      type="text"
+                      icon={<MessageOutlined />}
+                      style={{ padding: '4px 8px', color: '#666' }}
+                    >
+                      {article._count?.comments || 0}
+                    </Button>
+                  </Space>
+
+                  <Space>
+                    <Button
+                      type="text"
+                      icon={<StarOutlined />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFavorite(article.id);
+                      }}
+                      style={{ padding: '4px 8px' }}
+                    />utton
                       type="text"
                       icon={<EyeOutlined />}
                       style={{ padding: '4px 8px', color: '#666' }}

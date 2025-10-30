@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Card, Row, Col, Button, Tag, Space, Typography,
-  Input, message, Tooltip, Divider, Avatar
+  Input, message, Tooltip, Divider, Avatar, Spin
 } from 'antd';
 import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
@@ -11,11 +11,13 @@ import {
   BulbOutlined, PlayCircleOutlined, ExperimentOutlined,
   FilterOutlined, SearchOutlined, CalendarOutlined
 } from '@ant-design/icons';
+import { activityService, Activity } from '../../services/activityService';
+import { likeService, favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
 const { Search } = Input;
 
-// Dados mock das atividades
+// Dados mock das atividades (fallback)
 const mockActivities = [
   {
     id: 1,
@@ -175,9 +177,27 @@ const filterOptions = [
 
 const Atividades: React.FC = () => {
   const navigate = useNavigate();
-  const [activities, setActivities] = useState(mockActivities);
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    loadActivities();
+  }, []);
+
+  const loadActivities = async () => {
+    try {
+      setLoading(true);
+      const data = await activityService.getAll();
+      setActivities(data);
+    } catch (error: any) {
+      message.error('Erro ao carregar atividades');
+      setActivities(mockActivities as any);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Função para filtrar atividades
   const getFilteredActivities = () => {
@@ -192,52 +212,58 @@ const Atividades: React.FC = () => {
         'communication': 'Comunicação',
         'motora': 'Motora'
       };
-
-      filtered = filtered.filter(activity =>
-        activity.category && categoryMap[activeFilter] && activity.category.toLowerCase() === categoryMap[activeFilter]!.toLowerCase()
-      );
+  // Função para curtir/descurtir atividade
+  const handleLike = async (activityId: string) => {
+    try {
+      await likeService.toggle({ activityId });
+      await loadActivities();
+      message.success('Curtida atualizada!');
+    } catch (error) {
+      message.error('Erro ao atualizar curtida');
     }
-
-    // Filtro por busca
-    if (searchText) {
-      filtered = filtered.filter(activity =>
-        activity.title.toLowerCase().includes(searchText.toLowerCase()) ||
-        activity.description.toLowerCase().includes(searchText.toLowerCase()) ||
-        activity.tags.some(tag => tag.toLowerCase().includes(searchText.toLowerCase()))
-      );
-    }
-
-    return filtered;
   };
 
-  // Função para curtir/descurtir atividade
-  const handleLike = (activityId: number) => {
-    setActivities(prev => prev.map(activity => {
-      if (activity.id === activityId) {
-        const newIsLiked = !activity.isLiked;
-        const newLikes = newIsLiked ? activity.likes + 1 : activity.likes - 1;
-        return { ...activity, isLiked: newIsLiked, likes: newLikes };
-      }
-      return activity;
-    }));
-    message.success('Ação realizada com sucesso!');
+  // Função para favoritar/desfavoritar atividade
+  const handleFavorite = async (activityId: string) => {
+    try {
+      const result = await favoriteService.toggle({ activityId });
+      message.success(result.message);
+      await loadActivities();
+    } catch (error) {
+      message.error('Erro ao atualizar favorito');
+    }
+  };
+
+  const filteredActivities = getFilteredActivities();
+
+  // Função para navegar para a página de detalhes da atividade
+  const handleActivityClick = (activityId: string) => {
+    navigate(`/atividade/${activityId}`);
   };
 
   // Função para favoritar/desfavoritar atividade
   const handleFavorite = (activityId: number) => {
     setActivities(prev => prev.map(activity => {
       if (activity.id === activityId) {
-        return { ...activity, isFavorited: !activity.isFavorited };
-      }
-      return activity;
-    }));
-    message.success('Ação realizada com sucesso!');
+    switch (difficulty) {
+      case 'Fácil': return 'green';
+      case 'Médio': return 'orange';
+      case 'Avançado': return 'red';
+      default: return 'default';
+    }
   };
 
-  const filteredActivities = getFilteredActivities();
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
 
-  // Função para navegar para a página de detalhes da atividade
-  const handleActivityClick = (activityId: number) => {
+  return (
+    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Header */}tyClick = (activityId: number) => {
     navigate(`/atividade/${activityId}`);
   };
 
@@ -390,27 +416,27 @@ const Atividades: React.FC = () => {
                             <br />
                             <Text style={{ fontSize: '12px', color: '#666' }}>{activity.duration}</Text>
                           </div>
-                        </Col>
-                        <Col span={8}>
-                          <div style={{ textAlign: 'center', padding: '8px', background: '#f5f5f5', borderRadius: '8px' }}>
-                            <BulbOutlined style={{ fontSize: '16px', color: '#52c41a', marginBottom: '4px' }} />
-                            <br />
-                            <Text strong style={{ fontSize: '12px' }}>Materiais</Text>
-                            <br />
-                            <Text style={{ fontSize: '12px', color: '#666' }}>{activity.materials.length} itens</Text>
-                          </div>
-                        </Col>
-                        <Col span={8}>
-                          <div style={{ textAlign: 'center', padding: '8px', background: '#f5f5f5', borderRadius: '8px' }}>
-                            <TeamOutlined style={{ fontSize: '16px', color: '#fa8c16', marginBottom: '4px' }} />
-                            <br />
-                            <Text strong style={{ fontSize: '12px' }}>Objetivos</Text>
-                            <br />
-                            <Text style={{ fontSize: '12px', color: '#666' }}>{activity.objectives.length} metas</Text>
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
+                      <Space>
+                        <Tooltip title="Curtir atividade">
+                          <Button
+                            type="text"
+                            icon={<HeartOutlined />}
+                            onClick={() => handleLike(activity.id)}
+                            style={{ fontSize: '16px' }}
+                          >
+                            {activity._count?.likes || 0}
+                          </Button>
+                        </Tooltip>
+                        <Tooltip title="Favoritar atividade">
+                          <Button
+                            type="text"
+                            icon={<StarOutlined />}
+                            onClick={() => handleFavorite(activity.id)}
+                            style={{ fontSize: '16px' }}
+                          >
+                            {activity._count?.favorites || 0}
+                          </Button>
+                        </Tooltip>
 
                     {/* Ações */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

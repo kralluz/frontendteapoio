@@ -12,10 +12,12 @@ import {
   CheckCircleOutlined, BookOutlined, TrophyOutlined
 } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
+import { activityService } from '../../services/activityService';
+import { likeService, favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
 
-// Dados mock das atividades (mesmo que na página principal)
+// Dados mock das atividades (fallback)
 const mockActivities = [
   {
     id: 1,
@@ -255,31 +257,52 @@ const AtividadePage: React.FC = () => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   useEffect(() => {
-    // Simular carregamento da atividade
-    const loadActivity = () => {
-      setLoading(true);
-      setTimeout(() => {
-        const foundActivity = mockActivities.find(a => a.id === parseInt(id || '0'));
-        if (foundActivity) {
-          setActivity(foundActivity);
-          setIsLiked(foundActivity.isLiked);
-          setIsFavorited(foundActivity.isFavorited);
-        }
-        setLoading(false);
-      }, 500);
-    };
-
     loadActivity();
   }, [id]);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    message.success(isLiked ? 'Curtida removida!' : 'Atividade curtida!');
+  const loadActivity = async () => {
+    if (!id) return;
+    
+    try {
+      setLoading(true);
+      const data = await activityService.getById(id);
+      setActivity(data);
+    } catch (error: any) {
+      message.error('Erro ao carregar atividade');
+      // Fallback para dados mock
+      const foundActivity = mockActivities.find(a => a.id === parseInt(id || '0'));
+      if (foundActivity) {
+        setActivity(foundActivity);
+        setIsLiked(foundActivity.isLiked);
+        setIsFavorited(foundActivity.isFavorited);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleFavorite = () => {
-    setIsFavorited(!isFavorited);
-    message.success(isFavorited ? 'Removido dos favoritos!' : 'Adicionado aos favoritos!');
+  const handleLike = async () => {
+    if (!activity) return;
+    
+    try {
+      await likeService.toggle({ activityId: activity.id });
+      await loadActivity();
+      message.success('Curtida atualizada!');
+    } catch (error) {
+      message.error('Erro ao atualizar curtida');
+    }
+  };
+
+  const handleFavorite = async () => {
+    if (!activity) return;
+    
+    try {
+      const result = await favoriteService.toggle({ activityId: activity.id });
+      message.success(result.message);
+      await loadActivity();
+    } catch (error) {
+      message.error('Erro ao atualizar favorito');
+    }
   };
 
   const handleShare = () => {
@@ -406,20 +429,20 @@ const AtividadePage: React.FC = () => {
                 <Divider type="vertical" style={{ margin: '0 24px', height: '40px' }} />
                 <div>
                   <Text type="secondary">
-                    <CalendarOutlined style={{ marginRight: '6px' }} />
-                    {new Date(activity.publishedAt).toLocaleDateString('pt-BR')}
-                  </Text>
-                  <br />
-                  <Text type="secondary">
-                    <UserOutlined style={{ marginRight: '6px' }} />
-                    {activity.views} visualizações
-                  </Text>
-                </div>
-              </div>
-
-              {/* Ações */}
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 <Button
+                  size="large"
+                  icon={<HeartOutlined />}
+                  onClick={handleLike}
+                >
+                  {activity._count?.likes || 0}
+                </Button>
+                <Button
+                  size="large"
+                  icon={<StarOutlined />}
+                  onClick={handleFavorite}
+                >
+                  {activity._count?.favorites || 0}
+                </Button>
                   type="primary"
                   size="large"
                   icon={<PlayCircleOutlined />}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card, Button, Tag, Avatar, Space, Typography,
-  Breadcrumb, message, Affix
+  Breadcrumb, message, Affix, Spin
 } from 'antd';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
@@ -11,10 +11,12 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { articleService } from '../../services/articleService';
+import { likeService, favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
 
-// Dados mock dos artigos (mesmos da biblioteca)
+// Dados mock dos artigos (fallback)
 const mockArticles = [
   {
     id: 1,
@@ -276,33 +278,68 @@ const ArticlePage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [article, setArticle] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
 
   useEffect(() => {
-    // Simular busca do artigo por ID
-    const foundArticle = mockArticles.find(a => a.id === parseInt(id || '0'));
-    if (foundArticle) {
-      setArticle(foundArticle);
-      setIsLiked(foundArticle.isLiked);
-      setIsFavorited(foundArticle.isFavorited);
-      setLikesCount(foundArticle.likes);
-    }
+    loadArticle();
   }, [id]);
 
-  const handleLike = () => {
-    const newIsLiked = !isLiked;
-    const newLikesCount = newIsLiked ? likesCount + 1 : likesCount - 1;
-    setIsLiked(newIsLiked);
-    setLikesCount(newLikesCount);
-    message.success(newIsLiked ? 'Artigo curtido!' : 'Curtida removida!');
+  const loadArticle = async () => {
+    if (!id) return;
+    
+    try {
+      setLoading(true);
+      const data = await articleService.getById(id);
+      setArticle(data);
+      setLikesCount(data._count?.likes || 0);
+    } catch (error: any) {
+      message.error('Erro ao carregar artigo');
+      // Fallback para dados mock
+      const foundArticle = mockArticles.find(a => a.id === parseInt(id || '0'));
+      if (foundArticle) {
+        setArticle(foundArticle);
+        setIsLiked(foundArticle.isLiked);
+        setIsFavorited(foundArticle.isFavorited);
+        setLikesCount(foundArticle.likes);
+      }
+    } finally {
+      setLoading(false);
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    message.success('Link copiado para a área de transferência!');
   };
 
-  const handleFavorite = () => {
-    const newIsFavorited = !isFavorited;
-    setIsFavorited(newIsFavorited);
-    message.success(newIsFavorited ? 'Adicionado aos favoritos!' : 'Removido dos favoritos!');
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!article) {
+    return (
+      <div style={{ padding: '24px', textAlign: 'center' }}>
+        <Title level={3}>Artigo não encontrado</Title>
+        <Button onClick={() => navigate('/biblioteca')}>Voltar para Biblioteca</Button>
+      </div>
+    );
+  } }
+  };
+
+  const handleFavorite = async () => {
+    if (!article) return;
+    
+    try {
+      const result = await favoriteService.toggle({ articleId: article.id });
+      message.success(result.message);
+      await loadArticle();
+    } catch (error) {
+      message.error('Erro ao atualizar favorito');
+    }
   };
 
   const handleShare = () => {
@@ -363,38 +400,38 @@ const ArticlePage: React.FC = () => {
           </Space>
         </div>
 
-        {/* Título */}
-        <Title level={1} style={{ marginBottom: '16px' }}>
-          {article.title}
-        </Title>
+          <Space>
+            <Button
+              type="text"
+              icon={<HeartOutlined />}
+              onClick={handleLike}
+              style={{ fontSize: '16px' }}
+            >
+              {article._count?.likes || 0}
+            </Button>
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              style={{ fontSize: '16px', color: '#666' }}
+            >
+              0
+            </Button>
+            <Button
+              type="text"
+              icon={<MessageOutlined />}
+              style={{ fontSize: '16px', color: '#666' }}
+            >
+              {article._count?.comments || article.comments?.length || 0}
+            </Button>
+          </Space>
 
-        {/* Excerpt */}
-        <Paragraph style={{ fontSize: '18px', color: '#666', marginBottom: '24px' }}>
-          {article.excerpt}
-        </Paragraph>
-
-        {/* Informações do autor e artigo */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar src={article.author.avatar} size={48} style={{ marginRight: '12px' }} />
-            <div>
-              <Text strong style={{ fontSize: '16px' }}>{article.author.name}</Text>
-              <br />
-              <Text type="secondary">{article.author.role}</Text>
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'right' }}>
-            <Text type="secondary" style={{ fontSize: '14px' }}>
-              <ClockCircleOutlined style={{ marginRight: '4px' }} />
-              {article.readTime} min de leitura
-            </Text>
-            <br />
-            <Text type="secondary" style={{ fontSize: '14px' }}>
-              {new Date(article.publishedAt).toLocaleDateString('pt-BR')}
-            </Text>
-          </div>
-        </div>
+          <Space>
+            <Button
+              type="text"
+              icon={<StarOutlined />}
+              onClick={handleFavorite}
+              style={{ fontSize: '16px' }}
+            />
 
         {/* Estatísticas e ações */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
