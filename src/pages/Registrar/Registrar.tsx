@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Registrar = () => {
+    const { register } = useAuth();
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         name: "",
         email: "",
@@ -8,20 +12,41 @@ const Registrar = () => {
         confirmPassword: ""
     });
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+        if (error) setError('');
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        
+        if (!form.name.trim() || !form.email.trim() || !form.password.trim()) {
+            setError('Preencha todos os campos.');
+            return;
+        }
+        
         if (form.password !== form.confirmPassword) {
             setError("As senhas não coincidem.");
             return;
         }
-        // Aqui você pode adicionar a lógica de cadastro (API, etc)
-        alert("Cadastro realizado com sucesso!");
+        
+        setIsLoading(true);
+        
+        try {
+            await register({
+                name: form.name,
+                email: form.email,
+                password: form.password
+            });
+            navigate('/biblioteca');
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Erro ao criar conta.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -101,21 +126,22 @@ const Registrar = () => {
                 )}
                 <button
                     type="submit"
+                    disabled={isLoading}
                     style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        background: isLoading ? '#ccc' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         color: 'white',
                         border: 'none',
                         borderRadius: 4,
                         padding: '12px',
                         fontWeight: 'bold',
-                        cursor: 'pointer',
+                        cursor: isLoading ? 'not-allowed' : 'pointer',
                         marginTop: 8,
                         fontSize: '16px',
                         transition: 'transform 0.2s'
                     }}
-                    onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseOver={e => !isLoading && (e.currentTarget.style.transform = 'translateY(-2px)')}
                     onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-                >Cadastrar</button>
+                >{isLoading ? 'Cadastrando...' : 'Cadastrar'}</button>
                 <div style={{ textAlign: 'center', marginTop: 10 }}>
                     <a href="/login" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
                         Já tem uma conta? Login

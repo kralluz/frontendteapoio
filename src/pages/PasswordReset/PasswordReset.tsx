@@ -15,7 +15,7 @@ const PasswordReset: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'email' | 'code' | 'newPassword'>('email');
 
-  const onFinish = async (values: FormValues) => {
+  const onFinish = async () => {
     setLoading(true);
     try {
       if (step === 'email') {

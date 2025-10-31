@@ -77,6 +77,11 @@ const Login: React.FC = () => {
           required
           style={{
             padding: '10px',
+            border: error ? '2px solid #d32f2f' : '1px solid #667eea',
+            borderRadius: 4,
+            marginBottom: 8
+          }}
+        />
         {error && (
           <div style={{ color: '#d32f2f', marginBottom: 8, textAlign: 'center' }}>{error}</div>
         )}
@@ -97,15 +102,7 @@ const Login: React.FC = () => {
           }}
           onMouseOver={e => !isLoading && (e.currentTarget.style.transform = 'translateY(-2px)')}
           onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-        >{isLoading ? 'Entrando...' : 'Entrar'}</button>'bold',
-            cursor: 'pointer',
-            marginTop: 8,
-            fontSize: '16px',
-            transition: 'transform 0.2s'
-          }}
-          onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-          onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-        >Entrar</button>
+        >{isLoading ? 'Entrando...' : 'Entrar'}</button>
         <div style={{marginTop: 10 }}>
           <a href="/register" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
             Não tem uma conta? Cadastre-se

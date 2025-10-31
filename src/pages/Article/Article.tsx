@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Tag, Avatar, Space, Typography,
+  Card, Button, Tag, Space, Typography,
   Breadcrumb, message, Affix, Spin
 } from 'antd';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
-  EyeOutlined, ClockCircleOutlined, ShareAltOutlined,
+  EyeOutlined, ShareAltOutlined,
   MessageOutlined, ArrowLeftOutlined
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { articleService } from '../../services/articleService';
-import { likeService, favoriteService } from '../../services/interactionService';
+import { favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -307,9 +307,21 @@ const ArticlePage: React.FC = () => {
       }
     } finally {
       setLoading(false);
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    message.success('Link copiado para a área de transferência!');
+    }
+  };
+
+  const handleLike = async () => {
+    if (!article) return;
+    
+    try {
+      setIsLiked(!isLiked);
+      setLikesCount(prev => isLiked ? prev - 1 : prev + 1);
+      message.success(isLiked ? 'Curtida removida' : 'Artigo curtido!');
+    } catch (error) {
+      message.error('Erro ao curtir artigo');
+      setIsLiked(isLiked);
+      setLikesCount(prev => isLiked ? prev + 1 : prev - 1);
+    }
   };
 
   if (loading) {
@@ -319,16 +331,6 @@ const ArticlePage: React.FC = () => {
       </div>
     );
   }
-
-  if (!article) {
-    return (
-      <div style={{ padding: '24px', textAlign: 'center' }}>
-        <Title level={3}>Artigo não encontrado</Title>
-        <Button onClick={() => navigate('/biblioteca')}>Voltar para Biblioteca</Button>
-      </div>
-    );
-  } }
-  };
 
   const handleFavorite = async () => {
     if (!article) return;
@@ -399,39 +401,6 @@ const ArticlePage: React.FC = () => {
             ))}
           </Space>
         </div>
-
-          <Space>
-            <Button
-              type="text"
-              icon={<HeartOutlined />}
-              onClick={handleLike}
-              style={{ fontSize: '16px' }}
-            >
-              {article._count?.likes || 0}
-            </Button>
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              style={{ fontSize: '16px', color: '#666' }}
-            >
-              0
-            </Button>
-            <Button
-              type="text"
-              icon={<MessageOutlined />}
-              style={{ fontSize: '16px', color: '#666' }}
-            >
-              {article._count?.comments || article.comments?.length || 0}
-            </Button>
-          </Space>
-
-          <Space>
-            <Button
-              type="text"
-              icon={<StarOutlined />}
-              onClick={handleFavorite}
-              style={{ fontSize: '16px' }}
-            />
 
         {/* Estatísticas e ações */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

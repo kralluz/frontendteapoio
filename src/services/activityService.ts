@@ -1,5 +1,18 @@
 import api from './api';
 
+export interface Comment {
+  id: string;
+  content: string;
+  userId: string;
+  user: {
+    id: string;
+    name: string;
+    avatar?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Activity {
   id: string;
   title: string;
@@ -26,6 +39,7 @@ export interface Activity {
     likes: number;
     favorites: number;
   };
+  comments?: Comment[];
 }
 
 export interface CreateActivityData {

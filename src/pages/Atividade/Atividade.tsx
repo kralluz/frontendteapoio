@@ -6,9 +6,9 @@ import {
 } from 'antd';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
-  ClockCircleOutlined, UserOutlined,
+  ClockCircleOutlined,
   BulbOutlined, PlayCircleOutlined, ExperimentOutlined,
-  CalendarOutlined, ArrowLeftOutlined, ShareAltOutlined,
+  ArrowLeftOutlined, ShareAltOutlined,
   CheckCircleOutlined, BookOutlined, TrophyOutlined
 } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
@@ -428,21 +428,13 @@ const AtividadePage: React.FC = () => {
                 </div>
                 <Divider type="vertical" style={{ margin: '0 24px', height: '40px' }} />
                 <div>
-                  <Text type="secondary">
+                  <Text type="secondary">Publicado em {new Date(activity.publishedAt || activity.createdAt).toLocaleDateString('pt-BR')}</Text>
+                </div>
+              </div>
+
+              {/* Botões de ação */}
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 <Button
-                  size="large"
-                  icon={<HeartOutlined />}
-                  onClick={handleLike}
-                >
-                  {activity._count?.likes || 0}
-                </Button>
-                <Button
-                  size="large"
-                  icon={<StarOutlined />}
-                  onClick={handleFavorite}
-                >
-                  {activity._count?.favorites || 0}
-                </Button>
                   type="primary"
                   size="large"
                   icon={<PlayCircleOutlined />}

@@ -14,26 +14,27 @@ import ArticlePage from '../pages/Article/Article';
 import AtividadePage from '../pages/Atividade/Atividade';
 import PerfilAutista from '../pages/PerfilAutista/PerfilAutista';
 import PerfilAutistaDetalhes from '../pages/PerfilAutista/PerfilAutistaDetalhes';
-import Feed from '../pages/Feed/Feed';
+import ProtectedRoute from '../components/ProtectedRoute';
+
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<Biblioteca />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/perfil" element={<Perfil />} />
-      <Route path="/configuracoes" element={<Configuracoes />} />
-      <Route path="/favoritos" element={<Favoritos />} />
-      <Route path="/curtidos" element={<Curtidos />} />
-      <Route path="/biblioteca" element={<Biblioteca />} />
-      <Route path="/artigo/:id" element={<ArticlePage />} />
-      <Route path="/atividade/:id" element={<AtividadePage />} />
-      <Route path="/perfil-autista" element={<PerfilAutista />} />
-      <Route path="/perfil-autista/:id" element={<PerfilAutistaDetalhes />} />
-      <Route path="/atividades" element={React.createElement(require('../pages/Atividades/Atividades').default)} />
+      <Route path="/" element={<ProtectedRoute><Biblioteca /></ProtectedRoute>} />
+      <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+      <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+      <Route path="/perfil" element={<ProtectedRoute><Perfil /></ProtectedRoute>} />
+      <Route path="/configuracoes" element={<ProtectedRoute><Configuracoes /></ProtectedRoute>} />
+      <Route path="/favoritos" element={<ProtectedRoute><Favoritos /></ProtectedRoute>} />
+      <Route path="/curtidos" element={<ProtectedRoute><Curtidos /></ProtectedRoute>} />
+      <Route path="/biblioteca" element={<ProtectedRoute><Biblioteca /></ProtectedRoute>} />
+      <Route path="/artigo/:id" element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
+      <Route path="/atividade/:id" element={<ProtectedRoute><AtividadePage /></ProtectedRoute>} />
+      <Route path="/perfil-autista" element={<ProtectedRoute><PerfilAutista /></ProtectedRoute>} />
+      <Route path="/perfil-autista/:id" element={<ProtectedRoute><PerfilAutistaDetalhes /></ProtectedRoute>} />
+      <Route path="/atividades" element={<ProtectedRoute>{React.createElement(require('../pages/Atividades/Atividades').default)}</ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

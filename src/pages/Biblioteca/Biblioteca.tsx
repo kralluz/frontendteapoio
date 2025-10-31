@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Row, Col, Button, Tag, Avatar, Space, Typography, Input,
+  Card, Row, Col, Button, Tag, Space, Typography, Input,
   message, Spin
 } from 'antd';
 import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
-  HeartOutlined, HeartFilled, StarOutlined, StarFilled,
-  EyeOutlined, BookOutlined, ClockCircleOutlined, FireOutlined,
+  StarOutlined,
+  BookOutlined, ClockCircleOutlined, FireOutlined,
   UserOutlined, MessageOutlined, ShareAltOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { articleService, Article } from '../../services/articleService';
-import { likeService, favoriteService } from '../../services/interactionService';
+import { favoriteService } from '../../services/interactionService';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 const { Search } = Input;
 
 // Dados mock para os artigos (fallback)
@@ -169,29 +169,39 @@ const Biblioteca: React.FC = () => {
     if (activeFilter !== 'all') {
       switch (activeFilter) {
         case 'recent':
-          filtered = filtered.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+          filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
           break;
         case 'popular':
-          filtered = filtered.sort((a, b) => b.likes - a.likes);
+          filtered = filtered.sort((a, b) => (b._count?.likes || 0) - (a._count?.likes || 0));
           break;
         case 'communication':
-          filtered = filtered.filter(article => article.tags.includes('Comunicação') || article.tags.includes('PECs') || article.tags.includes('AAC'));
+          filtered = filtered.filter(article => article.category.includes('Comunicação'));
           break;
         case 'social':
-          filtered = filtered.filter(article => article.tags.includes('Social') || article.tags.includes('Habilidades') || article.tags.includes('Interação'));
+          filtered = filtered.filter(article => article.category.includes('Social'));
           break;
         case 'routine':
-          filtered = filtered.filter(article => article.tags.includes('Rotina') || article.tags.includes('Organização'));
-  // Função para curtir/descurtir artigo
-  const handleLike = async (articleId: string) => {
-    try {
-      await likeService.toggle({ articleId });
-      await loadArticles(); // Recarregar para atualizar contadores
-      message.success('Curtida atualizada!');
-    } catch (error: any) {
-      message.error('Erro ao atualizar curtida');
+          filtered = filtered.filter(article => article.category.includes('Rotina'));
+          break;
+        case 'activities':
+          filtered = filtered.filter(article => article.category.includes('Atividades'));
+          break;
+      }
     }
+
+    // Filtro por texto de busca
+    if (searchText) {
+      filtered = filtered.filter(article =>
+        article.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        (article.excerpt?.toLowerCase().includes(searchText.toLowerCase()) || false) ||
+        article.category.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    return filtered;
   };
+
+
 
   // Função para favoritar/desfavoritar artigo
   const handleFavorite = async (articleId: string) => {
@@ -207,10 +217,8 @@ const Biblioteca: React.FC = () => {
   // Função para navegar para o artigo completo
   const handleArticleClick = (articleId: string) => {
     navigate(`/artigo/${articleId}`);
-  };  return article;
-    }));
-    message.success('Ação realizada com sucesso!');
   };
+
   const filteredArticles = getFilteredArticles();
 
   if (loading) {
@@ -220,23 +228,6 @@ const Biblioteca: React.FC = () => {
       </div>
     );
   }
-
-  return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      {/* Header */} === articleId) {
-        return { ...article, isFavorited: !article.isFavorited };
-      }
-      return article;
-    }));
-    message.success('Ação realizada com sucesso!');
-  };
-
-  // Função para navegar para o artigo completo
-  const handleArticleClick = (articleId: number) => {
-    navigate(`/artigo/${articleId}`);
-  };
-
-  const filteredArticles = getFilteredArticles();
 
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -304,69 +295,16 @@ const Biblioteca: React.FC = () => {
                 <div style={{ marginBottom: '12px' }}>
                   <Space wrap>
                     <Tag color="blue">{article.category}</Tag>
-                    {article.tags.slice(0, 2).map(tag => (
-                      <Tag key={tag} color="geekblue">{tag}</Tag>
-                    ))}
+                    <Tag color="geekblue">{article.category}</Tag>
                   </Space>
+                </div>
+
                 {/* Estatísticas e ações */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Space>
                     <Button
                       type="text"
-                      icon={<HeartOutlined />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleLike(article.id);
-                      }}
-                      style={{ padding: '4px 8px' }}
-                    >
-                      {article._count?.likes || 0}
-                    </Button>
-                    <Button
-                      type="text"
-                      icon={<EyeOutlined />}
-                      style={{ padding: '4px 8px', color: '#666' }}
-                    >
-                      0
-                    </Button>
-                    <Button
-                      type="text"
-                      icon={<MessageOutlined />}
-                      style={{ padding: '4px 8px', color: '#666' }}
-                    >
-                      {article._count?.comments || 0}
-                    </Button>
-                  </Space>
-
-                  <Space>
-                    <Button
-                      type="text"
                       icon={<StarOutlined />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleFavorite(article.id);
-                      }}
-                      style={{ padding: '4px 8px' }}
-                    />utton
-                      type="text"
-                      icon={<EyeOutlined />}
-                      style={{ padding: '4px 8px', color: '#666' }}
-                    >
-                      {article.views}
-                    </Button>
-                    <Button
-                      type="text"
-                      icon={<MessageOutlined />}
-                      style={{ padding: '4px 8px', color: '#666' }}
-                    >
-                      {article.comments}
-                    </Button>
-                  </Space>
-
-                  <Space>
-                    <Button
-                      type="text"
-                      icon={article.isFavorited ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleFavorite(article.id);
@@ -392,7 +330,7 @@ const Biblioteca: React.FC = () => {
                     {article.readTime} min de leitura
                   </Text>
                   <Text type="secondary" style={{ fontSize: '12px' }}>
-                    {new Date(article.publishedAt).toLocaleDateString('pt-BR')}
+                    {new Date(article.createdAt).toLocaleDateString('pt-BR')}
                   </Text>
                 </div>
               </div>

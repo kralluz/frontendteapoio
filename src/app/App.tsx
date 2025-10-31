@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Typography, Button } from 'antd';
-import { UserOutlined, LogoutOutlined, SettingOutlined, AppstoreOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Grid } from 'antd';
+import { useAuth } from '../contexts/AuthContext';
+
 import AppRoutes from './routes';
 import './App.css';
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
-const { useBreakpoint } = Grid;
-
-const user = {
-  name: 'João',
-  avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-};
 
 const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const screens = useBreakpoint();
+  const { user, logout } = useAuth();
+
   const [collapsed, setCollapsed] = useState(false);
 
   // Verificar se estamos em uma rota que não deve mostrar header/sidebar
@@ -45,220 +41,106 @@ const App: React.FC = () => {
       icon: <LogoutOutlined />,
       label: 'Sair',
       onClick: () => {
+        logout();
         navigate('/login');
       },
     },
   ];
 
-  const sidebarMenuItems = [
+  const menuItems = [
     {
-      key: '/biblioteca',
+      key: '/',
       icon: <BookOutlined />,
       label: 'Biblioteca',
-    },
-    {
-      key: '/atividades',
-      icon: <AppstoreOutlined />,
-      label: 'Atividades',
+      onClick: () => navigate('/biblioteca'),
     },
     {
       key: '/perfil-autista',
       icon: <ProfileOutlined />,
-      label: 'Perfil do Autista',
+      label: 'Perfis',
+      onClick: () => navigate('/perfil-autista'),
     },
     {
       key: '/favoritos',
       icon: <StarOutlined />,
       label: 'Favoritos',
+      onClick: () => navigate('/favoritos'),
     },
     {
       key: '/curtidos',
       icon: <HeartOutlined />,
       label: 'Curtidos',
-    },
-    {
-      key: '/configuracoes',
-      icon: <SettingOutlined />,
-      label: 'Configurações',
+      onClick: () => navigate('/curtidos'),
     },
   ];
 
-  // Bottom bar items for mobile
-  const bottomBarItems = [
-    ...sidebarMenuItems.slice(0, 5), // Mostra apenas os primeiros 5 itens na bottom bar
-  ].map(item => ({
-    ...item,
-    label: collapsed ? '' : item.label,
-  }));
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    navigate(key);
-  };
-
-  // Se estiver em rota de autenticação, renderizar apenas o conteúdo sem header/sidebar
   if (isAuthRoute) {
     return (
-      <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
-        <AppRoutes />
-      </div>
-    );
-  }
-
-  // Render bottom bar for mobile
-  if (!screens.md) {
-    return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Header style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img
-              src="/imagens/Logo.png"
-              alt="Lyora Logo"
-              style={{ height: 36, width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))' }}
-            />
-            <Title level={3} style={{ color: 'white', margin: 0 }}>
-              Lyora
-            </Title>
-          </div>
-          <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-            <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-              <Avatar src={user.avatar} />
-              <span style={{ color: 'white', marginLeft: 8 }}>{user.name}</span>
-            </div>
-          </Dropdown>
-        </Header>
-        <Layout>
-          <Content style={{
-            padding: '24px',
-            marginTop: 64,
-            minHeight: 'calc(100vh - 64px - 80px)',
-            overflow: 'auto'
-          }}>
-            <AppRoutes />
-          </Content>
-        </Layout>
-        {/* Bottom Navigation Bar */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          background: '#fff',
-          borderTop: '1px solid #e8e8e8',
-          padding: '8px 0',
-          zIndex: 1000,
-          boxShadow: '0 -2px 8px rgba(0,0,0,0.1)'
-        }}>
-          <Menu
-            mode="horizontal"
-            selectedKeys={[location.pathname]}
-            items={bottomBarItems}
-            onClick={handleMenuClick}
-            style={{
-              border: 'none',
-              justifyContent: 'space-around',
-              flex: 1
-            }}
-          />
-        </div>
+        <Content>
+          <AppRoutes />
+        </Content>
       </Layout>
     );
   }
 
-  // Desktop layout with collapsible sidebar
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        padding: '0 24px',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '16px',
-              width: 64,
-              height: 64,
-              marginRight: 16
-            }}
-            className="sider-toggle-btn"
-          />
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <img
-              src="/imagens/Logo.png"
-              alt="Lyora Logo"
-              style={{ height: 40, width: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))' }}
-            />
-            <Title level={3} style={{ color: 'white', margin: 0 }}>
-              Lyora
-            </Title>
-          </div>
-        </div>
-        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+        <Button
+          type="text"
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => setCollapsed(!collapsed)}
+          style={{
+            fontSize: '18px',
+            color: 'white',
+            marginRight: '16px',
+          }}
+        />
+        <Title level={3} style={{ color: 'white', margin: 0, flex: 1 }}>TeApoio</Title>
+        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
           <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-            <Avatar src={user.avatar} />
-            <span style={{ color: 'white', marginLeft: 8 }}>{user.name}</span>
+            <Avatar src={user?.avatar} size="large" />
+            <span style={{ marginLeft: 8, color: 'white', fontWeight: 500 }}>{user?.name}</span>
           </div>
         </Dropdown>
       </Header>
       <Layout>
         <Sider
-          width={260}
+          trigger={null}
+          collapsible
           collapsed={collapsed}
-          style={{
-            position: 'fixed',
-            top: 64,
-            left: 0,
-            height: 'calc(100vh - 64px)',
-            background: '#f0f2f5',
-            transition: 'all 0.2s',
-            overflow: 'auto'
+          breakpoint="lg"
+          onBreakpoint={(broken) => {
+            if (broken) setCollapsed(true);
           }}
-          collapsedWidth={80}
+          style={{
+            background: 'white',
+            boxShadow: '2px 0 8px rgba(0,0,0,0.05)'
+          }}
         >
           <Menu
             mode="inline"
             selectedKeys={[location.pathname]}
-            items={sidebarMenuItems}
-            onClick={handleMenuClick}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              height: '100%'
-            }}
+            style={{ borderRight: 0, paddingTop: 16 }}
+            items={menuItems}
           />
         </Sider>
-        <Layout style={{
-          marginTop: 64,
-          marginLeft: collapsed ? 80 : 260,
-          transition: 'margin-left 0.2s'
+        <Content style={{
+          margin: '24px',
+          minHeight: 280,
         }}>
-          <Content style={{
-            padding: '24px',
-            minHeight: 'calc(100vh - 64px)',
-            overflow: 'auto'
-          }}>
-            <AppRoutes />
-          </Content>
-        </Layout>
+          <AppRoutes />
+        </Content>
       </Layout>
     </Layout>
   );

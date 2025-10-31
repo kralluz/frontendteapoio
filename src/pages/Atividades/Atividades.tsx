@@ -6,8 +6,8 @@ import {
 } from 'antd';
 import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
-  HeartOutlined, HeartFilled, StarOutlined, StarFilled,
-  ClockCircleOutlined, UserOutlined, TeamOutlined,
+  HeartOutlined, StarOutlined,
+  UserOutlined, TeamOutlined,
   BulbOutlined, PlayCircleOutlined, ExperimentOutlined,
   FilterOutlined, SearchOutlined, CalendarOutlined
 } from '@ant-design/icons';
@@ -212,6 +212,25 @@ const Atividades: React.FC = () => {
         'communication': 'Comunicação',
         'motora': 'Motora'
       };
+      
+      filtered = filtered.filter(activity => 
+        activity.category === categoryMap[activeFilter]
+      );
+    }
+
+    // Filtro por texto de busca
+    if (searchText) {
+      filtered = filtered.filter(activity =>
+        activity.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        activity.description.toLowerCase().includes(searchText.toLowerCase()) ||
+        activity.materials.some(material => material.toLowerCase().includes(searchText.toLowerCase())) ||
+        activity.materials.some(material => material.toLowerCase().includes(searchText.toLowerCase()))
+      );
+    }
+
+    return filtered;
+  };
+
   // Função para curtir/descurtir atividade
   const handleLike = async (activityId: string) => {
     try {
@@ -241,10 +260,8 @@ const Atividades: React.FC = () => {
     navigate(`/atividade/${activityId}`);
   };
 
-  // Função para favoritar/desfavoritar atividade
-  const handleFavorite = (activityId: number) => {
-    setActivities(prev => prev.map(activity => {
-      if (activity.id === activityId) {
+  // Função para obter cor baseada na dificuldade
+  const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Fácil': return 'green';
       case 'Médio': return 'orange';
@@ -260,22 +277,6 @@ const Atividades: React.FC = () => {
       </div>
     );
   }
-
-  return (
-    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-      {/* Header */}tyClick = (activityId: number) => {
-    navigate(`/atividade/${activityId}`);
-  };
-
-  // Função para obter cor baseada na dificuldade
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Fácil': return 'green';
-      case 'Médio': return 'orange';
-      case 'Avançado': return 'red';
-      default: return 'default';
-    }
-  };
 
   return (
     <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
@@ -393,29 +394,18 @@ const Atividades: React.FC = () => {
                       <Avatar src={activity.author?.avatar} size="small" style={{ marginRight: '8px' }} />
                       <div>
                         <Text strong style={{ fontSize: '14px' }}>{activity.author?.name}</Text>
-                        <br />
-                        <Text type="secondary" style={{ fontSize: '12px' }}>{activity.author?.role}</Text>
                       </div>
                       <Divider type="vertical" style={{ margin: '0 16px' }} />
                       <div>
                         <Text type="secondary" style={{ fontSize: '12px' }}>
                           <CalendarOutlined style={{ marginRight: '4px' }} />
-                          {activity.publishedAt ? new Date(activity.publishedAt).toLocaleDateString('pt-BR') : 'Data não disponível'}
+                          {new Date(activity.createdAt).toLocaleDateString('pt-BR')}
                         </Text>
                       </div>
                     </div>
 
-                    {/* Detalhes da atividade */}
-                    <div style={{ marginBottom: '16px' }}>
-                      <Row gutter={16}>
-                        <Col span={8}>
-                          <div style={{ textAlign: 'center', padding: '8px', background: '#f5f5f5', borderRadius: '8px' }}>
-                            <ClockCircleOutlined style={{ fontSize: '16px', color: '#1890ff', marginBottom: '4px' }} />
-                            <br />
-                            <Text strong style={{ fontSize: '12px' }}>Duração</Text>
-                            <br />
-                            <Text style={{ fontSize: '12px', color: '#666' }}>{activity.duration}</Text>
-                          </div>
+                    {/* Ações */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Space>
                         <Tooltip title="Curtir atividade">
                           <Button
@@ -427,7 +417,7 @@ const Atividades: React.FC = () => {
                             {activity._count?.likes || 0}
                           </Button>
                         </Tooltip>
-                        <Tooltip title="Favoritar atividade">
+                        <Tooltip title="Adicionar aos favoritos">
                           <Button
                             type="text"
                             icon={<StarOutlined />}
@@ -437,36 +427,12 @@ const Atividades: React.FC = () => {
                             {activity._count?.favorites || 0}
                           </Button>
                         </Tooltip>
-
-                    {/* Ações */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Space>
-                        <Tooltip title={activity.isLiked ? "Remover curtida" : "Curtir atividade"}>
-                          <Button
-                            type="text"
-                            icon={activity.isLiked ? <HeartFilled style={{ color: '#ff4d4f' }} /> : <HeartOutlined />}
-                            onClick={() => handleLike(activity.id)}
-                            style={{ fontSize: '16px' }}
-                          >
-                            {activity.likes}
-                          </Button>
-                        </Tooltip>
-                        <Tooltip title={activity.isFavorited ? "Remover dos favoritos" : "Adicionar aos favoritos"}>
-                          <Button
-                            type="text"
-                            icon={activity.isFavorited ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
-                            onClick={() => handleFavorite(activity.id)}
-                            style={{ fontSize: '16px' }}
-                          >
-                            {activity.favorites}
-                          </Button>
-                        </Tooltip>
                         <Button
                           type="text"
                           icon={<UserOutlined />}
                           style={{ fontSize: '16px', color: '#666' }}
                         >
-                          {activity.views}
+                          {activity._count?.comments || 0}
                         </Button>
                       </Space>
 
