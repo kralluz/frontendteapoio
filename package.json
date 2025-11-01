@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.0.2",
+    "@types/jwt-decode": "^2.2.1",
     "antd": "5.27.4",
     "axios": "^1.13.1",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",

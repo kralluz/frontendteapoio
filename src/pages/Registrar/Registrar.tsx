@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-const Registrar = () => {
+const Registrar: React.FC = () => {
     const { register } = useAuth();
     const navigate = useNavigate();
     const [form, setForm] = useState({
@@ -50,104 +50,125 @@ const Registrar = () => {
     };
 
     return (
-        <div className="page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-            <form
-                onSubmit={handleSubmit}
-                style={{
-                    background: '#fff',
-                    borderRadius: 8,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                    padding: 32,
-                    width: 350,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 18
-                }}
-            >
-                <h2 style={{ color: '#667eea', marginBottom: 16, textAlign: 'center' }}>Cadastro</h2>
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="Nome"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
+        <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f0f2f5' }}>
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                padding: '2rem'
+            }}>
+                <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>Crie sua Conta</h1>
+                <p style={{ fontSize: '1.2rem', marginTop: '1rem', textAlign: 'center' }}>
+                    Acesse um mundo de apoio e recursos.
+                </p>
+            </div>
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <form
+                    onSubmit={handleSubmit}
                     style={{
-                        padding: '10px',
-                        border: error ? '2px solid #d32f2f' : '1px solid #667eea',
-                        borderRadius: 4,
-                        marginBottom: 8
+                        background: '#fff',
+                        borderRadius: 8,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                        padding: '2.5rem',
+                        width: 400,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1.5rem'
                     }}
-                />
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="E-mail"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    style={{
-                        padding: '10px',
-                        border: error ? '2px solid #d32f2f' : '1px solid #667eea',
-                        borderRadius: 4,
-                        marginBottom: 8
-                    }}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Senha"
-                    value={form.password}
-                    onChange={handleChange}
-                    required
-                    style={{
-                        padding: '10px',
-                        border: error ? '2px solid #d32f2f' : '1px solid #667eea',
-                        borderRadius: 4,
-                        marginBottom: 8
-                    }}
-                />
-                <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirme a senha"
-                    value={form.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    style={{
-                        padding: '10px',
-                        border: error ? '2px solid #d32f2f' : '1px solid #667eea',
-                        borderRadius: 4,
-                        marginBottom: 8
-                    }}
-                />
-                {error && (
-                    <div style={{ color: '#d32f2f', marginBottom: 8, textAlign: 'center' }}>{error}</div>
-                )}
-                <button
-                    type="submit"
-                    disabled={isLoading}
-                    style={{
-                        background: isLoading ? '#ccc' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: 4,
-                        padding: '12px',
-                        fontWeight: 'bold',
-                        cursor: isLoading ? 'not-allowed' : 'pointer',
-                        marginTop: 8,
-                        fontSize: '16px',
-                        transition: 'transform 0.2s'
-                    }}
-                    onMouseOver={e => !isLoading && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                    onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-                >{isLoading ? 'Cadastrando...' : 'Cadastrar'}</button>
-                <div style={{ textAlign: 'center', marginTop: 10 }}>
-                    <a href="/login" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
-                        Já tem uma conta? Login
-                    </a>
-                </div>
-            </form>
+                >
+                    <h2 style={{ color: '#333', marginBottom: 0, textAlign: 'center', fontSize: '1.8rem' }}>Cadastro</h2>
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Nome"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                        style={{
+                            padding: '12px',
+                            border: '1px solid #ddd',
+                            borderRadius: 4,
+                            fontSize: '1rem'
+                        }}
+                    />
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="E-mail"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                        style={{
+                            padding: '12px',
+                            border: '1px solid #ddd',
+                            borderRadius: 4,
+                            fontSize: '1rem'
+                        }}
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Senha"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                        style={{
+                            padding: '12px',
+                            border: '1px solid #ddd',
+                            borderRadius: 4,
+                            fontSize: '1rem'
+                        }}
+                    />
+                    <input
+                        type="password"
+                        name="confirmPassword"
+                        placeholder="Confirme a senha"
+                        value={form.confirmPassword}
+                        onChange={handleChange}
+                        required
+                        style={{
+                            padding: '12px',
+                            border: '1px solid #ddd',
+                            borderRadius: 4,
+                            fontSize: '1rem'
+                        }}
+                    />
+                    {error && (
+                        <div style={{ color: '#d32f2f', textAlign: 'center' }}>{error}</div>
+                    )}
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        style={{
+                            background: isLoading ? '#ccc' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: 4,
+                            padding: '14px',
+                            fontWeight: 'bold',
+                            cursor: isLoading ? 'not-allowed' : 'pointer',
+                            fontSize: '1.1rem',
+                            transition: 'opacity 0.2s'
+                        }}
+                    >
+                        {isLoading ? 'Cadastrando...' : 'Cadastrar'}
+                    </button>
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                        <Link to="/login" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+                            Já tem uma conta? Faça login
+                        </Link>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

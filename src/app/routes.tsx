@@ -5,6 +5,7 @@ import Contact from '../pages/Contact/Contact';
 import NotFound from '../pages/NotFound/NotFound';
 import Login from '../pages/Login/Login';
 import RegisterPage from '../pages/Registrar/Registrar';
+import ProfessionalRegister from '../pages/Registrar/ProfessionalRegister';
 import Perfil from '../pages/Perfil/Perfil';
 import Configuracoes from '../pages/Configuracoes/Configuracoes';
 import Favoritos from '../pages/Favoritos/Favoritos';
@@ -22,6 +23,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/register/professional" element={<ProfessionalRegister />} />
       <Route path="/" element={<ProtectedRoute><Biblioteca /></ProtectedRoute>} />
       <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
       <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />

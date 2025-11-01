@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 
-const Login: React.FC = () => {
-  const { login } = useAuth();
+const ProfessionalRegister: React.FC = () => {
+  const { registerProfessional } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
+    name: '',
     email: '',
-    password: ''
+    password: '',
+    crp: '',
+    specialty: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +24,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     setError('');
     
-    if (!form.email.trim() || !form.password.trim()) {
+    if (!form.email.trim() || !form.password.trim() || !form.name.trim() || !form.crp.trim() || !form.specialty.trim()) {
       setError('Preencha todos os campos.');
       return;
     }
@@ -29,10 +32,10 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      await login(form);
+      await registerProfessional(form);
       navigate('/biblioteca');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Email ou senha incorretos.');
+      setError(err.response?.data?.message || 'Erro ao registrar.');
     } finally {
       setIsLoading(false);
     }
@@ -46,13 +49,13 @@ const Login: React.FC = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
         color: 'white',
         padding: '2rem'
       }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>TeApoio</h1>
+        <h1 style={{ fontSize: '3rem', fontWeight: 'bold' }}>Cadastro Profissional</h1>
         <p style={{ fontSize: '1.2rem', marginTop: '1rem', textAlign: 'center' }}>
-          Apoio e recursos para a comunidade autista.
+          Junte-se à nossa comunidade de profissionais e ajude a fazer a diferença.
         </p>
       </div>
       <div style={{
@@ -74,7 +77,21 @@ const Login: React.FC = () => {
             gap: '1.5rem'
           }}
         >
-          <h2 style={{ color: '#333', marginBottom: 0, textAlign: 'center', fontSize: '1.8rem' }}>Login</h2>
+          <h2 style={{ color: '#333', marginBottom: 0, textAlign: 'center', fontSize: '1.8rem' }}>Crie sua Conta</h2>
+          <input
+            type="text"
+            name="name"
+            placeholder="Nome Completo"
+            value={form.name}
+            onChange={handleChange}
+            required
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
+              borderRadius: 4,
+              fontSize: '1rem'
+            }}
+          />
           <input
             type="email"
             name="email"
@@ -84,7 +101,7 @@ const Login: React.FC = () => {
             required
             style={{
               padding: '12px',
-              border: error ? '1px solid #d32f2f' : '1px solid #ddd',
+              border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: '1rem'
             }}
@@ -98,7 +115,35 @@ const Login: React.FC = () => {
             required
             style={{
               padding: '12px',
-              border: error ? '1px solid #d32f2f' : '1px solid #ddd',
+              border: '1px solid #ddd',
+              borderRadius: 4,
+              fontSize: '1rem'
+            }}
+          />
+          <input
+            type="text"
+            name="crp"
+            placeholder="CRP ou CRM"
+            value={form.crp}
+            onChange={handleChange}
+            required
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
+              borderRadius: 4,
+              fontSize: '1rem'
+            }}
+          />
+          <input
+            type="text"
+            name="specialty"
+            placeholder="Especialidade"
+            value={form.specialty}
+            onChange={handleChange}
+            required
+            style={{
+              padding: '12px',
+              border: '1px solid #ddd',
               borderRadius: 4,
               fontSize: '1rem'
             }}
@@ -110,7 +155,7 @@ const Login: React.FC = () => {
             type="submit"
             disabled={isLoading}
             style={{
-              background: isLoading ? '#ccc' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: isLoading ? '#ccc' : 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
               color: 'white',
               border: 'none',
               borderRadius: 4,
@@ -121,15 +166,11 @@ const Login: React.FC = () => {
               transition: 'opacity 0.2s'
             }}
           >
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? 'Criando conta...' : 'Cadastrar'}
           </button>
           <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-            <Link to="/register" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
-              Não tem uma conta? Cadastre-se
-            </Link>
-            <br />
-            <Link to="/register/professional" style={{ color: '#764ba2', textDecoration: 'none', fontWeight: 'bold', marginTop: '0.5rem', display: 'inline-block' }}>
-              É um profissional da saúde? Cadastre-se aqui
+            <Link to="/login" style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}>
+              Já tem uma conta? Faça login
             </Link>
           </div>
         </form>
@@ -138,4 +179,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default ProfessionalRegister;

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { authService, User, LoginCredentials, RegisterData } from '../services/authService';
+import { authService, User, LoginCredentials, RegisterData, ProfessionalRegisterData } from '../services/authService';
 
 interface AuthContextType {
   user: User | null;
@@ -7,6 +7,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
+  registerProfessional: (data: ProfessionalRegisterData) => Promise<void>;
   logout: () => void;
 }
 
@@ -17,7 +18,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Carregar usuário do localStorage ao iniciar
     const storedUser = authService.getCurrentUser();
     if (storedUser) {
       setUser(storedUser);
@@ -45,6 +45,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const registerProfessional = async (data: ProfessionalRegisterData) => {
+    try {
+      const response = await authService.registerProfessional(data);
+      setUser(response.user);
+    } catch (error) {
+      console.error('Erro ao registrar profissional:', error);
+      throw error;
+    }
+  };
+
   const logout = () => {
     authService.logout();
     setUser(null);
@@ -53,7 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, registerProfessional, logout }}>
       {children}
     </AuthContext.Provider>
   );
