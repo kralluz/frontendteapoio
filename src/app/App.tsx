@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Typography, Button } from 'antd';
-import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, FileTextOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -18,7 +18,10 @@ const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   // Verificar se estamos em uma rota que não deve mostrar header/sidebar
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/password-reset';
+  const isAuthRoute = location.pathname === '/login' ||
+                       location.pathname === '/register' ||
+                       location.pathname === '/register/professional' ||
+                       location.pathname === '/password-reset';
 
   const userMenuItems = [
     {
@@ -47,6 +50,8 @@ const App: React.FC = () => {
     },
   ];
 
+  const isProfessional = user?.role === 'PROFESSIONAL';
+
   const menuItems = [
     {
       key: '/',
@@ -54,6 +59,35 @@ const App: React.FC = () => {
       label: 'Biblioteca',
       onClick: () => navigate('/biblioteca'),
     },
+    // Menu específico para profissionais
+    ...(isProfessional ? [
+      {
+        key: 'divider-1',
+        type: 'divider' as const,
+      },
+      {
+        key: '/professional/dashboard',
+        icon: <DashboardOutlined />,
+        label: 'Painel Profissional',
+        onClick: () => navigate('/professional/dashboard'),
+      },
+      {
+        key: '/professional/artigos',
+        icon: <FileTextOutlined />,
+        label: 'Meus Artigos',
+        onClick: () => navigate('/professional/artigos'),
+      },
+      {
+        key: '/professional/atividades',
+        icon: <ThunderboltOutlined />,
+        label: 'Minhas Atividades',
+        onClick: () => navigate('/professional/atividades'),
+      },
+      {
+        key: 'divider-2',
+        type: 'divider' as const,
+      },
+    ] : []),
     {
       key: '/perfil-autista',
       icon: <ProfileOutlined />,

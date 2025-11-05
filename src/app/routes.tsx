@@ -16,6 +16,12 @@ import AtividadePage from '../pages/Atividade/Atividade';
 import PerfilAutista from '../pages/PerfilAutista/PerfilAutista';
 import PerfilAutistaDetalhes from '../pages/PerfilAutista/PerfilAutistaDetalhes';
 import ProtectedRoute from '../components/ProtectedRoute';
+// Professional pages
+import ProfessionalDashboard from '../pages/Professional/Dashboard';
+import MyArticles from '../pages/Professional/MyArticles';
+import ArticleForm from '../pages/Professional/ArticleForm';
+import MyActivities from '../pages/Professional/MyActivities';
+import ActivityForm from '../pages/Professional/ActivityForm';
 
 
 const AppRoutes: React.FC = () => {
@@ -37,6 +43,14 @@ const AppRoutes: React.FC = () => {
       <Route path="/perfil-autista" element={<ProtectedRoute><PerfilAutista /></ProtectedRoute>} />
       <Route path="/perfil-autista/:id" element={<ProtectedRoute><PerfilAutistaDetalhes /></ProtectedRoute>} />
       <Route path="/atividades" element={<ProtectedRoute>{React.createElement(require('../pages/Atividades/Atividades').default)}</ProtectedRoute>} />
+      {/* Professional routes */}
+      <Route path="/professional/dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
+      <Route path="/professional/artigos" element={<ProtectedRoute><MyArticles /></ProtectedRoute>} />
+      <Route path="/professional/artigos/novo" element={<ProtectedRoute><ArticleForm /></ProtectedRoute>} />
+      <Route path="/professional/artigos/editar/:id" element={<ProtectedRoute><ArticleForm /></ProtectedRoute>} />
+      <Route path="/professional/atividades" element={<ProtectedRoute><MyActivities /></ProtectedRoute>} />
+      <Route path="/professional/atividades/novo" element={<ProtectedRoute><ActivityForm /></ProtectedRoute>} />
+      <Route path="/professional/atividades/editar/:id" element={<ProtectedRoute><ActivityForm /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
