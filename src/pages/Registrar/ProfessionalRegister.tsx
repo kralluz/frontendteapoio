@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { authService } from '../../services/authService';
 import { useNavigate, Link } from 'react-router-dom';
 
 const ProfessionalRegister: React.FC = () => {
-  const { registerProfessional } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: '',
@@ -55,8 +54,10 @@ const ProfessionalRegister: React.FC = () => {
 
     try {
       const { confirmPassword, ...registerData } = form;
-      await registerProfessional(registerData);
-      navigate('/biblioteca');
+      // Apenas criar a conta sem fazer login
+      await authService.registerProfessional(registerData);
+      // Redirecionar para login após cadastro bem-sucedido
+      navigate('/login');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Erro ao registrar.');
     } finally {

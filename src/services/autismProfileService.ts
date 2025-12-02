@@ -16,6 +16,8 @@ export interface AutismProfile {
   createdById?: string;
   createdAt: string;
   updatedAt: string;
+  birthDate?: string;
+  diagnosisDate?: string;
 }
 
 export interface CreateProfileData {
@@ -29,6 +31,8 @@ export interface CreateProfileData {
   challenges: string[];
   notes?: string;
   photo?: string;
+  birthDate?: string;
+  diagnosisDate?: string;
 }
 
 export const autismProfileService = {

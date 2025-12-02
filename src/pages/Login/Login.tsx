@@ -29,8 +29,13 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      await login(form);
-      navigate('/biblioteca');
+      const response = await login(form);
+      // Redirecionar baseado no tipo de usuário
+      if (response?.role === 'PROFESSIONAL') {
+        navigate('/professional/dashboard');
+      } else {
+        navigate('/biblioteca');
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Email ou senha incorretos.');
     } finally {

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Statistic, Button, Space } from 'antd';
 import { FileTextOutlined, ThunderboltOutlined, HeartOutlined, MessageOutlined, PlusOutlined } from '@ant-design/icons';
-import api from '../../services/api';
+import { articleService } from '../../services/articleService';
+import { activityService } from '../../services/activityService';
 
 const ProfessionalDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -19,13 +20,10 @@ const ProfessionalDashboard: React.FC = () => {
 
   const loadStats = async () => {
     try {
-      const [articlesRes, activitiesRes] = await Promise.all([
-        api.get('/articles/my'),
-        api.get('/activities/my'),
+      const [articles, activities] = await Promise.all([
+        articleService.getMyArticles(),
+        activityService.getMyActivities(),
       ]);
-
-      const articles = articlesRes.data;
-      const activities = activitiesRes.data;
 
       const totalLikes = articles.reduce((sum: number, a: any) => sum + a._count.likes, 0) +
                         activities.reduce((sum: number, a: any) => sum + a._count.likes, 0);

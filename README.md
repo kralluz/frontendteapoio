@@ -44,6 +44,11 @@ frontendteapoio/
    ```bash
    npm install
    ```
+3. **Configure as variáveis de ambiente:**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edite o arquivo `.env.local` com suas configurações (veja [ENV_CONFIG.md](./ENV_CONFIG.md) para detalhes)
 
 ## 📜 Scripts Disponíveis
 
@@ -157,11 +162,14 @@ O comando `npm run build` gera:
 ### Configuração de Environment
 O arquivo `.env` inclui:
 ```
+REACT_APP_API_URL=https://api-backendtea.i5mfns.easypanel.host/api
 BUILD_PATH=dist
 TSC_COMPILE_ON_ERROR=true
 ESLINT_NO_DEV_ERRORS=true
 GENERATE_SOURCEMAP=true
 ```
+
+Para mais informações sobre variáveis de ambiente, consulte [ENV_CONFIG.md](./ENV_CONFIG.md).
 
 ## 🚀 Próximos Passos
 

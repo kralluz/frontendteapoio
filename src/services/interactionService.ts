@@ -2,6 +2,37 @@ import api from './api';
 import { Article } from './articleService';
 import { Activity } from './activityService';
 
+// TRACKING
+export interface TrackData {
+  type: 'VIEW' | 'CLICK';
+  articleId?: string;
+  activityId?: string;
+}
+
+export interface ContentStats {
+  views: number;
+  clicks: number;
+  likes: number;
+  favorites: number;
+  comments: number;
+}
+
+export const interactionService = {
+  async track(data: TrackData): Promise<void> {
+    await api.post('/interactions/track', data);
+  },
+
+  async getArticleStats(id: string): Promise<ContentStats> {
+    const response = await api.get<ContentStats>(`/interactions/article/${id}/stats`);
+    return response.data;
+  },
+
+  async getActivityStats(id: string): Promise<ContentStats> {
+    const response = await api.get<ContentStats>(`/interactions/activity/${id}/stats`);
+    return response.data;
+  },
+};
+
 // COMENTÁRIOS
 export interface CreateCommentData {
   content: string;

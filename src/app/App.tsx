@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Avatar, Dropdown, Typography, Button } from 'antd';
-import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, HeartOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, FileTextOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, FileTextOutlined, ThunderboltOutlined, ExperimentOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -23,13 +23,25 @@ const App: React.FC = () => {
                        location.pathname === '/register/professional' ||
                        location.pathname === '/password-reset';
 
+  const isProfessional = user?.role === 'PROFESSIONAL';
+
   const userMenuItems = [
     {
+      key: 'user-info',
+      label: (
+        <div style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0', marginBottom: '8px' }}>
+          <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>{user?.name}</div>
+          <div style={{ fontSize: '12px', color: '#999' }}>{user?.email}</div>
+        </div>
+      ),
+      disabled: true,
+    },
+    ...(!isProfessional ? [{
       key: 'profile',
       icon: <UserOutlined />,
       label: 'Perfil',
       onClick: () => navigate('/perfil'),
-    },
+    }] : []),
     {
       key: 'settings',
       icon: <SettingOutlined />,
@@ -50,14 +62,18 @@ const App: React.FC = () => {
     },
   ];
 
-  const isProfessional = user?.role === 'PROFESSIONAL';
-
   const menuItems = [
     {
       key: '/',
       icon: <BookOutlined />,
       label: 'Biblioteca',
       onClick: () => navigate('/biblioteca'),
+    },
+    {
+      key: '/atividades',
+      icon: <ExperimentOutlined />,
+      label: 'Atividades',
+      onClick: () => navigate('/atividades'),
     },
     // Menu específico para profissionais
     ...(isProfessional ? [
@@ -68,7 +84,7 @@ const App: React.FC = () => {
       {
         key: '/professional/dashboard',
         icon: <DashboardOutlined />,
-        label: 'Painel Profissional',
+        label: 'Painel do Profissional',
         onClick: () => navigate('/professional/dashboard'),
       },
       {
@@ -88,12 +104,15 @@ const App: React.FC = () => {
         type: 'divider' as const,
       },
     ] : []),
-    {
-      key: '/perfil-autista',
-      icon: <ProfileOutlined />,
-      label: 'Perfis',
-      onClick: () => navigate('/perfil-autista'),
-    },
+    // Menu para não profissionais
+    ...(!isProfessional ? [
+      {
+        key: '/perfil-autista',
+        icon: <ProfileOutlined />,
+        label: 'Perfis',
+        onClick: () => navigate('/perfil-autista'),
+      },
+    ] : []),
     {
       key: '/favoritos',
       icon: <StarOutlined />,
@@ -101,10 +120,14 @@ const App: React.FC = () => {
       onClick: () => navigate('/favoritos'),
     },
     {
-      key: '/curtidos',
-      icon: <HeartOutlined />,
-      label: 'Curtidos',
-      onClick: () => navigate('/curtidos'),
+      key: 'divider-3',
+      type: 'divider' as const,
+    },
+    {
+      key: '/configuracoes',
+      icon: <SettingOutlined />,
+      label: 'Configurações',
+      onClick: () => navigate('/configuracoes'),
     },
   ];
 
@@ -124,11 +147,11 @@ const App: React.FC = () => {
         display: 'flex',
         alignItems: 'center',
         padding: '0 24px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'white',
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        borderBottom: '1px solid #f0f0f0'
       }}>
         <Button
           type="text"
@@ -136,16 +159,21 @@ const App: React.FC = () => {
           onClick={() => setCollapsed(!collapsed)}
           style={{
             fontSize: '18px',
-            color: 'white',
             marginRight: '16px',
           }}
         />
-        <Title level={3} style={{ color: 'white', margin: 0, flex: 1 }}>TeApoio</Title>
+        <Title level={3} style={{ margin: 0, flex: 1 }}>TeApoio</Title>
         <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-          <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-            <Avatar src={user?.avatar} size="large" />
-            <span style={{ marginLeft: 8, color: 'white', fontWeight: 500 }}>{user?.name}</span>
-          </div>
+          <Avatar 
+            src={user?.avatar} 
+            size="large"
+            style={{ 
+              backgroundColor: user?.avatar ? undefined : '#667eea',
+              cursor: 'pointer'
+            }}
+          >
+            {!user?.avatar && user?.name ? user.name.charAt(0).toUpperCase() : <UserOutlined />}
+          </Avatar>
         </Dropdown>
       </Header>
       <Layout>

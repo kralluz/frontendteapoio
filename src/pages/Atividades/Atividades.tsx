@@ -1,189 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Card, Row, Col, Button, Tag, Space, Typography,
-  Input, message, Tooltip, Divider, Avatar, Spin
+  Card, Row, Col, Tag, Space, Typography,
+  message, Spin, Segmented, Avatar
 } from 'antd';
-import { gradientSelectionButtonStyle } from '../../styles/SelectionButtonStyles';
 import {
-  HeartOutlined, StarOutlined,
+  HeartOutlined, HeartFilled, StarOutlined, StarFilled,
   UserOutlined, TeamOutlined,
   BulbOutlined, PlayCircleOutlined, ExperimentOutlined,
-  FilterOutlined, SearchOutlined, CalendarOutlined
+  ClockCircleOutlined
 } from '@ant-design/icons';
 import { activityService, Activity } from '../../services/activityService';
 import { likeService, favoriteService } from '../../services/interactionService';
 
 const { Title, Text, Paragraph } = Typography;
-const { Search } = Input;
 
-// Dados mock das atividades (fallback)
-const mockActivities = [
-  {
-    id: 1,
-    title: 'Caixa de Texturas Sensoriais',
-    description: 'Crie uma caixa com diferentes materiais (algodão, lixa, seda, areia) para estimular a percepção tátil e desenvolver o foco. Ajuda no processamento sensorial e na autorregulação.',
-    category: 'Sensorial',
-    ageRange: '3-7 anos',
-    duration: '20-30 min',
-    difficulty: 'Fácil',
-    materials: ['Caixa plástica', 'Tecidos diversos', 'Objetos texturizados'],
-    objectives: ['Desenvolvimento sensorial', 'Foco e atenção', 'Autorregulação'],
-    likes: 245,
-    favorites: 89,
-    isLiked: false,
-    isFavorited: false,
-    image: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?auto=format&fit=crop&w=400&q=80',
-    tags: ['Sensorial', 'Casa', 'Fácil'],
-    author: {
-      name: 'Dra. Maria Santos',
-      avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
-      role: 'Terapeuta Ocupacional'
-    },
-    publishedAt: '2024-01-20',
-    views: 1250
-  },
-  {
-    id: 2,
-    title: 'Sequências Visuais do Dia a Dia',
-    description: 'Use imagens ou desenhos para criar sequências visuais das rotinas diárias. Ajuda na compreensão de processos sequenciais e reduz ansiedade.',
-    category: 'Cognitiva',
-    ageRange: '4-10 anos',
-    duration: '15-25 min',
-    difficulty: 'Médio',
-    materials: ['Papel', 'Canetas coloridas', 'Imagens impressas', 'Fita adesiva'],
-    objectives: ['Compreensão sequencial', 'Redução de ansiedade', 'Independência'],
-    likes: 189,
-    favorites: 67,
-    isLiked: false,
-    isFavorited: true,
-    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80',
-    tags: ['Rotina', 'Visual', 'Sequencial'],
-    author: {
-      name: 'João Silva',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-      role: 'Educador Especial'
-    },
-    publishedAt: '2024-01-18',
-    views: 890
-  },
-  {
-    id: 3,
-    title: 'Jogo das Emoções Expressivas',
-    description: 'Crie cartões com diferentes expressões faciais e ajude seu filho a identificar e nomear emoções. Desenvolve a inteligência emocional e comunicação.',
-    category: 'Socioemocional',
-    ageRange: '5-12 anos',
-    duration: '25-35 min',
-    difficulty: 'Médio',
-    materials: ['Papel cartão', 'Canetas', 'Espelho', 'Imagens de emoções'],
-    objectives: ['Reconhecimento emocional', 'Comunicação', 'Empatia'],
-    likes: 312,
-    favorites: 124,
-    isLiked: true,
-    isFavorited: false,
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80',
-    tags: ['Emoções', 'Comunicação', 'Social'],
-    author: {
-      name: 'Ana Costa',
-      avatar: 'https://randomuser.me/api/portraits/women/28.jpg',
-      role: 'Psicóloga Infantil'
-    },
-    publishedAt: '2024-01-15',
-    views: 1450
-  },
-  {
-    id: 4,
-    title: 'Atividade de Classificação por Cores',
-    description: 'Use objetos de diferentes cores para trabalhar classificação e organização. Excelente para desenvolver habilidades cognitivas e de foco.',
-    category: 'Cognitiva',
-    ageRange: '3-8 anos',
-    duration: '15-20 min',
-    difficulty: 'Fácil',
-    materials: ['Objetos coloridos', 'Caixas ou recipientes', 'Cartões de cores'],
-    objectives: ['Classificação', 'Organização', 'Foco visual'],
-    likes: 156,
-    favorites: 45,
-    isLiked: false,
-    isFavorited: false,
-    image: 'https://images.unsplash.com/photo-1558877385-1199c1af4e8e?auto=format&fit=crop&w=400&q=80',
-    tags: ['Cores', 'Classificação', 'Casa'],
-    author: {
-      name: 'Pedro Oliveira',
-      avatar: 'https://randomuser.me/api/portraits/men/55.jpg',
-      role: 'Professor de Educação Especial'
-    },
-    publishedAt: '2024-01-12',
-    views: 720
-  },
-  {
-    id: 5,
-    title: 'Comunicação com PECS',
-    description: 'Introduza o sistema de comunicação por troca de imagens. Comece com itens preferidos e expanda para necessidades básicas.',
-    category: 'Comunicação',
-    ageRange: '2-8 anos',
-    duration: '30-45 min',
-    difficulty: 'Avançado',
-    materials: ['Imagens PECS', 'Prancheta', 'Fita velcro', 'Reforços'],
-    objectives: ['Comunicação funcional', 'Independência', 'Expressão'],
-    likes: 278,
-    favorites: 156,
-    isLiked: true,
-    isFavorited: true,
-    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80',
-    tags: ['PECS', 'Comunicação', 'Independência'],
-    author: {
-      name: 'Carla Mendes',
-      avatar: 'https://randomuser.me/api/portraits/women/33.jpg',
-      role: 'Fonoaudióloga'
-    },
-    publishedAt: '2024-01-10',
-    views: 1100
-  },
-  {
-    id: 6,
-    title: 'Atividade de Imitação Motora',
-    description: 'Jogos de imitação de movimentos e ações. Desenvolve coordenação motora, atenção e habilidades sociais através da imitação.',
-    category: 'Motora',
-    ageRange: '2-6 anos',
-    duration: '20-30 min',
-    difficulty: 'Fácil',
-    materials: ['Espaço livre', 'Objetos para imitar', 'Música (opcional)'],
-    objectives: ['Coordenação motora', 'Imitação', 'Habilidades sociais'],
-    likes: 203,
-    favorites: 78,
-    isLiked: false,
-    isFavorited: false,
-    image: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&w=400&q=80',
-    tags: ['Motora', 'Imitação', 'Social'],
-    author: {
-      name: 'Lucas Ferreira',
-      avatar: 'https://randomuser.me/api/portraits/men/42.jpg',
-      role: 'Fisioterapeuta'
-    },
-    publishedAt: '2024-01-08',
-    views: 650
-  }
-];
-
-// Filtros disponíveis
 const filterOptions = [
-  { key: 'all', label: 'Todas', icon: <ExperimentOutlined />, color: 'default' },
-  { key: 'sensorial', label: 'Sensoriais', icon: <BulbOutlined />, color: 'orange' },
-  { key: 'cognitiva', label: 'Cognitivas', icon: <PlayCircleOutlined />, color: 'blue' },
-  { key: 'social', label: 'Socioemocionais', icon: <TeamOutlined />, color: 'green' },
-  { key: 'communication', label: 'Comunicação', icon: <UserOutlined />, color: 'purple' },
-  { key: 'motora', label: 'Motoras', icon: <PlayCircleOutlined />, color: 'red' }
+  { label: 'Todas', value: 'all', icon: <ExperimentOutlined /> },
+  { label: 'Sensoriais', value: 'Sensorial', icon: <BulbOutlined /> },
+  { label: 'Cognitivas', value: 'Cognitiva', icon: <PlayCircleOutlined /> },
+  { label: 'Socioemocionais', value: 'Socioemocional', icon: <TeamOutlined /> },
+  { label: 'Comunicação', value: 'Comunicação', icon: <UserOutlined /> },
+  { label: 'Motoras', value: 'Motora', icon: <PlayCircleOutlined /> }
 ];
 
 const Atividades: React.FC = () => {
   const navigate = useNavigate();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [searchText, setSearchText] = useState('');
+  const [activeFilter, setActiveFilter] = useState<string | number>('all');
+  const [likedActivities, setLikedActivities] = useState<Set<string>>(new Set());
+  const [favoritedActivities, setFavoritedActivities] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadActivities();
+    loadUserInteractions();
   }, []);
 
   const loadActivities = async () => {
@@ -193,74 +44,98 @@ const Atividades: React.FC = () => {
       setActivities(data);
     } catch (error: any) {
       message.error('Erro ao carregar atividades');
-      setActivities(mockActivities as any);
     } finally {
       setLoading(false);
     }
   };
 
-  // Função para filtrar atividades
-  const getFilteredActivities = () => {
-    let filtered = activities;
-
-    // Filtro por categoria
-    if (activeFilter !== 'all') {
-      const categoryMap: { [key: string]: string } = {
-        'sensorial': 'Sensorial',
-        'cognitiva': 'Cognitiva',
-        'social': 'Socioemocional',
-        'communication': 'Comunicação',
-        'motora': 'Motora'
-      };
+  const loadUserInteractions = async () => {
+    try {
+      const [myLikes, myFavorites] = await Promise.all([
+        likeService.getMyLikes(),
+        favoriteService.getMyFavorites()
+      ]);
       
-      filtered = filtered.filter(activity => 
-        activity.category === categoryMap[activeFilter]
-      );
+      setLikedActivities(new Set(myLikes.filter(l => l.activityId).map(l => l.activityId!)));
+      setFavoritedActivities(new Set(myFavorites.filter(f => f.activityId).map(f => f.activityId!)));
+    } catch (error) {
+      // Usuário não autenticado - ignora
+      console.log('Erro ao carregar interações:', error);
     }
+  };
 
-    // Filtro por texto de busca
-    if (searchText) {
-      filtered = filtered.filter(activity =>
-        activity.title.toLowerCase().includes(searchText.toLowerCase()) ||
-        activity.description.toLowerCase().includes(searchText.toLowerCase()) ||
-        activity.materials.some(material => material.toLowerCase().includes(searchText.toLowerCase())) ||
-        activity.materials.some(material => material.toLowerCase().includes(searchText.toLowerCase()))
-      );
+  const getFilteredActivities = () => {
+    let filtered = [...activities];
+
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(activity => activity.category === activeFilter);
     }
 
     return filtered;
   };
 
-  // Função para curtir/descurtir atividade
-  const handleLike = async (activityId: string) => {
-    try {
-      await likeService.toggle({ activityId });
-      await loadActivities();
-      message.success('Curtida atualizada!');
-    } catch (error) {
-      message.error('Erro ao atualizar curtida');
-    }
-  };
-
-  // Função para favoritar/desfavoritar atividade
-  const handleFavorite = async (activityId: string) => {
+  const handleFavorite = async (e: React.MouseEvent, activityId: string) => {
+    e.stopPropagation();
     try {
       const result = await favoriteService.toggle({ activityId });
+      
+      // Atualizar estado de favoritos
+      setFavoritedActivities(prev => {
+        const newSet = new Set(prev);
+        if (result.favorited) {
+          newSet.add(activityId);
+        } else {
+          newSet.delete(activityId);
+        }
+        return newSet;
+      });
+      
       message.success(result.message);
-      await loadActivities();
-    } catch (error) {
+    } catch (error: any) {
       message.error('Erro ao atualizar favorito');
     }
   };
 
-  const filteredActivities = getFilteredActivities();
-
-  // Função para navegar para a página de detalhes da atividade
-  const handleActivityClick = (activityId: string) => {
-    navigate(`/atividade/${activityId}`);
+  const handleLike = async (e: React.MouseEvent, activityId: string) => {
+    e.stopPropagation();
+    try {
+      const result = await likeService.toggle({ activityId });
+      
+      // Atualizar estado de curtidas
+      setLikedActivities(prev => {
+        const newSet = new Set(prev);
+        if (result.liked) {
+          newSet.add(activityId);
+        } else {
+          newSet.delete(activityId);
+        }
+        return newSet;
+      });
+      
+      // Atualização otimista - atualiza apenas a atividade específica
+      setActivities(prevActivities => 
+        prevActivities.map(activity => 
+          activity.id === activityId 
+            ? { 
+                ...activity, 
+                _count: { 
+                  comments: activity._count?.comments || 0,
+                  favorites: activity._count?.favorites || 0,
+                  likes: result.liked 
+                    ? (activity._count?.likes || 0) + 1 
+                    : (activity._count?.likes || 1) - 1 
+                }
+              }
+            : activity
+        )
+      );
+      
+      message.success(result.message);
+    } catch (error: any) {
+      message.error('Erro ao curtir');
+    }
   };
 
-  // Função para obter cor baseada na dificuldade
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Fácil': return 'green';
@@ -269,6 +144,8 @@ const Atividades: React.FC = () => {
       default: return 'default';
     }
   };
+
+  const filteredActivities = getFilteredActivities();
 
   if (loading) {
     return (
@@ -279,185 +156,88 @@ const Atividades: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-        <Title level={1} style={{ marginBottom: '8px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          🧩 Banco de Atividades
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Page Header */}
+      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
+        <Title level={2} style={{ marginBottom: '8px' }}>
+          <ExperimentOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
+          Banco de Atividades
         </Title>
-        <Paragraph style={{ fontSize: '18px', color: '#666', maxWidth: '600px', margin: '0 auto' }}>
-          Descubra atividades práticas e divertidas para desenvolver habilidades e superar desafios com seu filho
+        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: '24px' }}>
+          Descubra atividades práticas e divertidas para desenvolver habilidades e superar desafios com seu filho.
         </Paragraph>
-      </div>
-
-      {/* Barra de busca */}
-      <div style={{ marginBottom: '24px', maxWidth: '500px', margin: '0 auto 32px' }}>
-        <Search
-          placeholder="Buscar atividades, materiais ou objetivos..."
-          allowClear
+        <Segmented
+          options={filterOptions}
+          value={activeFilter}
+          onChange={setActiveFilter}
           size="large"
-          prefix={<SearchOutlined />}
-          onChange={(e) => setSearchText(e.target.value)}
-          style={{ borderRadius: '50px' }}
+          block
+          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
         />
       </div>
 
-      {/* Filtros */}
-      <div style={{ marginBottom: '32px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-          <Text strong style={{ fontSize: '16px', color: '#666' }}>
-            <FilterOutlined style={{ marginRight: '8px' }} />
-            Filtrar por categoria:
-          </Text>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          {filterOptions.map(filter => (
-            <Button
-              key={filter.key}
-              {...gradientSelectionButtonStyle(activeFilter === filter.key)}
-              icon={filter.icon}
-              onClick={() => setActiveFilter(filter.key)}
-            >
-              {filter.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Grid de atividades - Layout diferente da biblioteca */}
+      {/* Activities Grid */}
       <Row gutter={[24, 24]}>
         {filteredActivities.map(activity => (
-          <Col xs={24} key={activity.id}>
+          <Col xs={24} sm={12} lg={8} key={activity.id}>
             <Card
               hoverable
-              style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                transition: 'all 0.3s ease',
-                marginBottom: '16px'
-              }}
-              bodyStyle={{ padding: '24px' }}
+              style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+              cover={
+                <img
+                  alt={activity.title}
+                  src={activity.image || `https://via.placeholder.com/400x200?text=${activity.category}`}
+                  style={{ height: '200px', objectFit: 'cover' }}
+                />
+              }
+              actions={[
+                <Space onClick={(e) => handleLike(e, activity.id)}>
+                  {likedActivities.has(activity.id) ? 
+                    <HeartFilled style={{ color: '#ff4d4f' }} /> : 
+                    <HeartOutlined />}
+                  {activity._count?.likes || 0}
+                </Space>,
+                <Space><ClockCircleOutlined /> {activity.duration} min</Space>,
+                <Space onClick={(e) => handleFavorite(e, activity.id)}>
+                  {favoritedActivities.has(activity.id) ? 
+                    <StarFilled style={{ color: '#faad14' }} /> : 
+                    <StarOutlined />}
+                  Favoritar
+                </Space>,
+              ]}
+              onClick={() => navigate(`/atividade/${activity.id}`)}
             >
-              <Row gutter={24}>
-                {/* Imagem da atividade */}
-                <Col xs={24} md={8}>
-                  <div
-                    style={{
-                      height: '200px',
-                      backgroundImage: `url(${activity.image})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                      borderRadius: '12px',
-                      position: 'relative',
-                      marginBottom: '16px'
-                    }}
-                  >
-                    <div style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      background: 'rgba(255,255,255,0.9)',
-                      borderRadius: '20px',
-                      padding: '4px 12px'
-                    }}>
-                      <Tag color={getDifficultyColor(activity.difficulty)} style={{ margin: 0 }}>
-                        {activity.difficulty}
-                      </Tag>
-                    </div>
-                  </div>
-                </Col>
-
-                {/* Conteúdo da atividade */}
-                <Col xs={24} md={16}>
-                  <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    {/* Header com título e categoria */}
-                    <div style={{ marginBottom: '16px' }}>
-                      <Space wrap style={{ marginBottom: '12px' }}>
-                        <Tag color="blue">{activity.category}</Tag>
-                        <Tag color="cyan">{activity.ageRange}</Tag>
-                      </Space>
-                      <Title level={3} style={{ marginBottom: '8px', marginTop: 0 }}>
-                        {activity.title}
-                      </Title>
-                    </div>
-
-                    {/* Descrição */}
-                    <Paragraph
-                      style={{ marginBottom: '16px', color: '#666', flex: 1 }}
-                    >
-                      {activity.description}
-                    </Paragraph>
-
-                    {/* Informações do autor e data */}
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                      <Avatar src={activity.author?.avatar} size="small" style={{ marginRight: '8px' }} />
-                      <div>
-                        <Text strong style={{ fontSize: '14px' }}>{activity.author?.name}</Text>
-                      </div>
-                      <Divider type="vertical" style={{ margin: '0 16px' }} />
-                      <div>
-                        <Text type="secondary" style={{ fontSize: '12px' }}>
-                          <CalendarOutlined style={{ marginRight: '4px' }} />
-                          {new Date(activity.createdAt).toLocaleDateString('pt-BR')}
-                        </Text>
-                      </div>
-                    </div>
-
-                    {/* Ações */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Space>
-                        <Tooltip title="Curtir atividade">
-                          <Button
-                            type="text"
-                            icon={<HeartOutlined />}
-                            onClick={() => handleLike(activity.id)}
-                            style={{ fontSize: '16px' }}
-                          >
-                            {activity._count?.likes || 0}
-                          </Button>
-                        </Tooltip>
-                        <Tooltip title="Adicionar aos favoritos">
-                          <Button
-                            type="text"
-                            icon={<StarOutlined />}
-                            onClick={() => handleFavorite(activity.id)}
-                            style={{ fontSize: '16px' }}
-                          >
-                            {activity._count?.favorites || 0}
-                          </Button>
-                        </Tooltip>
-                        <Button
-                          type="text"
-                          icon={<UserOutlined />}
-                          style={{ fontSize: '16px', color: '#666' }}
-                        >
-                          {activity._count?.comments || 0}
-                        </Button>
-                      </Space>
-
-                      <Button type="primary" icon={<PlayCircleOutlined />} onClick={() => handleActivityClick(activity.id)}>
-                        Experimentar Atividade
-                      </Button>
-                    </div>
-                  </div>
-                </Col>
-              </Row>
+              <Card.Meta
+                title={<Title level={5} ellipsis={{ rows: 2 }}>{activity.title}</Title>}
+                description={
+                  <Paragraph type="secondary" ellipsis={{ rows: 3 }}>
+                    {activity.description}
+                  </Paragraph>
+                }
+              />
+              <div style={{ marginTop: '16px', flex: '1' }}>
+                <Tag color="blue">{activity.category}</Tag>
+                <Tag color={getDifficultyColor(activity.difficulty)}>{activity.difficulty}</Tag>
+              </div>
+              <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
+                <Space>
+                  <Avatar src={activity.author?.avatar} icon={<UserOutlined />} size="small" />
+                  <Text type="secondary">{activity.author?.name}</Text>
+                </Space>
+                <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                  {activity.ageRange}
+                </Text>
+              </div>
             </Card>
           </Col>
         ))}
       </Row>
 
-      {/* Mensagem quando não há resultados */}
-      {filteredActivities.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-          <ExperimentOutlined style={{ fontSize: '64px', color: '#d9d9d9', marginBottom: '24px' }} />
-          <Title level={3} style={{ color: '#666', marginBottom: '8px' }}>
-            Nenhuma atividade encontrada
-          </Title>
-          <Text style={{ fontSize: '16px', color: '#888' }}>
-            Tente ajustar os filtros ou fazer uma nova busca
-          </Text>
+      {filteredActivities.length === 0 && !loading && (
+        <div style={{ textAlign: 'center', padding: '48px 0' }}>
+          <ExperimentOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+          <Title level={4} type="secondary">Nenhuma atividade encontrada</Title>
+          <Paragraph type="secondary">Tente ajustar os filtros ou fazer uma nova busca.</Paragraph>
         </div>
       )}
     </div>

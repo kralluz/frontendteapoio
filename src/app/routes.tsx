@@ -13,6 +13,7 @@ import Curtidos from '../pages/Curtidos/Curtidos';
 import Biblioteca from '../pages/Biblioteca/Biblioteca';
 import ArticlePage from '../pages/Article/Article';
 import AtividadePage from '../pages/Atividade/Atividade';
+import Atividades from '../pages/Atividades/Atividades';
 import PerfilAutista from '../pages/PerfilAutista/PerfilAutista';
 import PerfilAutistaDetalhes from '../pages/PerfilAutista/PerfilAutistaDetalhes';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -22,6 +23,7 @@ import MyArticles from '../pages/Professional/MyArticles';
 import ArticleForm from '../pages/Professional/ArticleForm';
 import MyActivities from '../pages/Professional/MyActivities';
 import ActivityForm from '../pages/Professional/ActivityForm';
+import ProfessionalProfile from '../pages/Professional/Profile';
 
 
 const AppRoutes: React.FC = () => {
@@ -42,7 +44,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/atividade/:id" element={<ProtectedRoute><AtividadePage /></ProtectedRoute>} />
       <Route path="/perfil-autista" element={<ProtectedRoute><PerfilAutista /></ProtectedRoute>} />
       <Route path="/perfil-autista/:id" element={<ProtectedRoute><PerfilAutistaDetalhes /></ProtectedRoute>} />
-      <Route path="/atividades" element={<ProtectedRoute>{React.createElement(require('../pages/Atividades/Atividades').default)}</ProtectedRoute>} />
+      <Route path="/atividades" element={<ProtectedRoute><Atividades /></ProtectedRoute>} />
       {/* Professional routes */}
       <Route path="/professional/dashboard" element={<ProtectedRoute><ProfessionalDashboard /></ProtectedRoute>} />
       <Route path="/professional/artigos" element={<ProtectedRoute><MyArticles /></ProtectedRoute>} />
@@ -51,6 +53,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/professional/atividades" element={<ProtectedRoute><MyActivities /></ProtectedRoute>} />
       <Route path="/professional/atividades/novo" element={<ProtectedRoute><ActivityForm /></ProtectedRoute>} />
       <Route path="/professional/atividades/editar/:id" element={<ProtectedRoute><ActivityForm /></ProtectedRoute>} />
+      <Route path="/professional/:id" element={<ProtectedRoute><ProfessionalProfile /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

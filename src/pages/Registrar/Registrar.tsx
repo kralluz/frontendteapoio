@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { authService } from '../../services/authService';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Registrar: React.FC = () => {
-    const { register } = useAuth();
     const navigate = useNavigate();
     const [form, setForm] = useState({
         name: "",
@@ -36,12 +35,14 @@ const Registrar: React.FC = () => {
         setIsLoading(true);
         
         try {
-            await register({
+            // Apenas criar a conta sem fazer login
+            await authService.register({
                 name: form.name,
                 email: form.email,
                 password: form.password
             });
-            navigate('/biblioteca');
+            // Redirecionar para login após cadastro bem-sucedido
+            navigate('/login');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Erro ao criar conta.');
         } finally {

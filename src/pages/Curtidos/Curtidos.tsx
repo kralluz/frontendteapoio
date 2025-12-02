@@ -1,169 +1,181 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Card, Empty, List, Spin, Tag, Button, message } from 'antd';
-import { HeartOutlined, HeartFilled, FileTextOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { Typography, Card, Row, Col, Tag, Space, Avatar, message } from 'antd';
+import { HeartFilled, HeartOutlined, StarOutlined, StarFilled, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { likeService, Like } from '../../services/interactionService';
+import { likeService, favoriteService, Like } from '../../services/interactionService';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const Curtidos: React.FC = () => {
   const navigate = useNavigate();
   const [likes, setLikes] = useState<Like[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [favoritedItems, setFavoritedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadLikes();
+    loadFavorites();
   }, []);
 
   const loadLikes = async () => {
-    setLoading(true);
     try {
       const data = await likeService.getMyLikes();
       setLikes(data);
     } catch (error) {
       message.error('Erro ao carregar curtidos');
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const handleUnlike = async (like: Like) => {
+  const loadFavorites = async () => {
+    try {
+      const myFavorites = await favoriteService.getMyFavorites();
+      const favoriteIds = new Set<string>();
+      myFavorites.forEach(fav => {
+        if (fav.articleId) favoriteIds.add(fav.articleId);
+        if (fav.activityId) favoriteIds.add(fav.activityId);
+      });
+      setFavoritedItems(favoriteIds);
+    } catch (error) {
+      console.log('Erro ao carregar favoritos:', error);
+    }
+  };
+
+  const handleUnlike = async (e: React.MouseEvent, like: Like) => {
+    e.stopPropagation();
     try {
       await likeService.toggle({
-        articleId: like.articleId,
-        activityId: like.activityId
+        ...(like.articleId && { articleId: like.articleId }),
+        ...(like.activityId && { activityId: like.activityId })
       });
       message.success('Curtida removida');
-      loadLikes(); // Recarregar lista
+      loadLikes();
     } catch (error) {
       message.error('Erro ao remover curtida');
     }
   };
 
-  const handleView = (like: Like) => {
-    if (like.article) {
-      navigate(`/artigo/${like.article.id}`);
-    } else if (like.activity) {
-      navigate(`/atividade/${like.activity.id}`);
+  const handleFavorite = async (e: React.MouseEvent, like: Like) => {
+    e.stopPropagation();
+    try {
+      const result = await favoriteService.toggle({
+        ...(like.articleId && { articleId: like.articleId }),
+        ...(like.activityId && { activityId: like.activityId })
+      });
+      
+      const itemId = like.articleId || like.activityId;
+      if (itemId) {
+        setFavoritedItems(prev => {
+          const newSet = new Set(prev);
+          if (result.favorited) {
+            newSet.add(itemId);
+          } else {
+            newSet.delete(itemId);
+          }
+          return newSet;
+        });
+      }
+      
+      message.success(result.message);
+    } catch (error) {
+      message.error('Erro ao atualizar favorito');
     }
   };
 
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-        <Spin size="large" />
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <Title level={2}>
-        <HeartFilled style={{ marginRight: 8, color: '#ff4d4f' }} />
-        Meus Curtidos
-      </Title>
-      <Text type="secondary" style={{ display: 'block', marginBottom: 24 }}>
-        {likes.length} {likes.length === 1 ? 'item curtido' : 'itens curtidos'}
-      </Text>
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Page Header */}
+      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
+        <Title level={2} style={{ marginBottom: '8px' }}>
+          <HeartFilled style={{ marginRight: '12px', color: '#ff4d4f' }} />
+          Meus Curtidos
+        </Title>
+        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+          {likes.length} {likes.length === 1 ? 'item curtido' : 'itens curtidos'}
+        </Paragraph>
+      </div>
 
       {likes.length > 0 ? (
-        <List
-          grid={{ gutter: 16, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 }}
-          dataSource={likes}
-          renderItem={(like) => {
+        <Row gutter={[24, 24]}>
+          {likes.map((like) => {
             const content = like.article || like.activity;
             const isArticle = !!like.article;
+            const itemId = like.articleId || like.activityId || '';
 
             if (!content) return null;
 
             return (
-              <List.Item>
+              <Col xs={24} sm={12} lg={8} key={like.id}>
                 <Card
                   hoverable
-                  style={{ height: '100%' }}
+                  style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
                   cover={
-                    content.image ? (
-                      <img
-                        alt={content.title}
-                        src={content.image}
-                        style={{ height: 200, objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <div style={{
-                        height: 200,
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        {isArticle ? (
-                          <FileTextOutlined style={{ fontSize: 48, color: 'white' }} />
-                        ) : (
-                          <ThunderboltOutlined style={{ fontSize: 48, color: 'white' }} />
-                        )}
-                      </div>
-                    )
+                    <img
+                      alt={content.title}
+                      src={content.image || `https://via.placeholder.com/400x200?text=${isArticle ? 'Artigo' : 'Atividade'}`}
+                      style={{ height: '200px', objectFit: 'cover' }}
+                    />
                   }
                   actions={[
-                    <Button
-                      type="text"
-                      icon={<HeartFilled style={{ color: '#ff4d4f' }} />}
-                      onClick={() => handleUnlike(like)}
-                    >
-                      Descurtir
-                    </Button>,
-                    <Button
-                      type="primary"
-                      onClick={() => handleView(like)}
-                    >
-                      Ver {isArticle ? 'Artigo' : 'Atividade'}
-                    </Button>
+                    <Space onClick={(e) => handleUnlike(e, like)}>
+                      <HeartFilled style={{ color: '#ff4d4f' }} /> 
+                      {content._count?.likes || 0}
+                    </Space>,
+                    <Space onClick={(e) => handleFavorite(e, like)}>
+                      {favoritedItems.has(itemId) ? 
+                        <StarFilled style={{ color: '#faad14' }} /> : 
+                        <StarOutlined />}
+                      Favoritar
+                    </Space>,
                   ]}
+                  onClick={() => navigate(isArticle ? `/artigo/${content.id}` : `/atividade/${content.id}`)}
                 >
                   <Card.Meta
-                    title={
-                      <div>
-                        <Tag color={isArticle ? 'blue' : 'green'}>
-                          {isArticle ? 'Artigo' : 'Atividade'}
-                        </Tag>
-                        <div style={{ marginTop: 8 }}>{content.title}</div>
-                      </div>
-                    }
+                    title={<Title level={5} ellipsis={{ rows: 2 }}>{content.title}</Title>}
                     description={
-                      <div>
-                        {isArticle && like.article?.excerpt && (
-                          <Text type="secondary" ellipsis={{ rows: 2 }}>
-                            {like.article.excerpt}
-                          </Text>
-                        )}
-                        {!isArticle && like.activity?.description && (
-                          <Text type="secondary" ellipsis={{ rows: 2 }}>
-                            {like.activity.description}
-                          </Text>
-                        )}
-                        <div style={{ marginTop: 12 }}>
-                          <Text type="secondary" style={{ fontSize: 12 }}>
-                            por {content.author?.name || 'Autor'}
-                          </Text>
-                        </div>
-                      </div>
+                      <Paragraph type="secondary" ellipsis={{ rows: 3 }}>
+                        {isArticle ? (like.article?.excerpt || like.article?.content.substring(0, 100)) : like.activity?.description}
+                      </Paragraph>
                     }
                   />
+                  <div style={{ marginTop: '16px', flex: '1' }}>
+                    <Tag color={isArticle ? 'blue' : 'green'}>
+                      {isArticle ? (like.article?.category || 'Artigo') : (like.activity?.category || 'Atividade')}
+                    </Tag>
+                    {!isArticle && like.activity?.difficulty && (
+                      <Tag color={like.activity.difficulty === 'Fácil' ? 'green' : like.activity.difficulty === 'Médio' ? 'orange' : 'red'}>
+                        {like.activity.difficulty}
+                      </Tag>
+                    )}
+                  </div>
+                  <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
+                    <Space>
+                      <Avatar src={content.author?.avatar} icon={<UserOutlined />} size="small" />
+                      <Text type="secondary">{content.author?.name}</Text>
+                    </Space>
+                    {isArticle && like.article?.readTime && (
+                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                        <ClockCircleOutlined style={{ marginRight: '6px' }} />
+                        {like.article.readTime} min
+                      </Text>
+                    )}
+                    {!isArticle && like.activity?.duration && (
+                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                        <ClockCircleOutlined style={{ marginRight: '6px' }} />
+                        {like.activity.duration} min
+                      </Text>
+                    )}
+                  </div>
                 </Card>
-              </List.Item>
+              </Col>
             );
-          }}
-        />
+          })}
+        </Row>
       ) : (
-        <Empty
-          description="Você ainda não curtiu nenhum conteúdo"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-        >
-          <Button type="primary" onClick={() => navigate('/biblioteca')}>
-            Explorar Biblioteca
-          </Button>
-        </Empty>
+        <div style={{ textAlign: 'center', padding: '48px 0' }}>
+          <HeartOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+          <Title level={4} type="secondary">Nenhum item curtido</Title>
+          <Paragraph type="secondary">Comece curtindo artigos e atividades que você gosta!</Paragraph>
+        </div>
       )}
     </div>
   );

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Form, Input, Select, Button, Upload, Switch, message, Card, Space } from 'antd';
-import { UploadOutlined, SaveOutlined } from '@ant-design/icons';
+import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Typography, Row, Col, Alert } from 'antd';
+import { UploadOutlined, SaveOutlined, ArrowLeftOutlined, InfoCircleOutlined, FileImageOutlined, FileTextOutlined } from '@ant-design/icons';
+import { articleService } from '../../services/articleService';
 import api from '../../services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { Title } = Typography;
 
 const ArticleForm: React.FC = () => {
   const navigate = useNavigate();
@@ -25,8 +27,7 @@ const ArticleForm: React.FC = () => {
 
   const loadArticle = async () => {
     try {
-      const response = await api.get(`/articles/${id}`);
-      const article = response.data;
+      const article = await articleService.getById(id!);
 
       form.setFieldsValue({
         title: article.title,
@@ -92,10 +93,10 @@ const ArticleForm: React.FC = () => {
 
     try {
       if (isEditing) {
-        await api.put(`/articles/${id}`, data);
+        await articleService.update(id!, data);
         message.success('Artigo atualizado com sucesso');
       } else {
-        await api.post('/articles', data);
+        await articleService.create(data);
         message.success('Artigo criado com sucesso');
       }
       navigate('/professional/artigos');
@@ -120,105 +121,261 @@ const ArticleForm: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <Card title={isEditing ? 'Editar Artigo' : 'Novo Artigo'}>
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{
-            published: false,
-            readTime: 5,
-          }}
+    <div style={{ padding: '24px', maxWidth: '1000px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '24px' }}>
+        <Space align="start" style={{ marginBottom: '16px' }}>
+          <Button 
+            icon={<ArrowLeftOutlined />} 
+            onClick={() => navigate('/professional/artigos')}
+            size="large"
+          />
+          <div>
+            <Title level={2} style={{ margin: 0 }}>
+              {isEditing ? 'Editar Artigo' : 'Novo Artigo'}
+            </Title>
+            <div style={{ color: '#8c8c8c', fontSize: '14px', marginTop: '4px' }}>
+              {isEditing ? 'Atualize as informações do seu artigo' : 'Compartilhe seu conhecimento com a comunidade'}
+            </div>
+          </div>
+        </Space>
+      </div>
+
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        initialValues={{
+          published: true,
+          readTime: 5,
+        }}
+      >
+        {/* Informações Básicas */}
+        <Card 
+          title={
+            <Space>
+              <FileTextOutlined style={{ color: '#1890ff' }} />
+              <span>Informações Básicas</span>
+            </Space>
+          }
+          style={{ marginBottom: '24px' }}
         >
           <Form.Item
             name="title"
             label="Título"
-            rules={[{ required: true, message: 'Por favor, insira o título' }]}
+            rules={[{ required: true, message: 'Insira um título atrativo' }]}
+            tooltip="Escolha um título chamativo e descritivo"
           >
-            <Input size="large" placeholder="Título do artigo" />
+            <Input 
+              placeholder="Ex: Como identificar sinais de autismo em crianças" 
+              size="large"
+            />
           </Form.Item>
 
           <Form.Item
             name="excerpt"
             label="Resumo"
-            rules={[{ required: false }]}
+            tooltip="Um resumo que aparecerá nos cards de prévia"
           >
-            <TextArea rows={2} placeholder="Breve resumo do artigo" />
+            <TextArea 
+              rows={3} 
+              placeholder="Escreva um resumo envolvente que incentive a leitura..." 
+              showCount
+              maxLength={200}
+              size="large"
+            />
           </Form.Item>
 
-          <Form.Item
-            name="category"
-            label="Categoria"
-            rules={[{ required: true, message: 'Por favor, selecione a categoria' }]}
-          >
-            <Select size="large" placeholder="Selecione a categoria">
-              {categories.map(cat => (
-                <Option key={cat} value={cat}>{cat}</Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={16}>
+            <Col xs={24} sm={16}>
+              <Form.Item
+                name="category"
+                label="Categoria"
+                rules={[{ required: true, message: 'Selecione uma categoria' }]}
+              >
+                <Select placeholder="Escolha a categoria" size="large">
+                  {categories.map(cat => (
+                    <Option key={cat} value={cat}>{cat}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={8}>
+              <Form.Item
+                name="readTime"
+                label="Tempo de Leitura"
+                rules={[{ required: true, message: 'Insira' }]}
+                tooltip="Tempo estimado em minutos"
+              >
+                <Input 
+                  type="number" 
+                  min={1} 
+                  placeholder="5" 
+                  suffix="min"
+                  size="large"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Card>
 
-          <Form.Item
-            name="readTime"
-            label="Tempo de Leitura (minutos)"
-            rules={[{ required: true, message: 'Por favor, insira o tempo de leitura' }]}
+        {/* Imagem de Capa */}
+        <Card 
+          title={
+            <Space>
+              <FileImageOutlined style={{ color: '#52c41a' }} />
+              <span>Imagem de Capa</span>
+            </Space>
+          }
+          style={{ marginBottom: '24px' }}
+        >
+          <Alert
+            message="Dica"
+            description="Use imagens de alta qualidade (máx 5MB). Formatos: JPG, PNG, GIF ou WebP"
+            type="info"
+            showIcon
+            icon={<InfoCircleOutlined />}
+            style={{ marginBottom: '16px' }}
+          />
+          
+          <Upload
+            beforeUpload={handleImageUpload}
+            maxCount={1}
+            showUploadList={false}
+            accept="image/*"
           >
-            <Input type="number" size="large" min={1} />
-          </Form.Item>
-
-          <Form.Item label="Imagem de Capa">
-            <Upload
-              beforeUpload={handleImageUpload}
-              maxCount={1}
-              showUploadList={false}
-              accept="image/*"
+            <Button 
+              icon={<UploadOutlined />} 
+              loading={uploading}
+              size="large"
+              block
+              style={{ height: '48px' }}
             >
-              <Button icon={<UploadOutlined />} loading={uploading}>
-                {uploading ? 'Enviando...' : 'Selecionar Imagem'}
-              </Button>
-            </Upload>
-            {imageUrl && (
-              <div style={{ marginTop: '16px' }}>
-                <img src={imageUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px' }} />
+              {uploading ? 'Enviando...' : imageUrl ? 'Alterar Imagem' : 'Selecionar Imagem'}
+            </Button>
+          </Upload>
+          
+          {imageUrl && (
+            <div style={{ 
+              marginTop: '16px', 
+              border: '2px solid #f0f0f0',
+              borderRadius: '8px',
+              overflow: 'hidden',
+              position: 'relative'
+            }}>
+              <img 
+                src={imageUrl} 
+                alt="Preview" 
+                style={{ 
+                  width: '100%',
+                  maxHeight: '300px', 
+                  objectFit: 'cover',
+                  display: 'block'
+                }} 
+              />
+              <div style={{ 
+                padding: '12px', 
+                background: '#fafafa',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '12px', color: '#8c8c8c' }}>✓ Imagem carregada</span>
+                <Button 
+                  type="link" 
+                  danger 
+                  size="small"
+                  onClick={() => setImageUrl('')}
+                >
+                  Remover
+                </Button>
               </div>
-            )}
-          </Form.Item>
+            </div>
+          )}
+        </Card>
 
+        {/* Conteúdo */}
+        <Card 
+          title={
+            <Space>
+              <FileTextOutlined style={{ color: '#722ed1' }} />
+              <span>Conteúdo do Artigo</span>
+            </Space>
+          }
+          style={{ marginBottom: '24px' }}
+        >
+          <Alert
+            message="Markdown Suportado"
+            description="Use # para títulos, ** para negrito, * para itálico, - para listas, etc."
+            type="info"
+            showIcon
+            icon={<InfoCircleOutlined />}
+            style={{ marginBottom: '16px' }}
+          />
+          
           <Form.Item
             name="content"
-            label="Conteúdo"
-            rules={[{ required: true, message: 'Por favor, insira o conteúdo' }]}
+            rules={[{ required: true, message: 'Insira o conteúdo do artigo' }]}
           >
-            <TextArea rows={15} placeholder="Conteúdo do artigo em Markdown" />
+            <TextArea 
+              rows={20} 
+              placeholder="# Título Principal\n\n## Introdução\n\nEscreva aqui o conteúdo do seu artigo...\n\n### Subtítulo\n\n- Ponto importante 1\n- Ponto importante 2\n\n**Texto em negrito** e *texto em itálico*" 
+              style={{ 
+                fontFamily: 'monospace', 
+                fontSize: '14px',
+                lineHeight: '1.6'
+              }}
+            />
           </Form.Item>
+        </Card>
 
-          <Form.Item
-            name="published"
-            label="Publicar"
-            valuePropName="checked"
-          >
-            <Switch checkedChildren="Publicado" unCheckedChildren="Rascunho" />
-          </Form.Item>
-
-          <Form.Item>
-            <Space>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                icon={<SaveOutlined />}
-                size="large"
+        {/* Publicação */}
+        <Card style={{ marginBottom: '24px' }}>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontWeight: '500', marginBottom: '4px' }}>Status de Publicação</div>
+                <div style={{ fontSize: '13px', color: '#8c8c8c' }}>
+                  Artigos em rascunho só são visíveis para você
+                </div>
+              </div>
+              <Form.Item
+                name="published"
+                valuePropName="checked"
+                style={{ margin: 0 }}
               >
-                {isEditing ? 'Atualizar' : 'Criar'} Artigo
-              </Button>
-              <Button size="large" onClick={() => navigate('/professional/artigos')}>
-                Cancelar
-              </Button>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Card>
+                <Switch 
+                  checkedChildren="Publicado" 
+                  unCheckedChildren="Rascunho"
+                  style={{ width: '90px' }}
+                />
+              </Form.Item>
+            </div>
+          </Space>
+        </Card>
+
+        {/* Botões de Ação */}
+        <Card>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button 
+              onClick={() => navigate('/professional/artigos')}
+              size="large"
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              icon={<SaveOutlined />}
+              size="large"
+              style={{ minWidth: '140px' }}
+            >
+              {isEditing ? 'Atualizar Artigo' : 'Publicar Artigo'}
+            </Button>
+          </div>
+        </Card>
+      </Form>
     </div>
   );
 };

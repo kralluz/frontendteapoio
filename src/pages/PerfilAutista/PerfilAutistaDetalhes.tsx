@@ -1,28 +1,167 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Card, Avatar, Row, Col, Button, Tag, Space, Typography, Divider,
-  Alert
+  Alert, Spin, message, Modal, Form, Input, Select, Checkbox
 } from 'antd';
 import {
-  UserOutlined, TeamOutlined, HeartOutlined,
+  UserOutlined, HeartOutlined,
   CalendarOutlined, TrophyOutlined,
-  ArrowLeftOutlined, MedicineBoxOutlined, BulbOutlined,
-  MessageOutlined, SoundOutlined, EyeOutlined
+  ArrowLeftOutlined, SoundOutlined, EditOutlined, DeleteOutlined
 } from '@ant-design/icons';
+import { autismProfileService, AutismProfile } from '../../services/autismProfileService';
 
 const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
 
-// Importar dados compartilhados
-import { childrenProfiles } from '../../data/childrenProfiles';
+const supportLevels = [
+  'Nível 1',
+  'Nível 2',
+  'Nível 3'
+];
+
+const therapyOptions = ['Terapia Ocupacional', 'Fonoaudiologia', 'Psicoterapia', 'Psicomotricidade', 'Musicoterapia', 'Equoterapia'];
+const sensoryOptions = ['Hipersensibilidade a sons', 'Hipersensibilidade a luzes', 'Hipersensibilidade a texturas', 'Hipossensibilidade a dor', 'Busca por estímulo vestibular'];
 
 const PerfilAutistaDetalhes: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [profile, setProfile] = useState<AutismProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
-  const child = childrenProfiles.find(c => c.id === parseInt(id || '0'));
+  useEffect(() => {
+    if (id) {
+      loadProfile(id);
+    }
+  }, [id]);
 
-  if (!child) {
+  const loadProfile = async (profileId: string) => {
+    try {
+      setLoading(true);
+      const data = await autismProfileService.getById(profileId);
+      setProfile(data);
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        setNotFound(true);
+      } else {
+        message.error('Erro ao carregar perfil');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showEditModal = () => {
+    if (profile) {
+      // Parsear as notas para extrair os campos
+      const notes = profile.notes || '';
+      const medicationsMatch = notes.match(/Medicamentos: ([^\n]+)/);
+      const communicationMatch = notes.match(/Comunicação: ([^\n]+)/);
+      const routinesMatch = notes.match(/Rotinas: ([^\n]+)/);
+      const therapiesMatch = notes.match(/Terapias: ([^\n]+)/);
+
+      form.setFieldsValue({
+        name: profile.name,
+        diagnosis: profile.diagnosis,
+        level: profile.level,
+        interests: profile.interests,
+        sensoryPreferences: profile.sensitivities,
+        strengths: profile.strengths,
+        challenges: profile.challenges,
+        medications: medicationsMatch ? medicationsMatch[1] : '',
+        communication: communicationMatch ? communicationMatch[1] : '',
+        routines: routinesMatch?.[1] ? routinesMatch[1].split(', ') : [],
+        therapies: therapiesMatch?.[1] ? therapiesMatch[1].split(', ') : [],
+      });
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    form.resetFields();
+  };
+
+  const handleUpdate = async (values: any) => {
+    if (!profile) return;
+
+    // Construir notas consolidadas
+    const notesArray = [
+      values.medications ? `Medicamentos: ${values.medications}` : '',
+      values.communication ? `Comunicação: ${values.communication}` : '',
+      values.routines && values.routines.length > 0 ? `Rotinas: ${values.routines.join(', ')}` : '',
+      values.therapies && values.therapies.length > 0 ? `Terapias: ${values.therapies.join(', ')}` : ''
+    ].filter(Boolean);
+
+    // Manter a idade atual do perfil
+    const profileData: any = {
+      name: values.name,
+      age: profile.age, // Mantém a idade atual
+      diagnosis: values.diagnosis,
+      level: values.level,
+      interests: values.interests || [],
+      sensitivities: values.sensoryPreferences || [],
+      strengths: values.strengths || [],
+      challenges: values.challenges || [],
+    };
+
+    // Adicionar notes apenas se houver conteúdo
+    if (notesArray.length > 0) {
+      profileData.notes = notesArray.join('\n\n');
+    }
+
+    try {
+      await autismProfileService.update(profile.id, profileData);
+      message.success('Perfil atualizado com sucesso!');
+      setIsModalVisible(false);
+      form.resetFields();
+      loadProfile(profile.id);
+    } catch (error: any) {
+      console.error('Erro ao atualizar perfil:', error);
+      message.error(error.response?.data?.message || 'Erro ao atualizar perfil.');
+    }
+  };
+
+  const handleDelete = () => {
+    if (!profile) return;
+
+    Modal.confirm({
+      title: 'Confirmar exclusão',
+      content: `Tem certeza que deseja deletar o perfil de ${profile.name}?`,
+      okText: 'Sim, deletar',
+      okType: 'danger',
+      cancelText: 'Cancelar',
+      onOk: async () => {
+        try {
+          await autismProfileService.delete(profile.id);
+          message.success('Perfil deletado com sucesso!');
+          navigate('/perfil-autista');
+        } catch (error: any) {
+          message.error('Erro ao deletar perfil.');
+        }
+      }
+    });
+  };
+
+  const getDifficultyColor = (level: string) => {
+    if (level.includes('Nível 1')) return 'green';
+    if (level.includes('Nível 2')) return 'orange';
+    if (level.includes('Nível 3')) return 'red';
+    return 'default';
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  if (!profile || notFound) {
     return (
       <div style={{ padding: '24px', textAlign: 'center' }}>
         <Alert
@@ -43,17 +182,10 @@ const PerfilAutistaDetalhes: React.FC = () => {
     );
   }
 
-  const getDifficultyColor = (level: string) => {
-    if (level.includes('Nível 1')) return 'green';
-    if (level.includes('Nível 2')) return 'orange';
-    if (level.includes('Nível 3')) return 'red';
-    return 'default';
-  };
-
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Breadcrumb */}
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Button
           type="link"
           icon={<ArrowLeftOutlined />}
@@ -62,6 +194,22 @@ const PerfilAutistaDetalhes: React.FC = () => {
         >
           Voltar para Perfis dos Autistas
         </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={showEditModal}
+          >
+            Editar Perfil
+          </Button>
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={handleDelete}
+          >
+            Excluir
+          </Button>
+        </Space>
       </div>
 
       {/* Header */}
@@ -70,7 +218,7 @@ const PerfilAutistaDetalhes: React.FC = () => {
           <Col xs={24} sm={8} style={{ textAlign: 'center' }}>
             <Avatar
               size={150}
-              src={child.avatar}
+              src={profile.photo}
               icon={<UserOutlined />}
               style={{
                 border: '6px solid #667eea',
@@ -79,27 +227,29 @@ const PerfilAutistaDetalhes: React.FC = () => {
               }}
             />
             <Tag
-              color={getDifficultyColor(child.supportLevel)}
+              color={getDifficultyColor(profile.level)}
               style={{ fontSize: '14px', padding: '4px 12px' }}
             >
-              {child.supportLevel}
+              {profile.level}
             </Tag>
           </Col>
           <Col xs={24} sm={16}>
-            <Title level={1} style={{ marginBottom: '8px' }}>{child.name}</Title>
-            <Text style={{ fontSize: '18px', color: '#666' }}>{child.age} anos</Text>
+            <Title level={1} style={{ marginBottom: '8px' }}>{profile.name}</Title>
+            <Text style={{ fontSize: '18px', color: '#666' }}>{profile.age} anos</Text>
             <br />
             <Text type="secondary" style={{ fontSize: '16px' }}>
               <CalendarOutlined style={{ marginRight: '8px' }} />
-              Nascido em {new Date(child.birthDate).toLocaleDateString('pt-BR')}
+              Cadastrado em {new Date(profile.createdAt).toLocaleDateString('pt-BR')}
             </Text>
             <Divider />
             <Paragraph style={{ fontSize: '16px', color: '#666' }}>
-              {child.diagnosis}
+              {profile.diagnosis}
             </Paragraph>
-            <Text type="secondary">
-              Diagnosticado em {new Date(child.diagnosisDate).toLocaleDateString('pt-BR')}
-            </Text>
+            {profile.notes && (
+              <Text type="secondary">
+                {profile.notes}
+              </Text>
+            )}
           </Col>
         </Row>
       </Card>
@@ -112,7 +262,7 @@ const PerfilAutistaDetalhes: React.FC = () => {
           {/* Interesses */}
           <Card title="Interesses" style={{ marginBottom: '24px' }}>
             <Space wrap size="middle">
-              {child.interests.map((interest, index) => (
+              {profile.interests.map((interest, index) => (
                 <Tag key={index} color="blue" style={{ fontSize: '14px', padding: '6px 12px' }}>
                   <HeartOutlined style={{ marginRight: '6px' }} />
                   {interest}
@@ -124,7 +274,7 @@ const PerfilAutistaDetalhes: React.FC = () => {
           {/* Pontos Fortes */}
           <Card title="Pontos Fortes" style={{ marginBottom: '24px' }}>
             <Space wrap size="middle">
-              {child.strengths.map((strength, index) => (
+              {profile.strengths.map((strength, index) => (
                 <Tag key={index} color="green" style={{ fontSize: '14px', padding: '6px 12px' }}>
                   <TrophyOutlined style={{ marginRight: '6px' }} />
                   {strength}
@@ -136,86 +286,189 @@ const PerfilAutistaDetalhes: React.FC = () => {
           {/* Desafios */}
           <Card title="Desafios" style={{ marginBottom: '24px' }}>
             <Space wrap size="middle">
-              {child.challenges.map((challenge, index) => (
+              {profile.challenges.map((challenge, index) => (
                 <Tag key={index} color="orange" style={{ fontSize: '14px', padding: '6px 12px' }}>
                   {challenge}
                 </Tag>
               ))}
             </Space>
           </Card>
-
-          {/* Comunicação */}
-          <Card title="Comunicação" style={{ marginBottom: '24px' }}>
-            <Paragraph style={{ fontSize: '16px' }}>
-              <MessageOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-              {child.communication}
-            </Paragraph>
-          </Card>
         </Col>
 
         <Col xs={24} lg={12}>
-          {/* Terapias */}
-          <Card title="Terapias" style={{ marginBottom: '24px' }}>
+          {/* Sensibilidades */}
+          <Card title="Sensibilidades" style={{ marginBottom: '24px' }}>
             <Space wrap size="middle">
-              {child.therapies.map((therapy, index) => (
-                <Tag key={index} color="purple" style={{ fontSize: '14px', padding: '6px 12px' }}>
-                  <MedicineBoxOutlined style={{ marginRight: '6px' }} />
-                  {therapy}
-                </Tag>
-              ))}
-            </Space>
-          </Card>
-
-          {/* Medicações */}
-          <Card title="Medicações" style={{ marginBottom: '24px' }}>
-            {child.medications.length > 0 ? (
-              <Space direction="vertical" style={{ width: '100%' }}>
-                {child.medications.map((medication, index) => (
-                  <Tag key={index} color="red" style={{ fontSize: '14px', padding: '6px 12px' }}>
-                    <MedicineBoxOutlined style={{ marginRight: '6px' }} />
-                    {medication}
-                  </Tag>
-                ))}
-              </Space>
-            ) : (
-              <Text type="secondary">Nenhuma medicação cadastrada</Text>
-            )}
-          </Card>
-
-          {/* Preferências Sensoriais */}
-          <Card title="Preferências Sensoriais" style={{ marginBottom: '24px' }}>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <div>
-                <SoundOutlined style={{ marginRight: '8px', color: '#fa8c16' }} />
-                <Text strong>Som:</Text> {child.sensoryPreferences.sound}
-              </div>
-              <div>
-                <BulbOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
-                <Text strong>Toque:</Text> {child.sensoryPreferences.touch}
-              </div>
-              <div>
-                <EyeOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-                <Text strong>Luz:</Text> {child.sensoryPreferences.light}
-              </div>
-              <div>
-                <TeamOutlined style={{ marginRight: '8px', color: '#722ed1' }} />
-                <Text strong>Movimento:</Text> {child.sensoryPreferences.movement}
-              </div>
-            </Space>
-          </Card>
-
-          {/* Rotinas */}
-          <Card title="Rotinas e Estruturas" style={{ marginBottom: '24px' }}>
-            <Space wrap size="middle">
-              {child.routines.map((routine, index) => (
-                <Tag key={index} color="cyan" style={{ fontSize: '14px', padding: '6px 12px' }}>
-                  {routine}
+              {profile.sensitivities.map((sensitivity, index) => (
+                <Tag key={index} color="volcano" style={{ fontSize: '14px', padding: '6px 12px' }}>
+                  <SoundOutlined style={{ marginRight: '6px' }} />
+                  {sensitivity}
                 </Tag>
               ))}
             </Space>
           </Card>
         </Col>
       </Row>
+
+      {/* Modal para editar perfil */}
+      <Modal
+        title="Editar Perfil de Autista"
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        width={800}
+        style={{ top: 20 }}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleUpdate}
+        >
+          <Divider>Informações Básicas</Divider>
+          <Form.Item
+            name="name"
+            label="Nome Completo"
+            rules={[{ required: true, message: 'Por favor, insira o nome!' }]}
+          >
+            <Input placeholder="Nome do perfil" />
+          </Form.Item>
+
+          <Divider>Diagnóstico e Suporte</Divider>
+          <Row gutter={16}>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                name="diagnosis"
+                label="Diagnóstico"
+                rules={[{ required: true, message: 'Por favor, insira o diagnóstico!' }]}
+              >
+                <Input placeholder="Ex: Transtorno do Espectro Autista" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                name="level"
+                label="Nível de Suporte"
+                rules={[{ required: true, message: 'Por favor, selecione o nível!' }]}
+              >
+                <Select placeholder="Selecione o nível">
+                  {supportLevels.map(level => (
+                    <Option key={level} value={level}>{level}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Divider>Interesses e Habilidades</Divider>
+          <Form.Item
+            name="interests"
+            label="Interesses"
+          >
+            <Select
+              mode="tags"
+              placeholder="Digite os interesses (pressione Enter para adicionar)"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="strengths"
+            label="Pontos Fortes / Habilidades"
+          >
+            <Select
+              mode="tags"
+              placeholder="Digite as habilidades (pressione Enter para adicionar)"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="challenges"
+            label="Desafios / Dificuldades"
+          >
+            <Select
+              mode="tags"
+              placeholder="Digite os desafios (pressione Enter para adicionar)"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          <Divider>Terapias e Tratamentos</Divider>
+          <Form.Item
+            name="therapies"
+            label="Terapias Frequentes"
+          >
+            <Checkbox.Group>
+              <Row>
+                {therapyOptions.map(therapy => (
+                  <Col xs={24} sm={12} key={therapy}>
+                    <Checkbox value={therapy}>{therapy}</Checkbox>
+                  </Col>
+                ))}
+              </Row>
+            </Checkbox.Group>
+          </Form.Item>
+
+          <Form.Item
+            name="medications"
+            label="Medicamentos (se aplicável)"
+          >
+            <Input.TextArea
+              placeholder="Liste os medicamentos e dosagens"
+              rows={3}
+            />
+          </Form.Item>
+
+          <Divider>Comunicação e Preferências Sensoriais</Divider>
+          <Form.Item
+            name="communication"
+            label="Estilo de Comunicação"
+          >
+            <Input.TextArea
+              placeholder="Descreva como a pessoa se comunica (verbal, não-verbal, PECs, etc.)"
+              rows={3}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="sensoryPreferences"
+            label="Preferências Sensoriais"
+          >
+            <Checkbox.Group>
+              <Row>
+                {sensoryOptions.map(preference => (
+                  <Col xs={24} sm={12} key={preference}>
+                    <Checkbox value={preference}>{preference}</Checkbox>
+                  </Col>
+                ))}
+              </Row>
+            </Checkbox.Group>
+          </Form.Item>
+
+          <Form.Item
+            name="routines"
+            label="Rotinas e Estruturas"
+          >
+            <Select
+              mode="tags"
+              placeholder="Digite as rotinas importantes (pressione Enter para adicionar)"
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+
+          <Divider />
+          <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
+            <Space>
+              <Button onClick={handleCancel}>
+                Cancelar
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Atualizar Perfil
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

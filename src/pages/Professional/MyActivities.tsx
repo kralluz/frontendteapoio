@@ -1,23 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Table, Button, Space, Modal, message, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import api from '../../services/api';
+import { Card, Row, Col, Button, Space, Modal, message, Tag, Typography, Spin } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, TrophyOutlined, HeartOutlined, MessageOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { activityService, Activity } from '../../services/activityService';
 
-interface Activity {
-  id: string;
-  title: string;
-  category: string;
-  difficulty: string;
-  published: boolean;
-  duration: number;
-  createdAt: string;
-  _count: {
-    comments: number;
-    likes: number;
-    favorites: number;
-  };
-}
+const { Title, Text, Paragraph } = Typography;
 
 const MyActivities: React.FC = () => {
   const navigate = useNavigate();
@@ -31,8 +18,8 @@ const MyActivities: React.FC = () => {
   const loadActivities = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/activities/my');
-      setActivities(response.data);
+      const data = await activityService.getMyActivities();
+      setActivities(data);
     } catch (error) {
       message.error('Erro ao carregar atividades');
     } finally {
@@ -40,7 +27,8 @@ const MyActivities: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
     Modal.confirm({
       title: 'Confirmar exclusão',
       content: 'Tem certeza que deseja deletar esta atividade?',
@@ -49,7 +37,7 @@ const MyActivities: React.FC = () => {
       cancelText: 'Não',
       onOk: async () => {
         try {
-          await api.delete(`/activities/${id}`);
+          await activityService.delete(id);
           message.success('Atividade deletada com sucesso');
           loadActivities();
         } catch (error) {
@@ -68,106 +56,133 @@ const MyActivities: React.FC = () => {
     return colors[difficulty] || 'default';
   };
 
-  const columns = [
-    {
-      title: 'Título',
-      dataIndex: 'title',
-      key: 'title',
-      width: '30%',
-    },
-    {
-      title: 'Categoria',
-      dataIndex: 'category',
-      key: 'category',
-    },
-    {
-      title: 'Dificuldade',
-      dataIndex: 'difficulty',
-      key: 'difficulty',
-      render: (difficulty: string) => (
-        <Tag color={difficultyColor(difficulty)}>{difficulty}</Tag>
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'published',
-      key: 'published',
-      render: (published: boolean) => (
-        <Tag color={published ? 'green' : 'orange'}>
-          {published ? 'Publicado' : 'Rascunho'}
-        </Tag>
-      ),
-    },
-    {
-      title: 'Duração',
-      dataIndex: 'duration',
-      key: 'duration',
-      render: (duration: number) => `${duration} min`,
-    },
-    {
-      title: 'Curtidas',
-      key: 'likes',
-      render: (record: Activity) => record._count.likes,
-    },
-    {
-      title: 'Comentários',
-      key: 'comments',
-      render: (record: Activity) => record._count.comments,
-    },
-    {
-      title: 'Ações',
-      key: 'actions',
-      render: (record: Activity) => (
-        <Space>
-          <Button
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/atividade/${record.id}`)}
-            size="small"
-          >
-            Ver
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => navigate(`/professional/atividades/editar/${record.id}`)}
-            type="primary"
-            size="small"
-          >
-            Editar
-          </Button>
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
-            danger
-            size="small"
-          >
-            Deletar
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Minhas Atividades</h1>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => navigate('/professional/atividades/novo')}
-          size="large"
-        >
-          Nova Atividade
-        </Button>
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Page Header */}
+      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <Title level={2} style={{ marginBottom: '8px' }}>
+              <TrophyOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
+              Minhas Atividades
+            </Title>
+            <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+              {activities.length} {activities.length === 1 ? 'atividade criada' : 'atividades criadas'}
+            </Paragraph>
+          </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/professional/atividades/novo')}
+            size="large"
+          >
+            Nova Atividade
+          </Button>
+        </div>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={activities}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      {activities.length > 0 ? (
+        <Row gutter={[24, 24]}>
+          {activities.map((activity) => (
+            <Col xs={24} sm={12} lg={8} key={activity.id}>
+              <Card
+                hoverable
+                style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+                cover={
+                  <img
+                    alt={activity.title}
+                    src={activity.image || `https://via.placeholder.com/400x200?text=${activity.category}`}
+                    style={{ height: '200px', objectFit: 'cover' }}
+                  />
+                }
+                actions={[
+                  <Space onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/atividade/${activity.id}`);
+                  }}>
+                    <EyeOutlined />
+                    Ver
+                  </Space>,
+                  <Space onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/professional/atividades/editar/${activity.id}`);
+                  }}>
+                    <EditOutlined />
+                    Editar
+                  </Space>,
+                  <Space onClick={(e) => handleDelete(e, activity.id)}>
+                    <DeleteOutlined style={{ color: '#ff4d4f' }} />
+                    Deletar
+                  </Space>,
+                ]}
+                onClick={() => navigate(`/atividade/${activity.id}`)}
+              >
+                <Card.Meta
+                  title={
+                    <div>
+                      <Title level={5} ellipsis={{ rows: 2 }} style={{ marginBottom: '8px' }}>
+                        {activity.title}
+                      </Title>
+                    </div>
+                  }
+                  description={
+                    <Paragraph type="secondary" ellipsis={{ rows: 3 }}>
+                      {activity.description}
+                    </Paragraph>
+                  }
+                />
+                <div style={{ marginTop: '16px', flex: '1' }}>
+                  <Space wrap>
+                    <Tag color="blue">{activity.category}</Tag>
+                    <Tag color={difficultyColor(activity.difficulty)}>{activity.difficulty}</Tag>
+                    <Tag color={activity.published ? 'green' : 'orange'}>
+                      {activity.published ? 'Publicado' : 'Rascunho'}
+                    </Tag>
+                  </Space>
+                </div>
+                <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
+                  <Space split={<span style={{ color: '#d9d9d9' }}>|</span>}>
+                    <Space size={4}>
+                      <HeartOutlined style={{ color: '#ff4d4f' }} />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{activity._count?.likes || 0}</Text>
+                    </Space>
+                    <Space size={4}>
+                      <MessageOutlined style={{ color: '#1890ff' }} />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{activity._count?.comments || 0}</Text>
+                    </Space>
+                    <Space size={4}>
+                      <ClockCircleOutlined />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{activity.duration} min</Text>
+                    </Space>
+                  </Space>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '48px 0' }}>
+          <TrophyOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+          <Title level={4} type="secondary">Nenhuma atividade criada</Title>
+          <Paragraph type="secondary">Comece criando sua primeira atividade!</Paragraph>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/professional/atividades/novo')}
+            size="large"
+          >
+            Criar Primeira Atividade
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

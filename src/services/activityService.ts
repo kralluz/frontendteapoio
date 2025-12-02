@@ -62,6 +62,11 @@ export const activityService = {
     return response.data;
   },
 
+  async getMyActivities(params?: { published?: boolean }): Promise<Activity[]> {
+    const response = await api.get<Activity[]>('/activities/my', { params });
+    return response.data;
+  },
+
   async getById(id: string): Promise<Activity> {
     const response = await api.get<Activity>(`/activities/${id}`);
     return response.data;

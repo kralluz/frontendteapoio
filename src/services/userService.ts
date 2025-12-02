@@ -1,39 +1,39 @@
-import api from './api';
+import { api } from './api';
 import { User } from './authService';
 
-export interface UpdateUserData {
+interface UpdateUserData {
   name?: string;
   avatar?: string;
 }
 
-export interface PublicUser {
-  id: string;
-  name: string;
-  avatar?: string;
-  createdAt: string;
-  _count: {
-    articles: number;
-    activities: number;
-  };
+interface ChangePasswordData {
+  currentPassword?: string;
+  newPassword?: string;
 }
 
+const getMe = async (): Promise<User> => {
+  const response = await api.get('/users/me');
+  return response.data;
+};
+
+const getById = async (id: string): Promise<User> => {
+  const response = await api.get(`/users/${id}`);
+  return response.data;
+};
+
+const updateMe = async (data: UpdateUserData) => {
+  const response = await api.put('/users/me', data);
+  return response.data;
+};
+
+const changePassword = async (data: ChangePasswordData) => {
+  const response = await api.put('/users/me/password', data);
+  return response.data;
+};
+
 export const userService = {
-  async getMe(): Promise<User> {
-    const response = await api.get<User>('/users/me');
-    return response.data;
-  },
-
-  async updateMe(data: UpdateUserData): Promise<User> {
-    const response = await api.put<User>('/users/me', data);
-
-    // Atualizar localStorage
-    localStorage.setItem('@teapoio:user', JSON.stringify(response.data));
-
-    return response.data;
-  },
-
-  async getById(id: string): Promise<PublicUser> {
-    const response = await api.get<PublicUser>(`/users/${id}`);
-    return response.data;
-  }
+  getMe,
+  getById,
+  updateMe,
+  changePassword,
 };

@@ -1,22 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Table, Button, Space, Modal, message, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
-import api from '../../services/api';
+import { Card, Row, Col, Button, Space, Modal, message, Tag, Typography, Spin } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, BookOutlined, HeartOutlined, MessageOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { articleService, Article } from '../../services/articleService';
 
-interface Article {
-  id: string;
-  title: string;
-  category: string;
-  published: boolean;
-  readTime: number;
-  createdAt: string;
-  _count: {
-    comments: number;
-    likes: number;
-    favorites: number;
-  };
-}
+const { Title, Text, Paragraph } = Typography;
 
 const MyArticles: React.FC = () => {
   const navigate = useNavigate();
@@ -30,8 +18,8 @@ const MyArticles: React.FC = () => {
   const loadArticles = async () => {
     setLoading(true);
     try {
-      const response = await api.get('/articles/my');
-      setArticles(response.data);
+      const data = await articleService.getMyArticles();
+      setArticles(data);
     } catch (error) {
       message.error('Erro ao carregar artigos');
     } finally {
@@ -39,7 +27,8 @@ const MyArticles: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
     Modal.confirm({
       title: 'Confirmar exclusão',
       content: 'Tem certeza que deseja deletar este artigo?',
@@ -48,7 +37,7 @@ const MyArticles: React.FC = () => {
       cancelText: 'Não',
       onOk: async () => {
         try {
-          await api.delete(`/articles/${id}`);
+          await articleService.delete(id);
           message.success('Artigo deletado com sucesso');
           loadArticles();
         } catch (error) {
@@ -58,98 +47,132 @@ const MyArticles: React.FC = () => {
     });
   };
 
-  const columns = [
-    {
-      title: 'Título',
-      dataIndex: 'title',
-      key: 'title',
-      width: '30%',
-    },
-    {
-      title: 'Categoria',
-      dataIndex: 'category',
-      key: 'category',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'published',
-      key: 'published',
-      render: (published: boolean) => (
-        <Tag color={published ? 'green' : 'orange'}>
-          {published ? 'Publicado' : 'Rascunho'}
-        </Tag>
-      ),
-    },
-    {
-      title: 'Leitura',
-      dataIndex: 'readTime',
-      key: 'readTime',
-      render: (time: number) => `${time} min`,
-    },
-    {
-      title: 'Curtidas',
-      key: 'likes',
-      render: (record: Article) => record._count.likes,
-    },
-    {
-      title: 'Comentários',
-      key: 'comments',
-      render: (record: Article) => record._count.comments,
-    },
-    {
-      title: 'Ações',
-      key: 'actions',
-      render: (record: Article) => (
-        <Space>
-          <Button
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/artigo/${record.id}`)}
-            size="small"
-          >
-            Ver
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => navigate(`/professional/artigos/editar/${record.id}`)}
-            type="primary"
-            size="small"
-          >
-            Editar
-          </Button>
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
-            danger
-            size="small"
-          >
-            Deletar
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Meus Artigos</h1>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => navigate('/professional/artigos/novo')}
-          size="large"
-        >
-          Novo Artigo
-        </Button>
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Page Header */}
+      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <Title level={2} style={{ marginBottom: '8px' }}>
+              <BookOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
+              Meus Artigos
+            </Title>
+            <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+              {articles.length} {articles.length === 1 ? 'artigo publicado' : 'artigos publicados'}
+            </Paragraph>
+          </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/professional/artigos/novo')}
+            size="large"
+          >
+            Novo Artigo
+          </Button>
+        </div>
       </div>
 
-      <Table
-        columns={columns}
-        dataSource={articles}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      {articles.length > 0 ? (
+        <Row gutter={[24, 24]}>
+          {articles.map((article) => (
+            <Col xs={24} sm={12} lg={8} key={article.id}>
+              <Card
+                hoverable
+                style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+                cover={
+                  <img
+                    alt={article.title}
+                    src={article.image || `https://via.placeholder.com/400x200?text=${article.category}`}
+                    style={{ height: '200px', objectFit: 'cover' }}
+                  />
+                }
+                actions={[
+                  <Space onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/artigo/${article.id}`);
+                  }}>
+                    <EyeOutlined />
+                    Ver
+                  </Space>,
+                  <Space onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/professional/artigos/editar/${article.id}`);
+                  }}>
+                    <EditOutlined />
+                    Editar
+                  </Space>,
+                  <Space onClick={(e) => handleDelete(e, article.id)}>
+                    <DeleteOutlined style={{ color: '#ff4d4f' }} />
+                    Deletar
+                  </Space>,
+                ]}
+                onClick={() => navigate(`/artigo/${article.id}`)}
+              >
+                <Card.Meta
+                  title={
+                    <div>
+                      <Title level={5} ellipsis={{ rows: 2 }} style={{ marginBottom: '8px' }}>
+                        {article.title}
+                      </Title>
+                    </div>
+                  }
+                  description={
+                    <Paragraph type="secondary" ellipsis={{ rows: 3 }}>
+                      {article.excerpt || article.content.substring(0, 100)}
+                    </Paragraph>
+                  }
+                />
+                <div style={{ marginTop: '16px', flex: '1' }}>
+                  <Space wrap>
+                    <Tag color="blue">{article.category}</Tag>
+                    <Tag color={article.published ? 'green' : 'orange'}>
+                      {article.published ? 'Publicado' : 'Rascunho'}
+                    </Tag>
+                  </Space>
+                </div>
+                <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
+                  <Space split={<span style={{ color: '#d9d9d9' }}>|</span>}>
+                    <Space size={4}>
+                      <HeartOutlined style={{ color: '#ff4d4f' }} />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{article._count?.likes || 0}</Text>
+                    </Space>
+                    <Space size={4}>
+                      <MessageOutlined style={{ color: '#1890ff' }} />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{article._count?.comments || 0}</Text>
+                    </Space>
+                    <Space size={4}>
+                      <ClockCircleOutlined />
+                      <Text type="secondary" style={{ fontSize: '12px' }}>{article.readTime} min</Text>
+                    </Space>
+                  </Space>
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '48px 0' }}>
+          <BookOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+          <Title level={4} type="secondary">Nenhum artigo criado</Title>
+          <Paragraph type="secondary">Comece criando seu primeiro artigo!</Paragraph>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/professional/artigos/novo')}
+            size="large"
+          >
+            Criar Primeiro Artigo
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

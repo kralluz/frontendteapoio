@@ -53,6 +53,11 @@ export const articleService = {
     return response.data;
   },
 
+  async getMyArticles(params?: { published?: boolean }): Promise<Article[]> {
+    const response = await api.get<Article[]>('/articles/my', { params });
+    return response.data;
+  },
+
   async getById(id: string): Promise<Article> {
     const response = await api.get<Article>(`/articles/${id}`);
     return response.data;

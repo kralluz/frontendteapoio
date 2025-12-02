@@ -5,9 +5,9 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
-  registerProfessional: (data: ProfessionalRegisterData) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<User>;
+  register: (data: RegisterData) => Promise<User>;
+  registerProfessional: (data: ProfessionalRegisterData) => Promise<User>;
   logout: () => void;
 }
 
@@ -29,6 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await authService.login(credentials);
       setUser(response.user);
+      return response.user;
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       throw error;
@@ -39,6 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await authService.register(data);
       setUser(response.user);
+      return response.user;
     } catch (error) {
       console.error('Erro ao registrar:', error);
       throw error;
@@ -49,6 +51,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await authService.registerProfessional(data);
       setUser(response.user);
+      return response.user;
     } catch (error) {
       console.error('Erro ao registrar profissional:', error);
       throw error;

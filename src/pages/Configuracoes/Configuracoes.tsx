@@ -1,70 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Modal, Form, Input, Avatar, List, Space, Typography,
-  Divider, Popconfirm, message, Tabs, Tag, Row, Col, Switch, Select
+  Card, Button, Modal, Form, Input, Avatar, Space, Typography,
+  Divider, Popconfirm, message, Row, Col, Switch, Select
 } from 'antd';
 import {
   LockOutlined, DeleteOutlined, LogoutOutlined,
-  HeartOutlined, BookOutlined, SettingOutlined, BellOutlined,
+  SettingOutlined, BellOutlined,
   EditOutlined, MailOutlined, MessageOutlined, BulbOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { userService } from '../../services/userService';
 
 const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
 const { Option } = Select;
 const { TextArea } = Input;
 
-// Dados mock para posts salvos e curtidos
-const mockSavedPosts = [
-  {
-    id: 1,
-    title: 'Atividade Sensorial: Caixa de Texturas',
-    description: 'Exercício divertido para trabalhar percepção tátil e foco.',
-    type: 'activity',
-    savedDate: '2 dias atrás',
-    image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=300&q=80'
-  },
-  {
-    id: 2,
-    title: 'Como estimular a comunicação em crianças TEA',
-    description: 'Dicas práticas para promover o desenvolvimento da fala.',
-    type: 'article',
-    savedDate: '5 dias atrás',
-    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=300&q=80'
-  },
-  {
-    id: 3,
-    title: 'Jogo de Sequências Visuais',
-    description: 'Atividade para estimular percepção visual e raciocínio lógico.',
-    type: 'activity',
-    savedDate: '1 semana atrás',
-    image: 'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=300&q=80'
-  }
-];
-
-const mockLikedPosts = [
-  {
-    id: 4,
-    title: 'Estratégias para rotina escolar',
-    description: 'Como adaptar o ambiente escolar para crianças com TEA.',
-    type: 'article',
-    likedDate: '3 dias atrás',
-    image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=300&q=80'
-  },
-  {
-    id: 5,
-    title: 'Atividade de Recorte e Colagem',
-    description: 'Estimule a coordenação motora fina com recortes.',
-    type: 'activity',
-    likedDate: '6 dias atrás',
-    image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
-  }
-];
-
 const Configuracoes: React.FC = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   // Estados para modais
@@ -77,13 +30,13 @@ const Configuracoes: React.FC = () => {
   const [passwordForm] = Form.useForm();
   const [profileForm] = Form.useForm();
 
-  // Dados do usuário (mock)
-  const [userData, setUserData] = useState({
-    name: 'João Silva',
-    email: 'joao.silva@email.com',
-    phone: '+55 11 99999-9999',
-    bio: 'Pai dedicado e apaixonado por ajudar crianças com TEA.'
-  });
+  // Dados do usuário
+  const [userData, setUserData] = useState(user);
+
+  useEffect(() => {
+    setUserData(user);
+    profileForm.setFieldsValue(user);
+  }, [user, profileForm]);
 
   // Configurações
   const [settings, setSettings] = useState({
@@ -95,30 +48,37 @@ const Configuracoes: React.FC = () => {
   // Handlers
   const handlePasswordChange = async (values: any) => {
     try {
-      // Simular mudança de senha
-      console.log('Mudando senha:', values);
+      await userService.changePassword(values);
       message.success('Senha alterada com sucesso!');
       setPasswordModalVisible(false);
       passwordForm.resetFields();
-    } catch (error) {
-      message.error('Erro ao alterar senha');
+    } catch (error: any) {
+      message.error(error.response?.data?.message || 'Erro ao alterar senha');
     }
   };
 
   const handleProfileUpdate = async (values: any) => {
     try {
-      // Simular atualização do perfil
-      setUserData(prev => ({ ...prev, ...values }));
+      // Remover campos vazios ou nulos antes de enviar
+      const cleanedValues = Object.entries(values).reduce((acc, [key, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as any);
+
+      const updatedUser = await userService.updateMe(cleanedValues);
+      setUserData(updatedUser);
       message.success('Perfil atualizado com sucesso!');
       setProfileModalVisible(false);
-    } catch (error) {
-      message.error('Erro ao atualizar perfil');
+    } catch (error: any) {
+      message.error(error.response?.data?.message || 'Erro ao atualizar perfil');
     }
   };
 
   const handleDeleteAccount = async () => {
     try {
-      // Simular exclusão da conta
+      // TODO: Implementar a chamada ao serviço de exclusão de conta
       message.success('Conta excluída com sucesso!');
       logout();
       navigate('/login');
@@ -140,7 +100,7 @@ const Configuracoes: React.FC = () => {
 
   const handleSendFeedback = async (values: any) => {
     try {
-      // Simular envio de feedback
+      // TODO: Implementar a chamada ao serviço de envio de feedback
       console.log('Enviando feedback:', values);
       message.success('Feedback enviado com sucesso! Obrigado pela sua contribuição.');
       setFeedbackModalVisible(false);
@@ -157,14 +117,24 @@ const Configuracoes: React.FC = () => {
 
       <Row gutter={24}>
         {/* Perfil e Conta */}
-        <Col xs={24} lg={12}>
+        <Col xs={24} lg={16} style={{ margin: '0 auto' }}>
           <Card title="Perfil e Conta" style={{ marginBottom: '24px' }}>
             <Space direction="vertical" style={{ width: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                <Avatar size={64} src="https://randomuser.me/api/portraits/men/32.jpg" style={{ marginRight: '16px' }} />
+                <Avatar 
+                  size={64} 
+                  src={userData?.avatar}
+                  style={{ 
+                    marginRight: '16px',
+                    backgroundColor: userData?.avatar ? undefined : '#667eea',
+                    fontSize: '24px'
+                  }}
+                >
+                  {!userData?.avatar && userData?.name ? userData.name.charAt(0).toUpperCase() : null}
+                </Avatar>
                 <div>
-                  <Title level={4} style={{ margin: 0 }}>{userData.name}</Title>
-                  <Text type="secondary">{userData.email}</Text>
+                  <Title level={4} style={{ margin: 0 }}>{userData?.name}</Title>
+                  <Text type="secondary">{userData?.email}</Text>
                 </div>
               </div>
 
@@ -268,113 +238,6 @@ const Configuracoes: React.FC = () => {
             </Space>
           </Card>
         </Col>
-
-        {/* Posts Salvos e Curtidos */}
-        <Col xs={24} lg={12}>
-          <Tabs defaultActiveKey="1">
-            <TabPane
-              tab={
-                <span>
-                  <BookOutlined />
-                  Salvos ({mockSavedPosts.length})
-                </span>
-              }
-              key="1"
-            >
-              <List
-                dataSource={mockSavedPosts}
-                renderItem={(item) => (
-                  <List.Item
-                    style={{ padding: '16px', border: '1px solid #f0f0f0', borderRadius: '8px', marginBottom: '12px' }}
-                  >
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          shape="square"
-                          size={64}
-                          src={item.image}
-                          icon={<BookOutlined />}
-                        />
-                      }
-                      title={
-                        <div>
-                          <Text strong>{item.title}</Text>
-                          <Tag
-                            color={item.type === 'activity' ? 'green' : 'blue'}
-                            style={{ marginLeft: '8px' }}
-                          >
-                            {item.type === 'activity' ? 'Atividade' : 'Artigo'}
-                          </Tag>
-                        </div>
-                      }
-                      description={
-                        <div>
-                          <Paragraph ellipsis={{ rows: 2 }} style={{ margin: '8px 0' }}>
-                            {item.description}
-                          </Paragraph>
-                          <Text type="secondary" style={{ fontSize: '12px' }}>
-                            Salvo {item.savedDate}
-                          </Text>
-                        </div>
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            </TabPane>
-
-            <TabPane
-              tab={
-                <span>
-                  <HeartOutlined />
-                  Curtidos ({mockLikedPosts.length})
-                </span>
-              }
-              key="2"
-            >
-              <List
-                dataSource={mockLikedPosts}
-                renderItem={(item) => (
-                  <List.Item
-                    style={{ padding: '16px', border: '1px solid #f0f0f0', borderRadius: '8px', marginBottom: '12px' }}
-                  >
-                    <List.Item.Meta
-                      avatar={
-                        <Avatar
-                          shape="square"
-                          size={64}
-                          src={item.image}
-                          icon={<HeartOutlined />}
-                        />
-                      }
-                      title={
-                        <div>
-                          <Text strong>{item.title}</Text>
-                          <Tag
-                            color={item.type === 'activity' ? 'green' : 'blue'}
-                            style={{ marginLeft: '8px' }}
-                          >
-                            {item.type === 'activity' ? 'Atividade' : 'Artigo'}
-                          </Tag>
-                        </div>
-                      }
-                      description={
-                        <div>
-                          <Paragraph ellipsis={{ rows: 2 }} style={{ margin: '8px 0' }}>
-                            {item.description}
-                          </Paragraph>
-                          <Text type="secondary" style={{ fontSize: '12px' }}>
-                            Curtido {item.likedDate}
-                          </Text>
-                        </div>
-                      }
-                    />
-                  </List.Item>
-                )}
-              />
-            </TabPane>
-          </Tabs>
-        </Col>
       </Row>
 
       {/* Modal Enviar Feedback */}
@@ -472,6 +335,7 @@ const Configuracoes: React.FC = () => {
           <Form.Item
             name="confirmPassword"
             label="Confirmar Nova Senha"
+            dependencies={['newPassword']}
             rules={[
               { required: true, message: 'Confirme sua nova senha' },
               ({ getFieldValue }) => ({
@@ -509,7 +373,6 @@ const Configuracoes: React.FC = () => {
         open={profileModalVisible}
         onCancel={() => {
           setProfileModalVisible(false);
-          profileForm.resetFields();
         }}
         footer={null}
         width={600}
@@ -518,7 +381,7 @@ const Configuracoes: React.FC = () => {
           form={profileForm}
           layout="vertical"
           onFinish={handleProfileUpdate}
-          initialValues={userData}
+          initialValues={userData || {}}
         >
           <Form.Item
             name="name"
@@ -536,35 +399,21 @@ const Configuracoes: React.FC = () => {
               { type: 'email', message: 'Digite um email válido' }
             ]}
           >
-            <Input placeholder="Digite seu email" />
+            <Input placeholder="Digite seu email" disabled />
           </Form.Item>
 
           <Form.Item
-            name="phone"
-            label="Telefone"
-            rules={[{ required: true, message: 'Digite seu telefone' }]}
+            name="avatar"
+            label="URL do Avatar"
+            rules={[{ type: 'url', message: 'Digite uma URL válida' }]}
           >
-            <Input placeholder="Digite seu telefone" />
-          </Form.Item>
-
-          <Form.Item
-            name="bio"
-            label="Bio"
-            rules={[{ max: 200, message: 'A bio deve ter no máximo 200 caracteres' }]}
-          >
-            <Input.TextArea
-              placeholder="Conte um pouco sobre você..."
-              rows={4}
-              showCount
-              maxLength={200}
-            />
+            <Input placeholder="https://example.com/avatar.png" />
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
             <Space>
               <Button onClick={() => {
                 setProfileModalVisible(false);
-                profileForm.resetFields();
               }}>
                 Cancelar
               </Button>
@@ -590,13 +439,8 @@ const Configuracoes: React.FC = () => {
           <DeleteOutlined style={{ fontSize: '48px', color: '#ff4d4f', marginBottom: '16px' }} />
           <Title level={4}>Esta ação é irreversível!</Title>
           <Paragraph>
-            Ao excluir sua conta, todos os seus dados, posts salvos, histórico de atividades
-            e conquistas serão permanentemente removidos do sistema.
+            Ao excluir sua conta, todos os seus dados serão permanentemente removidos.
           </Paragraph>
-          <Paragraph type="danger">
-            Digite "EXCLUIR" para confirmar:
-          </Paragraph>
-          <Input placeholder="Digite EXCLUIR" />
         </div>
       </Modal>
     </div>
