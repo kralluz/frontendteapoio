@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Card, Row, Col, Tag, Space, Typography,
-  message, Spin, Segmented, Avatar
+  message, Spin, Avatar
 } from 'antd';
 import {
   HeartOutlined, HeartFilled, StarOutlined, StarFilled,
@@ -158,22 +158,64 @@ const Atividades: React.FC = () => {
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <Title level={2} style={{ marginBottom: '8px' }}>
+      <div style={{ 
+        background: '#fff', 
+        padding: window.innerWidth <= 768 ? '16px' : '24px', 
+        borderRadius: window.innerWidth <= 768 ? '0' : '8px', 
+        marginBottom: window.innerWidth <= 768 ? '16px' : '24px', 
+        border: window.innerWidth <= 768 ? 'none' : '1px solid #f0f0f0',
+        marginLeft: window.innerWidth <= 768 ? '-16px' : '0', 
+        marginRight: window.innerWidth <= 768 ? '-16px' : '0'
+      }}>
+        <Title level={2} style={{ marginBottom: '8px', fontSize: window.innerWidth <= 768 ? '24px' : '30px' }}>
           <ExperimentOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
           Banco de Atividades
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: '24px' }}>
+        <Paragraph type="secondary" style={{ fontSize: window.innerWidth <= 768 ? '14px' : '16px', marginBottom: window.innerWidth <= 768 ? '16px' : '24px' }}>
           Descubra atividades práticas e divertidas para desenvolver habilidades e superar desafios com seu filho.
         </Paragraph>
-        <Segmented
-          options={filterOptions}
-          value={activeFilter}
-          onChange={setActiveFilter}
-          size="large"
-          block
-          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
-        />
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: '8px',
+          justifyContent: window.innerWidth <= 768 ? 'flex-start' : 'center'
+        }}>
+          {filterOptions.map(option => (
+            <div
+              key={option.value}
+              onClick={() => setActiveFilter(option.value)}
+              style={{
+                padding: window.innerWidth <= 768 ? '8px 16px' : '10px 20px',
+                borderRadius: '20px',
+                cursor: 'pointer',
+                background: activeFilter === option.value ? '#1890ff' : '#f0f0f0',
+                color: activeFilter === option.value ? '#fff' : '#595959',
+                fontWeight: activeFilter === option.value ? 600 : 400,
+                fontSize: window.innerWidth <= 768 ? '13px' : '14px',
+                transition: 'all 0.3s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: activeFilter === option.value ? '0 2px 8px rgba(24,144,255,0.3)' : 'none',
+                userSelect: 'none',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => {
+                if (activeFilter !== option.value) {
+                  e.currentTarget.style.background = '#e6e6e6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeFilter !== option.value) {
+                  e.currentTarget.style.background = '#f0f0f0';
+                }
+              }}
+            >
+              {option.icon}
+              <span>{option.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Activities Grid */}

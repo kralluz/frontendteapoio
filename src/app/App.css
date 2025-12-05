@@ -89,90 +89,109 @@
   font-size: 1.01rem;
 }
 
-/* ================= Botões Padronizados (Gradiente) ================= */
-/* Override global dos botões Ant Design para usar gradiente consistente */
-.ant-btn,
-.ant-btn-primary,
-.ant-btn-default,
-.ant-btn-background-ghost {
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  font-weight: 500;
-  border-radius: 8px !important;
-  transition: filter 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
-  box-shadow: 0 2px 6px rgba(118, 75, 162, 0.35);
-  display: inline-flex;
+/* Mobile Bottom Navigation */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  flex: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.ant-btn:hover,
-.ant-btn-primary:hover,
-.ant-btn-default:hover,
-.ant-btn-background-ghost:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
+.mobile-nav-item:active {
+  transform: scale(0.95);
+  background: rgba(102, 126, 234, 0.05);
 }
 
-.ant-btn:active,
-.ant-btn-primary:active,
-.ant-btn-default:active,
-.ant-btn-background-ghost:active {
-  filter: brightness(0.95);
-  transform: translateY(0);
+.mobile-nav-item.active {
+  color: #667eea;
 }
 
-.ant-btn[disabled],
-.ant-btn-disabled,
-.ant-btn[disabled]:hover {
-  background: linear-gradient(90deg, #9fa7d9 0%, #b29ccd 100%) !important;
-  box-shadow: none;
-  cursor: not-allowed;
-  filter: none;
-  transform: none;
-  opacity: 0.75;
+.mobile-nav-item:not(.active) {
+  color: #8c8c8c;
 }
 
-/* Remover bordas/cores padrão de variantes específicas */
-.ant-btn-default:not([disabled]) {
-  box-shadow: 0 2px 6px rgba(118, 75, 162, 0.3);
+.mobile-nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 3px;
+  background: #667eea;
+  border-radius: 0 0 3px 3px;
+  animation: slideDown 0.3s ease;
 }
 
-/* Ícones dentro dos botões */
-.ant-btn .anticon {
-  margin-inline-end: 6px;
+.mobile-nav-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Tamanho compacto caso necessário */
-.ant-btn-sm {
-  height: 32px !important;
-  padding: 0 14px !important;
-  font-size: 13px !important;
+.mobile-nav-item.active .mobile-nav-icon {
+  transform: scale(1.1);
 }
 
-.ant-btn-lg {
-  height: 48px !important;
-  padding: 0 26px !important;
-  font-size: 16px !important;
+.mobile-nav-label {
+  font-size: 11px;
+  text-align: center;
+  transition: font-weight 0.3s;
 }
 
-/* Caso existam botões ghost que você queira manter translúcidos, pode criar uma exceção específica depois */
+.mobile-nav-item.active .mobile-nav-label {
+  font-weight: 600;
+}
 
-/* Exceção: Botão de toggle do Sider deve ser texto simples sem gradiente */
-.sider-toggle-btn.ant-btn {
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #ffffff !important;
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-5px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
 }
-.sider-toggle-btn.ant-btn:hover {
-  background: rgba(255,255,255,0.12) !important;
-  transform: none;
-  filter: none;
+
+/* Adicionar safe area para dispositivos com notch */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-bottom-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  }
 }
-.sider-toggle-btn.ant-btn:active {
-  background: rgba(255,255,255,0.18) !important;
-  transform: none;
-  filter: none;
+
+/* Animação de ripple para feedback tátil */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
+
 

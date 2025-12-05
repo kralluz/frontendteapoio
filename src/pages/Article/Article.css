@@ -1,0 +1,196 @@
+/* Article Page Styles */
+
+/* Animações suaves para entrada */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Efeito hover nos botões de ação */
+.article-action-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.article-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Efeito hover nos links do artigo */
+.article-content a {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.article-content a:hover {
+  color: #764ba2;
+  border-bottom-color: #764ba2;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Estilo para seleção de texto */
+.article-content ::selection {
+  background-color: #667eea;
+  color: white;
+}
+
+/* Parallax container */
+.article-header {
+  overflow: hidden;
+  will-change: scroll-position;
+}
+
+/* Parallax background */
+.article-parallax-bg {
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+}
+
+/* Botões flutuantes mobile */
+.mobile-floating-actions {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .article-header {
+    height: 350px !important;
+    padding: 32px 0 40px 0 !important;
+  }
+
+  .article-header h1 {
+    font-size: 28px !important;
+    padding: 0 20px;
+  }
+
+  .article-content-wrapper {
+    padding: 0 16px 40px !important;
+    margin-top: -30px !important;
+  }
+
+  .article-author-card {
+    padding: 16px 20px !important;
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .article-content-body {
+    padding: 32px 20px !important;
+  }
+
+  .article-content-body h1 {
+    font-size: 26px !important;
+    margin-top: 32px !important;
+  }
+
+  .article-content-body h2 {
+    font-size: 22px !important;
+    margin-top: 28px !important;
+  }
+
+  .article-content-body h3 {
+    font-size: 19px !important;
+    margin-top: 24px !important;
+  }
+
+  .article-content-body h4 {
+    font-size: 17px !important;
+  }
+
+  .article-content-body p {
+    font-size: 16px !important;
+  }
+
+  .article-action-btn {
+    padding: 0 12px !important;
+    height: 40px !important;
+  }
+
+  .article-back-btn {
+    top: 16px !important;
+    left: 16px !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .article-header {
+    height: 300px !important;
+  }
+
+  .article-header h1 {
+    font-size: 24px !important;
+  }
+
+  .article-content-wrapper {
+    padding: 0 12px 40px !important;
+  }
+
+  .article-content-body {
+    padding: 24px 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .article-author-card {
+    border-radius: 12px !important;
+  }
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Print styles */
+@media print {
+  .article-action-btn,
+  .article-back-btn {
+    display: none !important;
+  }
+
+  .article-content-body {
+    box-shadow: none !important;
+  }
+}

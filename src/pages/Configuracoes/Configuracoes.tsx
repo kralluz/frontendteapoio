@@ -312,13 +312,17 @@ const Configuracoes: React.FC = () => {
           form={passwordForm}
           layout="vertical"
           onFinish={handlePasswordChange}
+          autoComplete="off"
         >
           <Form.Item
             name="currentPassword"
             label="Senha Atual"
             rules={[{ required: true, message: 'Digite sua senha atual' }]}
           >
-            <Input.Password placeholder="Digite sua senha atual" />
+            <Input.Password 
+              placeholder="Digite sua senha atual" 
+              autoComplete="off"
+            />
           </Form.Item>
 
           <Form.Item
@@ -329,7 +333,10 @@ const Configuracoes: React.FC = () => {
               { min: 6, message: 'A senha deve ter pelo menos 6 caracteres' }
             ]}
           >
-            <Input.Password placeholder="Digite sua nova senha" />
+            <Input.Password 
+              placeholder="Digite sua nova senha" 
+              autoComplete="new-password"
+            />
           </Form.Item>
 
           <Form.Item
@@ -348,7 +355,10 @@ const Configuracoes: React.FC = () => {
               }),
             ]}
           >
-            <Input.Password placeholder="Confirme sua nova senha" />
+            <Input.Password 
+              placeholder="Confirme sua nova senha" 
+              autoComplete="new-password"
+            />
           </Form.Item>
 
           <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>

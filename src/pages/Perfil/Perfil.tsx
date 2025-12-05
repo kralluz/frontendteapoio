@@ -8,6 +8,10 @@ import {
 } from '@ant-design/icons';
 import { autismProfileService, AutismProfile } from '../../services/autismProfileService';
 import { useAuth } from '../../contexts/AuthContext';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -52,13 +56,10 @@ const Perfil: React.FC = () => {
   const showModal = (profile?: AutismProfile) => {
     setEditingProfile(profile || null);
     if (profile) {
-      // O DatePicker do antd normalmente recebe um objeto dayjs/moment. Para evitar a dependência
-      // aqui apenas definimos valores nativos de Date quando possível — o DatePicker aceita objetos
-      // que implementem toDate(), mas caso contrário deixamos nulo (usuário pode reescolher).
       form.setFieldsValue({
         ...profile,
-        birthDate: profile.birthDate ? new Date(profile.birthDate) : null,
-        diagnosisDate: profile.diagnosisDate ? new Date(profile.diagnosisDate) : null,
+        birthDate: profile.birthDate ? dayjs(profile.birthDate) : null,
+        diagnosisDate: profile.diagnosisDate ? dayjs(profile.diagnosisDate) : null,
       });
     } else {
       form.resetFields();
@@ -75,19 +76,15 @@ const Perfil: React.FC = () => {
   const handleSubmit = async (values: any) => {
     let age;
     if (values.birthDate) {
-      const birthDateNative = (values.birthDate && typeof values.birthDate.toDate === 'function')
-        ? values.birthDate.toDate()
-        : new Date(values.birthDate);
-
-      const now = new Date();
-      const diff = now.getTime() - birthDateNative.getTime();
-      age = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.2425));
+      const birthDateMoment = dayjs(values.birthDate);
+      const now = dayjs();
+      age = now.diff(birthDateMoment, 'year');
     }
 
     const profileData = {
       ...values,
-      birthDate: values.birthDate ? (typeof values.birthDate.toDate === 'function' ? values.birthDate.toDate().toISOString() : new Date(values.birthDate).toISOString()) : null,
-      diagnosisDate: values.diagnosisDate ? (typeof values.diagnosisDate.toDate === 'function' ? values.diagnosisDate.toDate().toISOString() : new Date(values.diagnosisDate).toISOString()) : null,
+      birthDate: values.birthDate ? dayjs(values.birthDate).toISOString() : null,
+      diagnosisDate: values.diagnosisDate ? dayjs(values.diagnosisDate).toISOString() : null,
       age: age,
     };
 
@@ -288,11 +285,30 @@ const Perfil: React.FC = () => {
               <Form.Item
                 name="birthDate"
                 label="Data de Nascimento"
+                rules={[
+                  {
+                    validator: (_, value) => {
+                      if (!value) {
+                        return Promise.resolve();
+                      }
+                      const selectedDate = dayjs(value);
+                      const today = dayjs();
+                      if (selectedDate.isAfter(today)) {
+                        return Promise.reject(new Error('A data de nascimento não pode ser no futuro'));
+                      }
+                      return Promise.resolve();
+                    },
+                  },
+                ]}
               >
                 <DatePicker
                   placeholder="Selecione a data"
                   style={{ width: '100%' }}
                   format="DD/MM/YYYY"
+                  disabledDate={(current) => {
+                    return current && current > dayjs().endOf('day');
+                  }}
+                  showToday={false}
                 />
               </Form.Item>
             </Col>
@@ -325,11 +341,30 @@ const Perfil: React.FC = () => {
           <Form.Item
             name="diagnosisDate"
             label="Data do Diagnóstico"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (!value) {
+                    return Promise.resolve();
+                  }
+                  const selectedDate = dayjs(value);
+                  const today = dayjs();
+                  if (selectedDate.isAfter(today)) {
+                    return Promise.reject(new Error('A data do diagnóstico não pode ser no futuro'));
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
             <DatePicker
               placeholder="Selecione a data"
               style={{ width: '100%' }}
               format="DD/MM/YYYY"
+              disabledDate={(current) => {
+                return current && current > dayjs().endOf('day');
+              }}
+              showToday={false}
             />
           </Form.Item>
 

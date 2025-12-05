@@ -1,5 +1,7 @@
 import { api } from './api';
 import { User } from './authService';
+import { Article } from './articleService';
+import { Activity } from './activityService';
 
 interface UpdateUserData {
   name?: string;
@@ -21,6 +23,16 @@ const getById = async (id: string): Promise<User> => {
   return response.data;
 };
 
+const getUserArticles = async (id: string): Promise<Article[]> => {
+  const response = await api.get(`/users/${id}/articles`);
+  return response.data;
+};
+
+const getUserActivities = async (id: string): Promise<Activity[]> => {
+  const response = await api.get(`/users/${id}/activities`);
+  return response.data;
+};
+
 const updateMe = async (data: UpdateUserData) => {
   const response = await api.put('/users/me', data);
   return response.data;
@@ -34,6 +46,8 @@ const changePassword = async (data: ChangePasswordData) => {
 export const userService = {
   getMe,
   getById,
+  getUserArticles,
+  getUserActivities,
   updateMe,
   changePassword,
 };

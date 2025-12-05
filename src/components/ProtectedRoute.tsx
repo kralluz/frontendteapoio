@@ -16,7 +16,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        height: '100vh' 
+        height: '100vh', 
+        padding: '0',
       }}>
         Carregando...
       </div>

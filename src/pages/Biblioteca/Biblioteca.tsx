@@ -151,22 +151,35 @@ const Biblioteca: React.FC = () => {
   return (
     <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <Title level={2} style={{ marginBottom: '8px' }}>
+      <div style={{ 
+        background: '#fff', 
+        padding: window.innerWidth <= 768 ? '16px' : '24px', 
+        borderRadius: window.innerWidth <= 768 ? '0' : '8px', 
+        marginBottom: window.innerWidth <= 768 ? '16px' : '24px', 
+        border: window.innerWidth <= 768 ? 'none' : '1px solid #f0f0f0', 
+        marginLeft: window.innerWidth <= 768 ? '-16px' : '0', 
+        marginRight: window.innerWidth <= 768 ? '-16px' : '0'
+      }}>
+        <Title level={2} style={{ marginBottom: '8px', fontSize: window.innerWidth <= 768 ? '24px' : '30px' }}>
           <BookOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
           Biblioteca
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: '24px' }}>
+        <Paragraph type="secondary" style={{ fontSize: window.innerWidth <= 768 ? '14px' : '16px', marginBottom: window.innerWidth <= 768 ? '16px' : '24px' }}>
           Explore artigos, guias e recursos especializados para apoiar pessoas com TEA.
         </Paragraph>
-        <Segmented
-          options={filterOptions}
-          value={activeFilter}
-          onChange={setActiveFilter}
-          size="large"
-          block
-          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
-        />
+        <div style={{ overflowX: 'auto', margin: window.innerWidth <= 768 ? '0 -16px' : '0', padding: window.innerWidth <= 768 ? '0 16px' : '0' }}>
+          <Segmented
+            options={filterOptions}
+            value={activeFilter}
+            onChange={setActiveFilter}
+            size={window.innerWidth <= 768 ? 'middle' : 'large'}
+            block={window.innerWidth > 768}
+            style={{ 
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              minWidth: window.innerWidth <= 768 ? 'max-content' : 'auto'
+            }}
+          />
+        </div>
       </div>
 
       {/* Articles Grid */}

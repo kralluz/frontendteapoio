@@ -11,6 +11,10 @@ export interface User {
   specialty?: string;
   createdAt: string;
   updatedAt: string;
+  _count?: {
+    articles: number;
+    activities: number;
+  };
 }
 
 export interface LoginCredentials {
