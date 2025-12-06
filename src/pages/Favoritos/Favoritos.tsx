@@ -3,6 +3,7 @@ import { Typography, Card, Row, Col, Tag, Space, Avatar, message, Spin } from 'a
 import { StarFilled, StarOutlined, HeartOutlined, HeartFilled, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { favoriteService, likeService, Favorite } from '../../services/interactionService';
+import './Favoritos.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -87,21 +88,21 @@ const Favoritos: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="favoritos-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="favoritos-container">
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <Title level={2} style={{ marginBottom: '8px' }}>
+      <div className="favoritos-header-card">
+        <Title level={2} className="favoritos-title">
           <StarFilled style={{ marginRight: '12px', color: '#faad14' }} />
           Meus Favoritos
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+        <Paragraph type="secondary" className="favoritos-subtitle">
           {favorites.length} {favorites.length === 1 ? 'item favoritado' : 'itens favoritados'}
         </Paragraph>
       </div>
@@ -119,12 +120,12 @@ const Favoritos: React.FC = () => {
               <Col xs={24} sm={12} lg={8} key={favorite.id}>
                 <Card
                   hoverable
-                  style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+                  className="favorito-card"
                   cover={
                     <img
                       alt={content.title}
                       src={content.image || `https://via.placeholder.com/400x200?text=${isArticle ? 'Artigo' : 'Atividade'}`}
-                      style={{ height: '200px', objectFit: 'cover' }}
+                      className="favorito-card-cover"
                     />
                   }
                   actions={[
@@ -159,19 +160,27 @@ const Favoritos: React.FC = () => {
                       </Tag>
                     )}
                   </div>
-                  <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
-                    <Space>
+                  <div className="favorito-card-footer">
+                    <Space
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (content.author?.id) {
+                          navigate(`/perfil/${content.author.id}`);
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <Avatar src={content.author?.avatar} icon={<UserOutlined />} size="small" />
                       <Text type="secondary">{content.author?.name}</Text>
                     </Space>
                     {isArticle && favorite.article?.readTime && (
-                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                      <Text type="secondary" className="favorito-card-time">
                         <ClockCircleOutlined style={{ marginRight: '6px' }} />
                         {favorite.article.readTime} min
                       </Text>
                     )}
                     {!isArticle && favorite.activity?.duration && (
-                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                      <Text type="secondary" className="favorito-card-time">
                         <ClockCircleOutlined style={{ marginRight: '6px' }} />
                         {favorite.activity.duration} min
                       </Text>
@@ -183,8 +192,8 @@ const Favoritos: React.FC = () => {
           })}
         </Row>
       ) : (
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <StarOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+        <div className="empty-state">
+          <StarOutlined className="empty-state-icon" />
           <Title level={4} type="secondary">Nenhum item favoritado</Title>
           <Paragraph type="secondary">Comece favoritando artigos e atividades para acesso rápido!</Paragraph>
         </div>

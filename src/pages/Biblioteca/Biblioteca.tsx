@@ -15,6 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { articleService, Article } from '../../services/articleService';
 import { likeService, favoriteService } from '../../services/interactionService';
+import './Biblioteca.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -142,42 +143,29 @@ const Biblioteca: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="biblioteca-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="biblioteca-container">
       {/* Page Header */}
-      <div style={{ 
-        background: '#fff', 
-        padding: window.innerWidth <= 768 ? '16px' : '24px', 
-        borderRadius: window.innerWidth <= 768 ? '0' : '8px', 
-        marginBottom: window.innerWidth <= 768 ? '16px' : '24px', 
-        border: window.innerWidth <= 768 ? 'none' : '1px solid #f0f0f0', 
-        marginLeft: window.innerWidth <= 768 ? '-16px' : '0', 
-        marginRight: window.innerWidth <= 768 ? '-16px' : '0'
-      }}>
-        <Title level={2} style={{ marginBottom: '8px', fontSize: window.innerWidth <= 768 ? '24px' : '30px' }}>
+      <div className="biblioteca-header">
+        <Title level={2} className="biblioteca-title">
           <BookOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
           Biblioteca
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: window.innerWidth <= 768 ? '14px' : '16px', marginBottom: window.innerWidth <= 768 ? '16px' : '24px' }}>
+        <Paragraph type="secondary" className="biblioteca-subtitle">
           Explore artigos, guias e recursos especializados para apoiar pessoas com TEA.
         </Paragraph>
-        <div style={{ overflowX: 'auto', margin: window.innerWidth <= 768 ? '0 -16px' : '0', padding: window.innerWidth <= 768 ? '0 16px' : '0' }}>
+        <div className="biblioteca-filter">
           <Segmented
             options={filterOptions}
             value={activeFilter}
             onChange={setActiveFilter}
-            size={window.innerWidth <= 768 ? 'middle' : 'large'}
-            block={window.innerWidth > 768}
-            style={{ 
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              minWidth: window.innerWidth <= 768 ? 'max-content' : 'auto'
-            }}
+            size="large"
           />
         </div>
       </div>
@@ -188,12 +176,12 @@ const Biblioteca: React.FC = () => {
           <Col xs={24} sm={12} lg={8} key={article.id}>
             <Card
               hoverable
-              style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+              className="article-card"
               cover={
                 <img
                   alt={article.title}
                   src={article.image || `https://via.placeholder.com/400x200?text=${article.category}`}
-                  style={{ height: '200px', objectFit: 'cover' }}
+                  className="article-card-cover"
                 />
               }
               actions={[
@@ -224,7 +212,15 @@ const Biblioteca: React.FC = () => {
                 <Tag color="blue">{article.category}</Tag>
               </div>
               <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
-                <Space>
+                <Space
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (article.author?.id) {
+                      navigate(`/perfil/${article.author.id}`);
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   <Avatar src={article.author.avatar} icon={<UserOutlined />} size="small" />
                   <Text type="secondary">{article.author.name}</Text>
                 </Space>

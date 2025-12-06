@@ -351,10 +351,19 @@ const ArticlePage: React.FC = () => {
           gap: '16px'
         }}>
           {/* Autor */}
-          <Space size={16}>
-            <Avatar 
-              src={article.author?.avatar} 
-              icon={<UserOutlined />} 
+          <Space
+            size={16}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (article.author?.id) {
+                navigate(`/perfil/${article.author.id}`);
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <Avatar
+              src={article.author?.avatar}
+              icon={<UserOutlined />}
               size={56}
               style={{
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',

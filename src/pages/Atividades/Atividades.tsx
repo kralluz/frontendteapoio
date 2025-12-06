@@ -149,67 +149,29 @@ const Atividades: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="atividades-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="atividades-page">
       {/* Page Header */}
-      <div style={{ 
-        background: '#fff', 
-        padding: window.innerWidth <= 768 ? '16px' : '24px', 
-        borderRadius: window.innerWidth <= 768 ? '0' : '8px', 
-        marginBottom: window.innerWidth <= 768 ? '16px' : '24px', 
-        border: window.innerWidth <= 768 ? 'none' : '1px solid #f0f0f0',
-        marginLeft: window.innerWidth <= 768 ? '-16px' : '0', 
-        marginRight: window.innerWidth <= 768 ? '-16px' : '0'
-      }}>
-        <Title level={2} style={{ marginBottom: '8px', fontSize: window.innerWidth <= 768 ? '24px' : '30px' }}>
+      <div className="atividades-header">
+        <Title level={2} className="atividades-title">
           <ExperimentOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
           Banco de Atividades
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: window.innerWidth <= 768 ? '14px' : '16px', marginBottom: window.innerWidth <= 768 ? '16px' : '24px' }}>
+        <Paragraph type="secondary" className="atividades-subtitle">
           Descubra atividades práticas e divertidas para desenvolver habilidades e superar desafios com seu filho.
         </Paragraph>
-        <div style={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: '8px',
-          justifyContent: window.innerWidth <= 768 ? 'flex-start' : 'center'
-        }}>
+        <div className="atividades-filters">
           {filterOptions.map(option => (
             <div
               key={option.value}
               onClick={() => setActiveFilter(option.value)}
-              style={{
-                padding: window.innerWidth <= 768 ? '8px 16px' : '10px 20px',
-                borderRadius: '20px',
-                cursor: 'pointer',
-                background: activeFilter === option.value ? '#1890ff' : '#f0f0f0',
-                color: activeFilter === option.value ? '#fff' : '#595959',
-                fontWeight: activeFilter === option.value ? 600 : 400,
-                fontSize: window.innerWidth <= 768 ? '13px' : '14px',
-                transition: 'all 0.3s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: activeFilter === option.value ? '0 2px 8px rgba(24,144,255,0.3)' : 'none',
-                userSelect: 'none',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                if (activeFilter !== option.value) {
-                  e.currentTarget.style.background = '#e6e6e6';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeFilter !== option.value) {
-                  e.currentTarget.style.background = '#f0f0f0';
-                }
-              }}
+              className={`atividades-filter-item ${activeFilter === option.value ? 'active' : ''}`}
             >
               {option.icon}
               <span>{option.label}</span>
@@ -257,16 +219,24 @@ const Atividades: React.FC = () => {
                   </Paragraph>
                 }
               />
-              <div style={{ marginTop: '16px', flex: '1' }}>
+              <div className="atividade-tags-container">
                 <Tag color="blue">{activity.category}</Tag>
                 <Tag color={getDifficultyColor(activity.difficulty)}>{activity.difficulty}</Tag>
               </div>
-              <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
-                <Space>
+              <div className="atividade-author-section">
+                <Space
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (activity.author?.id) {
+                      navigate(`/perfil/${activity.author.id}`);
+                    }
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   <Avatar src={activity.author?.avatar} icon={<UserOutlined />} size="small" />
                   <Text type="secondary">{activity.author?.name}</Text>
                 </Space>
-                <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                <Text type="secondary" className="atividade-age-range">
                   {activity.ageRange}
                 </Text>
               </div>
@@ -276,8 +246,8 @@ const Atividades: React.FC = () => {
       </Row>
 
       {filteredActivities.length === 0 && !loading && (
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <ExperimentOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+        <div className="atividades-empty-state">
+          <ExperimentOutlined className="atividades-empty-icon" />
           <Title level={4} type="secondary">Nenhuma atividade encontrada</Title>
           <Paragraph type="secondary">Tente ajustar os filtros ou fazer uma nova busca.</Paragraph>
         </div>

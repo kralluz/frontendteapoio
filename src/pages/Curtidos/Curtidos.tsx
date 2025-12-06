@@ -3,6 +3,7 @@ import { Typography, Card, Row, Col, Tag, Space, Avatar, message } from 'antd';
 import { HeartFilled, HeartOutlined, StarOutlined, StarFilled, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { likeService, favoriteService, Like } from '../../services/interactionService';
+import './Curtidos.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -82,14 +83,14 @@ const Curtidos: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="curtidos-container">
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <Title level={2} style={{ marginBottom: '8px' }}>
+      <div className="curtidos-header-card">
+        <Title level={2} className="curtidos-title">
           <HeartFilled style={{ marginRight: '12px', color: '#ff4d4f' }} />
           Meus Curtidos
         </Title>
-        <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+        <Paragraph type="secondary" className="curtidos-subtitle">
           {likes.length} {likes.length === 1 ? 'item curtido' : 'itens curtidos'}
         </Paragraph>
       </div>
@@ -107,12 +108,12 @@ const Curtidos: React.FC = () => {
               <Col xs={24} sm={12} lg={8} key={like.id}>
                 <Card
                   hoverable
-                  style={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: '8px', overflow: 'hidden' }}
+                  className="curtido-card"
                   cover={
                     <img
                       alt={content.title}
                       src={content.image || `https://via.placeholder.com/400x200?text=${isArticle ? 'Artigo' : 'Atividade'}`}
-                      style={{ height: '200px', objectFit: 'cover' }}
+                      className="curtido-card-cover"
                     />
                   }
                   actions={[
@@ -147,19 +148,27 @@ const Curtidos: React.FC = () => {
                       </Tag>
                     )}
                   </div>
-                  <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid #f0f0f0' }}>
-                    <Space>
+                  <div className="curtido-card-footer">
+                    <Space
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (content.author?.id) {
+                          navigate(`/perfil/${content.author.id}`);
+                        }
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <Avatar src={content.author?.avatar} icon={<UserOutlined />} size="small" />
                       <Text type="secondary">{content.author?.name}</Text>
                     </Space>
                     {isArticle && like.article?.readTime && (
-                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                      <Text type="secondary" className="curtido-card-time">
                         <ClockCircleOutlined style={{ marginRight: '6px' }} />
                         {like.article.readTime} min
                       </Text>
                     )}
                     {!isArticle && like.activity?.duration && (
-                      <Text type="secondary" style={{ float: 'right', fontSize: '12px' }}>
+                      <Text type="secondary" className="curtido-card-time">
                         <ClockCircleOutlined style={{ marginRight: '6px' }} />
                         {like.activity.duration} min
                       </Text>
@@ -171,8 +180,8 @@ const Curtidos: React.FC = () => {
           })}
         </Row>
       ) : (
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <HeartOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+        <div className="empty-state">
+          <HeartOutlined className="empty-state-icon" />
           <Title level={4} type="secondary">Nenhum item curtido</Title>
           <Paragraph type="secondary">Comece curtindo artigos e atividades que você gosta!</Paragraph>
         </div>
