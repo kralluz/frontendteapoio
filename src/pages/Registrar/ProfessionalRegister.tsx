@@ -16,7 +16,10 @@ const ProfessionalRegister: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    // Converter CRP/CRM para maiúsculas automaticamente
+    const newValue = name === 'crp' ? value.toUpperCase() : value;
+    setForm({ ...form, [name]: newValue });
     if (error) setError('');
   };
 
@@ -59,7 +62,15 @@ const ProfessionalRegister: React.FC = () => {
       // Redirecionar para login após cadastro bem-sucedido
       navigate('/login');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Erro ao registrar.');
+      // Capturar erros de validação do Zod do backend
+      const errorMessage = err.response?.data?.message || err.response?.data?.error || 'Erro ao registrar.';
+
+      // Se for um array de erros do Zod, pegar a primeira mensagem
+      if (Array.isArray(err.response?.data?.errors)) {
+        setError(err.response.data.errors[0].message);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -158,20 +169,25 @@ const ProfessionalRegister: React.FC = () => {
               fontSize: '1rem'
             }}
           />
-          <input
-            type="text"
-            name="crp"
-            placeholder="CRP ou CRM (ex: 12345/SP)"
-            value={form.crp}
-            onChange={handleChange}
-            required
-            style={{
-              padding: '12px',
-              border: '1px solid #ddd',
-              borderRadius: 4,
-              fontSize: '1rem'
-            }}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <input
+              type="text"
+              name="crp"
+              placeholder="CRP ou CRM (ex: 12345/SP)"
+              value={form.crp}
+              onChange={handleChange}
+              required
+              style={{
+                padding: '12px',
+                border: '1px solid #ddd',
+                borderRadius: 4,
+                fontSize: '1rem'
+              }}
+            />
+            <small style={{ color: '#666', fontSize: '0.85rem', marginLeft: '4px' }}>
+              Formato: 5 ou 6 dígitos + barra + UF (ex: 12345/SP ou 123456/RJ)
+            </small>
+          </div>
           <select
             name="specialty"
             value={form.specialty}
