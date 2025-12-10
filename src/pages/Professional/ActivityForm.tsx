@@ -93,7 +93,7 @@ const ActivityForm: React.FC = () => {
 
     const data = {
       ...values,
-      image: imageUrl,
+      ...(imageUrl && { image: imageUrl }),
     };
 
     try {
