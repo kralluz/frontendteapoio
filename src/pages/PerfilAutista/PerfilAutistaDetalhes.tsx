@@ -10,6 +10,7 @@ import {
   ArrowLeftOutlined, SoundOutlined, EditOutlined, DeleteOutlined
 } from '@ant-design/icons';
 import { autismProfileService, AutismProfile } from '../../services/autismProfileService';
+import './PerfilAutista.css';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;

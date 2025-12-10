@@ -1,11 +1,68 @@
 
 .atividades-page {
-  max-width: 900px;
+  padding: 24px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+}
+
+.atividades-header {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.atividades-title {
+  margin-bottom: 8px !important;
+  font-size: 30px;
+}
+
+.atividades-subtitle {
+  font-size: 16px !important;
+  margin-bottom: 24px !important;
+}
+
+.atividades-filters {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.atividades-filter-item {
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: #f0f0f0;
+  color: #595959;
+  font-weight: 400;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
   align-items: center;
+  gap: 6px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.atividades-filter-item:hover {
+  background: #e6e6e6;
+}
+
+.atividades-filter-item.active {
+  background: #1890ff;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(24,144,255,0.3);
+}
+
+.atividades-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
 }
 
 
@@ -86,7 +143,306 @@
   color: #764ba2;
 }
 @media (max-width: 768px) {
+  .atividades-page {
+    padding: 16px;
+  }
+
+  .atividades-header {
+    padding: 16px;
+    border-radius: 0;
+    border: none;
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-bottom: 16px;
+  }
+
+  .atividades-title {
+    font-size: 24px !important;
+  }
+
+  .atividades-subtitle {
+    font-size: 14px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .atividades-filters {
+    justify-content: flex-start;
+  }
+
+  .atividades-filter-item {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
   .atividade-card {
     padding: 16px 8px;
+  }
+}
+
+/* ========================================
+   TEMA ESCURO - ATIVIDADES
+   ======================================== */
+
+body.dark-theme .atividades-page {
+  background: transparent !important;
+}
+
+body.dark-theme .atividades-header {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .atividades-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .atividades-subtitle {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-filter-item {
+  background: #2a2a2a !important;
+  color: #b0b0b0 !important;
+  border: 1px solid #3a3a3a;
+}
+
+body.dark-theme .atividades-filter-item:hover {
+  background: #353535 !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .atividades-filter-item.active {
+  background: #667eea !important;
+  color: #ffffff !important;
+  border-color: #667eea !important;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4) !important;
+}
+
+body.dark-theme .atividade-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .atividade-card:hover {
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4) !important;
+}
+
+body.dark-theme .atividade-card-header {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .atividade-card-icon {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .atividade-card-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .atividade-card-desc {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividade-card-etaria {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .atividade-like-btn {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .atividade-like-btn:hover svg {
+  stroke: #a5b4ff !important;
+}
+
+body.dark-theme .atividade-like-count {
+  color: #8b9bea !important;
+}
+
+/* Cards Ant Design no tema escuro */
+body.dark-theme .atividades-page .ant-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .atividades-page .ant-card:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.4) !important;
+}
+
+body.dark-theme .atividades-page .ant-card-cover img {
+  opacity: 0.9;
+}
+
+body.dark-theme .atividades-page .ant-card-body {
+  background: #1f1f1f !important;
+}
+
+body.dark-theme .atividades-page .ant-card-actions {
+  background: #1f1f1f !important;
+  border-top: 1px solid #2a2a2a !important;
+}
+
+body.dark-theme .atividades-page .ant-card-actions > li {
+  border-right: 1px solid #2a2a2a !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-page .ant-card-actions > li:hover {
+  color: #667eea !important;
+}
+
+body.dark-theme .atividades-page .ant-card-actions .anticon {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-page .ant-card-actions .anticon:hover {
+  color: #667eea !important;
+}
+
+/* Meta e Typography do card */
+body.dark-theme .atividades-page .ant-card-meta-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .atividades-page .ant-card-meta-description {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-page .ant-typography {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-page .ant-typography-secondary {
+  color: #888888 !important;
+}
+
+/* Tags no tema escuro */
+body.dark-theme .atividades-page .ant-tag {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .atividades-page .ant-tag-blue {
+  background: #1a3a5c !important;
+  border-color: #2a5a8c !important;
+  color: #5a9bea !important;
+}
+
+body.dark-theme .atividades-page .ant-tag-green {
+  background: #1a3a2c !important;
+  border-color: #2a5a3c !important;
+  color: #5aea8b !important;
+}
+
+body.dark-theme .atividades-page .ant-tag-orange {
+  background: #3a2a1a !important;
+  border-color: #5a3a2a !important;
+  color: #ea9b5a !important;
+}
+
+body.dark-theme .atividades-page .ant-tag-red {
+  background: #3a1a1a !important;
+  border-color: #5a2a2a !important;
+  color: #ea5a5a !important;
+}
+
+/* Avatar no tema escuro */
+body.dark-theme .atividades-page .ant-avatar {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+  color: #b0b0b0 !important;
+}
+
+/* Space no tema escuro */
+body.dark-theme .atividades-page .ant-space-item {
+  color: #b0b0b0 !important;
+}
+
+/* Divider interno do card */
+body.dark-theme .atividades-page .ant-card-body > div[style*="borderTop"] {
+  border-top-color: #2a2a2a !important;
+}
+
+/* Estado vazio no tema escuro */
+body.dark-theme .atividades-page .ant-empty-description {
+  color: #888888 !important;
+}
+
+body.dark-theme .atividades-page .anticon-experiment {
+  color: #3a3a3a !important;
+}
+
+/* Classes adicionais para elementos inline */
+.atividade-tags-container {
+  margin-top: 16px;
+  flex: 1;
+}
+
+.atividade-author-section {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+body.dark-theme .atividade-author-section {
+  border-top-color: #2a2a2a !important;
+}
+
+.atividade-age-range {
+  float: right;
+  font-size: 12px;
+}
+
+.atividades-empty-state {
+  text-align: center;
+  padding: 48px 0;
+}
+
+.atividades-empty-icon {
+  font-size: 48px;
+  color: #d9d9d9;
+  margin-bottom: 16px;
+}
+
+body.dark-theme .atividades-empty-icon {
+  color: #3a3a3a !important;
+}
+
+/* Ícones de ações mantém cores específicas */
+body.dark-theme .atividades-page .anticon-heart[style*="color"] {
+  color: #ff4d4f !important;
+}
+
+body.dark-theme .atividades-page .anticon-star[style*="color"] {
+  color: #faad14 !important;
+}
+
+/* Ajustes adicionais para melhor contraste */
+body.dark-theme .atividades-page .ant-card-meta {
+  margin-bottom: 16px;
+}
+
+body.dark-theme .atividades-page .ant-card .ant-typography-ellipsis {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .atividades-page .ant-card .ant-typography-ellipsis-multiple-line {
+  color: #b0b0b0 !important;
+}
+
+/* Cor do ícone de título */
+body.dark-theme .atividades-title .anticon {
+  color: #5a9bea !important;
+}
+
+/* Grid responsivo melhorado */
+@media (max-width: 768px) {
+  body.dark-theme .atividades-page .ant-card {
+    margin-bottom: 16px;
   }
 }

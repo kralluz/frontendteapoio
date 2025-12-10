@@ -1,0 +1,344 @@
+/* Activity Form Styles */
+
+.activity-form-page {
+  padding: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.activity-form-header {
+  margin-bottom: 24px;
+}
+
+.activity-form-back-btn {
+  margin-right: 16px;
+}
+
+.activity-form-title {
+  margin: 0 !important;
+  font-size: 28px !important;
+  color: #262626;
+}
+
+.activity-form-subtitle {
+  color: #8c8c8c;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.activity-form-card {
+  margin-bottom: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.activity-form-card-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.activity-form-image-preview {
+  margin-top: 16px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.activity-form-image-preview img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.activity-form-image-info {
+  padding: 12px;
+  background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activity-form-image-success {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.activity-form-step-number {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.activity-form-material-number {
+  width: 32px;
+  height: 32px;
+  background: #f0f0f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #8c8c8c;
+  flex-shrink: 0;
+}
+
+.activity-form-publish-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activity-form-publish-info {
+  flex: 1;
+}
+
+.activity-form-publish-title {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.activity-form-publish-desc {
+  font-size: 13px;
+  color: #8c8c8c;
+}
+
+.activity-form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .activity-form-page {
+    padding: 16px;
+  }
+
+  .activity-form-title {
+    font-size: 24px !important;
+  }
+
+  .activity-form-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .activity-form-actions button {
+    width: 100%;
+  }
+}
+
+/* ========================================
+   TEMA ESCURO - ACTIVITY FORM
+   ======================================== */
+
+body.dark-theme .activity-form-page {
+  background: transparent !important;
+}
+
+body.dark-theme .activity-form-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-form-subtitle {
+  color: #888888 !important;
+}
+
+body.dark-theme .activity-form-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .ant-card-head {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #2a2a2a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-card-head-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-card-body {
+  background: #1f1f1f !important;
+  color: #b0b0b0 !important;
+}
+
+/* Form items */
+body.dark-theme .ant-form-item-label > label {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  color: #ff4d4f !important;
+}
+
+body.dark-theme .ant-input,
+body.dark-theme .ant-input-number,
+body.dark-theme .ant-input-number-input,
+body.dark-theme .ant-select-selector {
+  background: #141414 !important;
+  border-color: #3a3a3a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-input::placeholder,
+body.dark-theme .ant-input-number-input::placeholder {
+  color: #666666 !important;
+}
+
+body.dark-theme .ant-input:hover,
+body.dark-theme .ant-input-number:hover,
+body.dark-theme .ant-select-selector:hover {
+  border-color: #667eea !important;
+}
+
+body.dark-theme .ant-input:focus,
+body.dark-theme .ant-input-focused,
+body.dark-theme .ant-input-number:focus,
+body.dark-theme .ant-input-number-focused {
+  background: #1a1a1a !important;
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* TextArea */
+body.dark-theme .ant-input-textarea-show-count::after {
+  color: #666666 !important;
+}
+
+/* Select */
+body.dark-theme .ant-select-arrow {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-select-selection-placeholder {
+  color: #666666 !important;
+}
+
+body.dark-theme .ant-select-item {
+  background: #1f1f1f !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-select-item-option-selected {
+  background: #2a2a2a !important;
+  color: #667eea !important;
+}
+
+body.dark-theme .ant-select-item-option-active {
+  background: #2a2a2a !important;
+}
+
+/* InputNumber */
+body.dark-theme .ant-input-number-handler-wrap {
+  background: #1f1f1f !important;
+  border-left-color: #3a3a3a !important;
+}
+
+body.dark-theme .ant-input-number-handler {
+  border-color: #3a3a3a !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-input-number-handler:hover {
+  color: #667eea !important;
+}
+
+/* Switch */
+body.dark-theme .ant-switch {
+  background: #3a3a3a !important;
+}
+
+body.dark-theme .ant-switch-checked {
+  background: #667eea !important;
+}
+
+/* Alert */
+body.dark-theme .ant-alert-info {
+  background: #1a2a3a !important;
+  border: 1px solid #2a3a5a !important;
+}
+
+body.dark-theme .ant-alert-info .ant-alert-message,
+body.dark-theme .ant-alert-info .ant-alert-description {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-alert-info .anticon {
+  color: #5a9bea !important;
+}
+
+/* Image preview */
+body.dark-theme .activity-form-image-preview {
+  border-color: #2a2a2a !important;
+}
+
+body.dark-theme .activity-form-image-info {
+  background: #141414 !important;
+  border-top: 1px solid #2a2a2a !important;
+}
+
+body.dark-theme .activity-form-image-success {
+  color: #888888 !important;
+}
+
+/* Step/Material numbers */
+body.dark-theme .activity-form-material-number {
+  background: #2a2a2a !important;
+  color: #b0b0b0 !important;
+}
+
+/* Step number mantém gradiente */
+
+/* Publish section */
+body.dark-theme .activity-form-publish-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-form-publish-desc {
+  color: #888888 !important;
+}
+
+/* Tooltip */
+body.dark-theme .ant-form-item-tooltip {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-form-item-tooltip .anticon {
+  color: #888888 !important;
+}
+
+/* Input suffix */
+body.dark-theme .ant-input-suffix {
+  color: #888888 !important;
+}
+
+body.dark-theme .ant-input-number-suffix {
+  color: #888888 !important;
+}
+
+/* Botões dashed */
+body.dark-theme .ant-btn-dashed {
+  border-color: #3a3a3a !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-btn-dashed:hover {
+  border-color: #667eea !important;
+  color: #667eea !important;
+}
+
+/* Form.List items */
+body.dark-theme .ant-space-item {
+  color: #b0b0b0 !important;
+}

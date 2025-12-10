@@ -76,6 +76,16 @@ html {
   }
 }
 
+/* Botão voltar */
+.activity-action-btn.ant-btn-circle {
+  background: rgba(255,255,255,0.95) !important;
+  border: none !important;
+}
+
+.activity-action-btn.ant-btn-circle:hover {
+  background: rgba(255,255,255,1) !important;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .activity-header {
@@ -172,4 +182,128 @@ html {
   .activity-content-body {
     box-shadow: none !important;
   }
+}
+
+/* ========================================
+   TEMA ESCURO - ACTIVITY PAGE
+   ======================================== */
+
+/* Botão voltar no tema escuro */
+body.dark-theme .activity-action-btn.ant-btn-circle {
+  background: rgba(31, 31, 31, 0.95) !important;
+  border: 1px solid #3a3a3a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-action-btn.ant-btn-circle:hover {
+  background: rgba(42, 42, 42, 0.98) !important;
+  border-color: #667eea !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .activity-action-btn.ant-btn-circle .anticon {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-action-btn.ant-btn-circle:hover .anticon {
+  color: #ffffff !important;
+}
+
+body.dark-theme .activity-parallax-bg {
+  background: linear-gradient(135deg, rgba(45, 55, 72, 0.95) 0%, rgba(26, 32, 44, 0.95) 100%) !important;
+}
+
+body.dark-theme .activity-header h1 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .activity-content-wrapper {
+  background: transparent !important;
+}
+
+body.dark-theme .activity-author-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .activity-author-card .ant-typography {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-author-card .ant-typography-secondary {
+  color: #888888 !important;
+}
+
+body.dark-theme .activity-content-body {
+  background: #1f1f1f !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .activity-content-body h1,
+body.dark-theme .activity-content-body h2,
+body.dark-theme .activity-content-body h3,
+body.dark-theme .activity-content-body h4,
+body.dark-theme .activity-content-body h5,
+body.dark-theme .activity-content-body h6 {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-content-body p,
+body.dark-theme .activity-content-body li,
+body.dark-theme .activity-content-body span {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .activity-content-body a {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .activity-content-body a:hover {
+  color: #a5b4ff !important;
+}
+
+body.dark-theme .activity-content-body code {
+  background: #2a2a2a !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+body.dark-theme .activity-content-body pre {
+  background: #2a2a2a !important;
+  border: 1px solid #3a3a3a !important;
+}
+
+body.dark-theme .activity-content-body pre code {
+  background: transparent !important;
+  border: none !important;
+}
+
+body.dark-theme .activity-content-body blockquote {
+  background: #2a2a2a !important;
+  border-left-color: #667eea !important;
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .activity-content ::selection {
+  background-color: #667eea !important;
+  color: white !important;
+}
+
+body.dark-theme .activity-back-btn {
+  background: rgba(31, 31, 31, 0.9) !important;
+  border: 1px solid #2a2a2a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .activity-back-btn:hover {
+  background: rgba(42, 42, 42, 0.95) !important;
+  border-color: #3a3a3a !important;
+}
+
+body.dark-theme .mobile-floating-actions {
+  background: rgba(31, 31, 31, 0.95) !important;
+  border: 1px solid #2a2a2a !important;
 }

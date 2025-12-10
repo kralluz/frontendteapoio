@@ -1,0 +1,412 @@
+/* Perfil Autista Page Styles */
+
+.perfil-autista-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.perfil-autista-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.perfil-autista-header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.perfil-autista-header-text {
+  text-align: center;
+  flex: 1;
+}
+
+.perfil-autista-main-title {
+  margin-bottom: 8px !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.perfil-autista-subtitle {
+  font-size: 18px !important;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto !important;
+}
+
+.profile-card {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.profile-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+}
+
+.profile-card-cover {
+  height: 200px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.profile-card-avatar {
+  border: 6px solid white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.profile-card-level-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.profile-card-action-btn {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.profile-card-content {
+  padding: 16px 0;
+}
+
+.profile-card-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-card-name {
+  margin-bottom: 4px !important;
+  color: #333;
+}
+
+.profile-card-age {
+  font-size: 16px;
+  color: #666;
+}
+
+.profile-card-date {
+  font-size: 14px !important;
+}
+
+.profile-card-section {
+  margin-bottom: 16px;
+}
+
+.profile-card-section-label {
+  font-size: 14px !important;
+  color: #666 !important;
+}
+
+.profile-card-section-text {
+  font-size: 14px;
+}
+
+.profile-card-tags {
+  margin-top: 8px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  color: #d9d9d9;
+  display: block;
+  margin-bottom: 24px;
+}
+
+.empty-state-title {
+  color: #666 !important;
+  margin-bottom: 8px !important;
+}
+
+.empty-state-text {
+  font-size: 16px !important;
+  color: #888 !important;
+  margin-bottom: 24px !important;
+}
+
+/* Detalhes do Perfil */
+.perfil-detalhes-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.perfil-detalhes-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.perfil-detalhes-avatar {
+  margin-bottom: 24px;
+}
+
+.perfil-detalhes-info h1 {
+  color: #333;
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+
+.perfil-detalhes-info p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.perfil-section {
+  margin-bottom: 24px;
+}
+
+.perfil-section h3 {
+  color: #667eea;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.perfil-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.perfil-list li {
+  padding: 8px 0;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.perfil-list li::before {
+  content: '•';
+  color: #667eea;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .perfil-autista-container,
+  .perfil-detalhes-container {
+    padding: 16px;
+  }
+
+  .perfil-autista-main-title,
+  .perfil-detalhes-info h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .perfil-autista-subtitle {
+    font-size: 16px !important;
+  }
+
+  .empty-state {
+    padding: 60px 16px;
+  }
+}
+
+/* ========================================
+   TEMA ESCURO - PERFIL AUTISTA
+   ======================================== */
+
+body.dark-theme .perfil-autista-main-title {
+  background: linear-gradient(135deg, #8b9bea 0%, #a5b4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.dark-theme .perfil-autista-subtitle {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .profile-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
+
+body.dark-theme .profile-card:hover {
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
+  border-color: #3a3a3a !important;
+}
+
+body.dark-theme .profile-card-cover {
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+}
+
+body.dark-theme .profile-card-avatar {
+  border-color: #2a2a2a;
+}
+
+body.dark-theme .profile-card-level-badge {
+  background: rgba(31, 31, 31, 0.9);
+}
+
+body.dark-theme .profile-card .ant-card-body {
+  background: #1f1f1f !important;
+}
+
+body.dark-theme .profile-card .ant-card-actions {
+  background: #1f1f1f !important;
+  border-top-color: #2a2a2a !important;
+}
+
+body.dark-theme .profile-card .ant-card-actions > li {
+  border-right-color: #2a2a2a !important;
+}
+
+body.dark-theme .profile-card-name {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .profile-card-age,
+body.dark-theme .profile-card-section-text {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .profile-card-section-label {
+  color: #888888 !important;
+}
+
+body.dark-theme .perfil-section h3 {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .perfil-list li {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .perfil-list li::before {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .empty-state-icon {
+  color: #3a3a3a !important;
+}
+
+body.dark-theme .empty-state-title {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .empty-state-text {
+  color: #666666 !important;
+}
+
+body.dark-theme .perfil-detalhes-info h1 {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .perfil-detalhes-info p {
+  color: #b0b0b0 !important;
+}
+
+/* Modal de criação/edição */
+body.dark-theme .ant-form-item-label > label {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-form-item-explain-error {
+  color: #ff6b6b !important;
+}
+
+body.dark-theme .ant-picker {
+  background: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+
+body.dark-theme .ant-picker input {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-picker-suffix {
+  color: #888888 !important;
+}
+
+body.dark-theme .ant-picker-dropdown {
+  background: #2a2a2a !important;
+}
+
+body.dark-theme .ant-picker-panel-container {
+  background: #2a2a2a !important;
+}
+
+body.dark-theme .ant-picker-header {
+  color: #e0e0e0 !important;
+  border-bottom-color: #3a3a3a !important;
+}
+
+body.dark-theme .ant-picker-header button {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-picker-header button:hover {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-picker-content th,
+body.dark-theme .ant-picker-content td {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-picker-cell-in-view {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-picker-cell:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end) .ant-picker-cell-inner {
+  background: #3a3a3a !important;
+}
+
+body.dark-theme .ant-picker-cell-selected .ant-picker-cell-inner {
+  background: #667eea !important;
+}
+
+body.dark-theme .ant-picker-today-btn {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .ant-checkbox-wrapper {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-checkbox-inner {
+  background: #2a2a2a !important;
+  border-color: #3a3a3a !important;
+}
+
+body.dark-theme .ant-checkbox-checked .ant-checkbox-inner {
+  background: #667eea !important;
+  border-color: #667eea !important;
+}
+
+body.dark-theme .ant-divider {
+  border-color: #2a2a2a !important;
+}
+
+body.dark-theme .ant-divider-inner-text {
+  color: #b0b0b0 !important;
+}
+

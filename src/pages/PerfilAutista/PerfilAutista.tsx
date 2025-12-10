@@ -9,6 +9,7 @@ import {
   CalendarOutlined, TrophyOutlined, PlusOutlined
 } from '@ant-design/icons';
 import { autismProfileService, AutismProfile } from '../../services/autismProfileService';
+import './PerfilAutista.css';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -131,21 +132,21 @@ const PerfilAutista: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="perfil-autista-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="perfil-autista-container">
       {/* Header */}
-      <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-        <div style={{ textAlign: 'center', flex: 1 }}>
-          <Title level={1} style={{ marginBottom: '8px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+      <div className="perfil-autista-header">
+        <div className="perfil-autista-header-text">
+          <Title level={1} className="perfil-autista-main-title">
             👨‍👩‍👧‍👦 Perfis dos Autistas
           </Title>
-          <Paragraph style={{ fontSize: '18px', color: '#666', maxWidth: '600px', margin: '0 auto' }}>
+          <Paragraph className="perfil-autista-subtitle">
             Gerencie os perfis dos seus filhos para receber recomendações personalizadas de atividades e conteúdos
           </Paragraph>
         </div>
@@ -162,41 +163,16 @@ const PerfilAutista: React.FC = () => {
           <Col xs={24} lg={12} key={profile.id}>
             <Card
               hoverable
-              style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                transition: 'all 0.3s ease',
-                height: '100%'
-              }}
+              className="profile-card"
               cover={
-                <div
-                  style={{
-                    height: '200px',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    position: 'relative'
-                  }}
-                >
+                <div className="profile-card-cover">
                   <Avatar
                     size={120}
                     src={profile.photo}
                     icon={<UserOutlined />}
-                    style={{
-                      border: '6px solid white',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                    }}
+                    className="profile-card-avatar"
                   />
-                  <div style={{
-                    position: 'absolute',
-                    top: '16px',
-                    right: '16px',
-                    background: 'rgba(255,255,255,0.9)',
-                    borderRadius: '20px',
-                    padding: '4px 12px'
-                  }}>
+                  <div className="profile-card-level-badge">
                     <Tag color={getDifficultyColor(profile.level)} style={{ margin: 0 }}>
                       {profile.level}
                     </Tag>
@@ -208,38 +184,38 @@ const PerfilAutista: React.FC = () => {
                   type="primary"
                   size="large"
                   onClick={() => handleViewProfile(profile.id)}
-                  style={{ width: '100%', borderRadius: '8px' }}
+                  className="profile-card-action-btn"
                 >
                   Ver Perfil Completo
                 </Button>
               ]}
             >
-              <div style={{ padding: '16px 0' }}>
+              <div className="profile-card-content">
                 {/* Informações Básicas */}
-                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <Title level={2} style={{ marginBottom: '4px' }}>{profile.name}</Title>
-                  <Text style={{ fontSize: '16px', color: '#666' }}>{profile.age} anos</Text>
+                <div className="profile-card-info">
+                  <Title level={2} className="profile-card-name">{profile.name}</Title>
+                  <Text className="profile-card-age">{profile.age} anos</Text>
                   <br />
-                  <Text type="secondary" style={{ fontSize: '14px' }}>
+                  <Text type="secondary" className="profile-card-date">
                     <CalendarOutlined style={{ marginRight: '6px' }} />
                     Cadastrado em {new Date(profile.createdAt).toLocaleDateString('pt-BR')}
                   </Text>
                 </div>
 
                 {/* Diagnóstico */}
-                <div style={{ marginBottom: '16px' }}>
-                  <Text strong style={{ fontSize: '14px', color: '#666' }}>Diagnóstico:</Text>
+                <div className="profile-card-section">
+                  <Text strong className="profile-card-section-label">Diagnóstico:</Text>
                   <br />
-                  <Text style={{ fontSize: '14px' }}>{profile.diagnosis}</Text>
+                  <Text className="profile-card-section-text">{profile.diagnosis}</Text>
                 </div>
 
                 {/* Interesses */}
-                <div style={{ marginBottom: '16px' }}>
-                  <Text strong style={{ fontSize: '14px', color: '#666' }}>
+                <div className="profile-card-section">
+                  <Text strong className="profile-card-section-label">
                     <HeartOutlined style={{ marginRight: '6px' }} />
                     Interesses:
                   </Text>
-                  <div style={{ marginTop: '8px' }}>
+                  <div className="profile-card-tags">
                     <Space wrap>
                       {profile.interests.slice(0, 3).map((interest, index) => (
                         <Tag key={index} color="blue">{interest}</Tag>
@@ -252,12 +228,12 @@ const PerfilAutista: React.FC = () => {
                 </div>
 
                 {/* Pontos Fortes */}
-                <div style={{ marginBottom: '16px' }}>
-                  <Text strong style={{ fontSize: '14px', color: '#666' }}>
+                <div className="profile-card-section">
+                  <Text strong className="profile-card-section-label">
                     <TrophyOutlined style={{ marginRight: '6px' }} />
                     Pontos Fortes:
                   </Text>
-                  <div style={{ marginTop: '8px' }}>
+                  <div className="profile-card-tags">
                     <Space wrap>
                       {profile.strengths.slice(0, 2).map((strength, index) => (
                         <Tag key={index} color="green">{strength}</Tag>
@@ -276,12 +252,12 @@ const PerfilAutista: React.FC = () => {
 
       {/* Mensagem quando não há perfis */}
       {profiles.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '80px 20px' }}>
-          <TeamOutlined style={{ fontSize: '64px', color: '#d9d9d9', marginBottom: '24px' }} />
-          <Title level={3} style={{ color: '#666', marginBottom: '8px' }}>
+        <div className="empty-state">
+          <TeamOutlined className="empty-state-icon" />
+          <Title level={3} className="empty-state-title">
             Nenhum perfil cadastrado
           </Title>
-          <Paragraph style={{ fontSize: '16px', color: '#888', marginBottom: '24px' }}>
+          <Paragraph className="empty-state-text">
             Crie o perfil do seu filho para receber recomendações personalizadas de atividades e conteúdos.
           </Paragraph>
           <Button

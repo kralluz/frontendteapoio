@@ -1,0 +1,92 @@
+/* Professional Dashboard Styles */
+
+.professional-dashboard {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.professional-dashboard-title {
+  font-size: 28px !important;
+  font-weight: bold !important;
+  margin-bottom: 24px !important;
+  color: #262626;
+}
+
+.professional-dashboard-description {
+  color: #595959;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .professional-dashboard {
+    padding: 16px;
+  }
+
+  .professional-dashboard-title {
+    font-size: 24px !important;
+    margin-bottom: 16px !important;
+  }
+}
+
+/* ========================================
+   TEMA ESCURO - PROFESSIONAL DASHBOARD
+   ======================================== */
+
+body.dark-theme .professional-dashboard {
+  background: transparent !important;
+}
+
+body.dark-theme .professional-dashboard-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .professional-dashboard-description {
+  color: #b0b0b0 !important;
+}
+
+/* Cards no tema escuro */
+body.dark-theme .ant-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+}
+
+body.dark-theme .ant-card-head {
+  background: #1f1f1f !important;
+  border-bottom: 1px solid #2a2a2a !important;
+}
+
+body.dark-theme .ant-card-head-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-card-body {
+  color: #b0b0b0 !important;
+}
+
+/* Estatísticas no tema escuro */
+body.dark-theme .ant-statistic-title {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .ant-statistic-content {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .ant-statistic-content-value {
+  color: inherit !important;
+}
+
+/* Manter cores dos ícones das estatísticas */
+body.dark-theme .ant-statistic-content-prefix {
+  color: inherit !important;
+}
+
+/* Links no tema escuro */
+body.dark-theme .ant-btn-link {
+  color: #8b9bea !important;
+}
+
+body.dark-theme .ant-btn-link:hover {
+  color: #a5b4ff !important;
+}

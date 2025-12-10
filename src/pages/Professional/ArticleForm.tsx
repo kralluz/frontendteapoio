@@ -4,6 +4,7 @@ import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Typo
 import { UploadOutlined, SaveOutlined, ArrowLeftOutlined, InfoCircleOutlined, FileImageOutlined, FileTextOutlined } from '@ant-design/icons';
 import { articleService } from '../../services/articleService';
 import api from '../../services/api';
+import './ArticleForm.css';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -121,20 +122,21 @@ const ArticleForm: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="article-form-page">
       {/* Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <Space align="start" style={{ marginBottom: '16px' }}>
+      <div className="article-form-header">
+        <Space align="start">
           <Button 
+            className="article-form-back-btn"
             icon={<ArrowLeftOutlined />} 
             onClick={() => navigate('/professional/artigos')}
             size="large"
           />
           <div>
-            <Title level={2} style={{ margin: 0 }}>
+            <Title level={2} className="article-form-title">
               {isEditing ? 'Editar Artigo' : 'Novo Artigo'}
             </Title>
-            <div style={{ color: '#8c8c8c', fontSize: '14px', marginTop: '4px' }}>
+            <div className="article-form-subtitle">
               {isEditing ? 'Atualize as informações do seu artigo' : 'Compartilhe seu conhecimento com a comunidade'}
             </div>
           </div>
@@ -152,13 +154,13 @@ const ArticleForm: React.FC = () => {
       >
         {/* Informações Básicas */}
         <Card 
+          className="article-form-card"
           title={
             <Space>
               <FileTextOutlined style={{ color: '#1890ff' }} />
-              <span>Informações Básicas</span>
+              <span className="article-form-card-title">Informações Básicas</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Form.Item
             name="title"
@@ -221,13 +223,13 @@ const ArticleForm: React.FC = () => {
 
         {/* Imagem de Capa */}
         <Card 
+          className="article-form-card"
           title={
             <Space>
               <FileImageOutlined style={{ color: '#52c41a' }} />
-              <span>Imagem de Capa</span>
+              <span className="article-form-card-title">Imagem de Capa</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Alert
             message="Dica"
@@ -256,31 +258,13 @@ const ArticleForm: React.FC = () => {
           </Upload>
           
           {imageUrl && (
-            <div style={{ 
-              marginTop: '16px', 
-              border: '2px solid #f0f0f0',
-              borderRadius: '8px',
-              overflow: 'hidden',
-              position: 'relative'
-            }}>
+            <div className="article-form-image-preview">
               <img 
                 src={imageUrl} 
-                alt="Preview" 
-                style={{ 
-                  width: '100%',
-                  maxHeight: '300px', 
-                  objectFit: 'cover',
-                  display: 'block'
-                }} 
+                alt="Preview"
               />
-              <div style={{ 
-                padding: '12px', 
-                background: '#fafafa',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <span style={{ fontSize: '12px', color: '#8c8c8c' }}>✓ Imagem carregada</span>
+              <div className="article-form-image-info">
+                <span className="article-form-image-success">✓ Imagem carregada</span>
                 <Button 
                   type="link" 
                   danger 
@@ -296,13 +280,13 @@ const ArticleForm: React.FC = () => {
 
         {/* Conteúdo */}
         <Card 
+          className="article-form-card"
           title={
             <Space>
               <FileTextOutlined style={{ color: '#722ed1' }} />
-              <span>Conteúdo do Artigo</span>
+              <span className="article-form-card-title">Conteúdo do Artigo</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Alert
             message="Markdown Suportado"
@@ -330,15 +314,14 @@ const ArticleForm: React.FC = () => {
         </Card>
 
         {/* Publicação */}
-        <Card style={{ marginBottom: '24px' }}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: '500', marginBottom: '4px' }}>Status de Publicação</div>
-                <div style={{ fontSize: '13px', color: '#8c8c8c' }}>
-                  Artigos em rascunho só são visíveis para você
-                </div>
+        <Card className="article-form-card">
+          <div className="article-form-publish-section">
+            <div className="article-form-publish-info">
+              <div className="article-form-publish-title">Status de Publicação</div>
+              <div className="article-form-publish-desc">
+                Artigos em rascunho só são visíveis para você
               </div>
+            </div>
               <Form.Item
                 name="published"
                 valuePropName="checked"
@@ -349,14 +332,13 @@ const ArticleForm: React.FC = () => {
                   unCheckedChildren="Rascunho"
                   style={{ width: '90px' }}
                 />
-              </Form.Item>
-            </div>
-          </Space>
+            </Form.Item>
+          </div>
         </Card>
 
         {/* Botões de Ação */}
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Card className="article-form-card">
+          <div className="article-form-actions">
             <Button 
               onClick={() => navigate('/professional/artigos')}
               size="large"

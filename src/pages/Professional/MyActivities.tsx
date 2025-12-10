@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Button, Space, Modal, message, Tag, Typography, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, TrophyOutlined, HeartOutlined, MessageOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { activityService, Activity } from '../../services/activityService';
+import './MyActivities.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -58,23 +59,23 @@ const MyActivities: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="my-activities-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="my-activities-page">
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="my-activities-header">
+        <div className="my-activities-header-content">
           <div>
-            <Title level={2} style={{ marginBottom: '8px' }}>
+            <Title level={2} className="my-activities-title">
               <TrophyOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
               Minhas Atividades
             </Title>
-            <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+            <Paragraph type="secondary" className="my-activities-count">
               {activities.length} {activities.length === 1 ? 'atividade criada' : 'atividades criadas'}
             </Paragraph>
           </div>
@@ -169,8 +170,8 @@ const MyActivities: React.FC = () => {
           ))}
         </Row>
       ) : (
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <TrophyOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+        <div className="my-activities-empty">
+          <TrophyOutlined className="my-activities-empty-icon" />
           <Title level={4} type="secondary">Nenhuma atividade criada</Title>
           <Paragraph type="secondary">Comece criando sua primeira atividade!</Paragraph>
           <Button

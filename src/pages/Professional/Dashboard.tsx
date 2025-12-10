@@ -4,6 +4,7 @@ import { Card, Row, Col, Statistic, Button, Space } from 'antd';
 import { FileTextOutlined, ThunderboltOutlined, HeartOutlined, MessageOutlined, PlusOutlined } from '@ant-design/icons';
 import { articleService } from '../../services/articleService';
 import { activityService } from '../../services/activityService';
+import './Dashboard.css';
 
 const ProfessionalDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ const ProfessionalDashboard: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
-      <h1 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '24px' }}>
+    <div className="professional-dashboard">
+      <h1 className="professional-dashboard-title">
         Painel do Profissional
       </h1>
 
@@ -105,7 +106,9 @@ const ProfessionalDashboard: React.FC = () => {
               </Button>
             }
           >
-            <p>Crie e gerencie seus artigos educacionais sobre autismo.</p>
+            <p className="professional-dashboard-description">
+              Crie e gerencie seus artigos educacionais sobre autismo.
+            </p>
             <Button
               type="link"
               onClick={() => navigate('/professional/artigos')}
@@ -128,7 +131,9 @@ const ProfessionalDashboard: React.FC = () => {
               </Button>
             }
           >
-            <p>Crie e gerencie atividades terapêuticas para crianças autistas.</p>
+            <p className="professional-dashboard-description">
+              Crie e gerencie atividades terapêuticas para crianças autistas.
+            </p>
             <Button
               type="link"
               onClick={() => navigate('/professional/atividades')}

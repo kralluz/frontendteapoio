@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Typography, Button } from 'antd';
-import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, FileTextOutlined, ThunderboltOutlined, ExperimentOutlined } from '@ant-design/icons';
+import { Layout, Menu, Avatar, Dropdown, Typography, Button, Drawer } from 'antd';
+import { UserOutlined, LogoutOutlined, SettingOutlined, BookOutlined, ProfileOutlined, StarOutlined, MenuFoldOutlined, MenuUnfoldOutlined, DashboardOutlined, FileTextOutlined, ThunderboltOutlined, ExperimentOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -17,6 +17,7 @@ const App: React.FC = () => {
 
   const [collapsed, setCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [mobileDrawerVisible, setMobileDrawerVisible] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,6 +26,31 @@ const App: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Aplicar tema escuro ao carregar a aplicação
+  useEffect(() => {
+    const applyTheme = () => {
+      const isDark = localStorage.getItem('darkTheme') === 'true';
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+      }
+    };
+
+    // Aplicar tema inicial
+    applyTheme();
+
+    // Escutar mudanças no localStorage (sincroniza entre abas)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'darkTheme') {
+        applyTheme();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Verificar se estamos em uma rota que não deve mostrar header/sidebar
@@ -65,10 +91,10 @@ const App: React.FC = () => {
       onClick: () => navigate('/perfil-autista'),
     }]),
     {
-      key: '/favoritos',
-      icon: <StarOutlined style={{ fontSize: '22px' }} />,
-      label: 'Favoritos',
-      onClick: () => navigate('/favoritos'),
+      key: 'more',
+      icon: <AppstoreOutlined style={{ fontSize: '22px' }} />,
+      label: 'Mais',
+      onClick: () => setMobileDrawerVisible(true),
     },
   ];
 
@@ -178,6 +204,46 @@ const App: React.FC = () => {
     },
   ];
 
+  // Menu específico para o drawer mobile (sem repetir itens da barra inferior)
+  const mobileDrawerMenuItems = [
+    // Para profissionais: apenas as opções exclusivas
+    ...(isProfessional ? [
+      {
+        key: '/professional/artigos',
+        icon: <FileTextOutlined />,
+        label: 'Meus Artigos',
+        onClick: () => navigate('/professional/artigos'),
+      },
+      {
+        key: '/professional/atividades',
+        icon: <ThunderboltOutlined />,
+        label: 'Minhas Atividades',
+        onClick: () => navigate('/professional/atividades'),
+      },
+      {
+        key: 'divider-1',
+        type: 'divider' as const,
+      },
+    ] : []),
+    // Favoritos (comum para todos)
+    {
+      key: '/favoritos',
+      icon: <StarOutlined />,
+      label: 'Favoritos',
+      onClick: () => navigate('/favoritos'),
+    },
+    {
+      key: 'divider-2',
+      type: 'divider' as const,
+    },
+    {
+      key: '/configuracoes',
+      icon: <SettingOutlined />,
+      label: 'Configurações',
+      onClick: () => navigate('/configuracoes'),
+    },
+  ];
+
   if (isAuthRoute) {
     return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -270,26 +336,48 @@ const App: React.FC = () => {
 
       {/* Menu inferior para mobile */}
       {isMobile && (
-        <div className="mobile-bottom-nav">
-          {mobileMenuItems.map((item) => {
-            const isActive = location.pathname === item.key;
-            return (
-              <div
-                key={item.key}
-                onClick={item.onClick}
-                className={`mobile-nav-item ${isActive ? 'active' : ''}`}
-              >
-                {isActive && <div className="mobile-nav-indicator" />}
-                <div className="mobile-nav-icon">
-                  {item.icon}
+        <>
+          <div className="mobile-bottom-nav">
+            {mobileMenuItems.map((item) => {
+              const isActive = location.pathname === item.key;
+              return (
+                <div
+                  key={item.key}
+                  onClick={item.onClick}
+                  className={`mobile-nav-item ${isActive ? 'active' : ''}`}
+                >
+                  {isActive && <div className="mobile-nav-indicator" />}
+                  <div className="mobile-nav-icon">
+                    {item.icon}
+                  </div>
+                  <span className="mobile-nav-label">
+                    {item.label}
+                  </span>
                 </div>
-                <span className="mobile-nav-label">
-                  {item.label}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* Drawer com menu completo para mobile */}
+          <Drawer
+            title="Menu"
+            placement="bottom"
+            onClose={() => setMobileDrawerVisible(false)}
+            open={mobileDrawerVisible}
+            height="auto"
+            styles={{
+              body: { padding: '0' }
+            }}
+          >
+            <Menu
+              mode="inline"
+              selectedKeys={[location.pathname]}
+              style={{ border: 'none' }}
+              items={mobileDrawerMenuItems}
+              onClick={() => setMobileDrawerVisible(false)}
+            />
+          </Drawer>
+        </>
       )}
     </Layout>
   );

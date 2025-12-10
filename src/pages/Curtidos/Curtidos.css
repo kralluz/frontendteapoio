@@ -1,0 +1,177 @@
+/* Curtidos Page Styles */
+
+.curtidos-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.curtidos-header-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.curtidos-title {
+  margin-bottom: 8px !important;
+  color: #333;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.curtidos-subtitle {
+  font-size: 16px !important;
+  margin-bottom: 0 !important;
+}
+
+.curtido-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.curtido-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+}
+
+.curtido-card-cover {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.curtido-card .ant-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.curtido-card .ant-card-meta {
+  margin-bottom: 16px;
+}
+
+.curtido-card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.curtido-card-time {
+  font-size: 12px !important;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  color: #d9d9d9;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .curtidos-container {
+    padding: 16px;
+  }
+
+  .curtidos-header-card {
+    padding: 20px;
+  }
+
+  .curtidos-title {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* ========================================
+   TEMA ESCURO - CURTIDOS
+   ======================================== */
+
+body.dark-theme .curtidos-header-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .curtidos-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .curtidos-subtitle {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .curtido-card {
+  background: #1f1f1f !important;
+  border: 1px solid #2a2a2a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .curtido-card:hover {
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3) !important;
+  border-color: #3a3a3a !important;
+}
+
+body.dark-theme .curtido-card .ant-card-body {
+  background: #1f1f1f !important;
+}
+
+body.dark-theme .curtido-card .ant-card-meta-title {
+  color: #e0e0e0 !important;
+}
+
+body.dark-theme .curtido-card .ant-card-meta-description {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .curtido-card .ant-card-actions {
+  background: #1f1f1f !important;
+  border-top-color: #2a2a2a !important;
+}
+
+body.dark-theme .curtido-card .ant-card-actions > li {
+  border-right-color: #2a2a2a !important;
+}
+
+body.dark-theme .curtido-card .ant-card-actions > li > span {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .curtido-card .ant-card-actions > li:hover {
+  background: #2a2a2a !important;
+}
+
+body.dark-theme .curtido-card-footer {
+  border-top-color: #2a2a2a !important;
+}
+
+body.dark-theme .curtido-card-time {
+  color: #888888 !important;
+}
+
+body.dark-theme .empty-state-icon {
+  color: #3a3a3a !important;
+}
+
+body.dark-theme .empty-state h4 {
+  color: #b0b0b0 !important;
+}
+
+body.dark-theme .empty-state .ant-typography {
+  color: #666666 !important;
+}

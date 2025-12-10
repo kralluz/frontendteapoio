@@ -4,6 +4,7 @@ import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Inpu
 import { UploadOutlined, SaveOutlined, PlusOutlined, MinusCircleOutlined, ArrowLeftOutlined, InfoCircleOutlined, TrophyOutlined, FileImageOutlined, OrderedListOutlined, ToolOutlined } from '@ant-design/icons';
 import { activityService } from '../../services/activityService';
 import api from '../../services/api';
+import './ActivityForm.css';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -127,20 +128,21 @@ const ActivityForm: React.FC = () => {
   const ageRanges = ['0-3 anos', '3-6 anos', '6-9 anos', '9-12 anos', '12+ anos', 'Todas as idades'];
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="activity-form-page">
       {/* Header */}
-      <div style={{ marginBottom: '24px' }}>
-        <Space align="start" style={{ marginBottom: '16px' }}>
+      <div className="activity-form-header">
+        <Space align="start">
           <Button 
+            className="activity-form-back-btn"
             icon={<ArrowLeftOutlined />} 
             onClick={() => navigate('/professional/atividades')}
             size="large"
           />
           <div>
-            <Title level={2} style={{ margin: 0 }}>
+            <Title level={2} className="activity-form-title">
               {isEditing ? 'Editar Atividade' : 'Nova Atividade'}
             </Title>
-            <div style={{ color: '#8c8c8c', fontSize: '14px', marginTop: '4px' }}>
+            <div className="activity-form-subtitle">
               {isEditing ? 'Atualize as informações da sua atividade' : 'Crie uma atividade educativa para pessoas com TEA'}
             </div>
           </div>
@@ -160,13 +162,13 @@ const ActivityForm: React.FC = () => {
       >
         {/* Informações Básicas */}
         <Card 
+          className="activity-form-card"
           title={
             <Space>
               <TrophyOutlined style={{ color: '#1890ff' }} />
-              <span>Informações Básicas</span>
+              <span className="activity-form-card-title">Informações Básicas</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Form.Item
             name="title"
@@ -252,13 +254,13 @@ const ActivityForm: React.FC = () => {
 
         {/* Imagem */}
         <Card 
+          className="activity-form-card"
           title={
             <Space>
               <FileImageOutlined style={{ color: '#52c41a' }} />
-              <span>Imagem da Atividade</span>
+              <span className="activity-form-card-title">Imagem da Atividade</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Alert
             message="Dica"
@@ -287,30 +289,13 @@ const ActivityForm: React.FC = () => {
           </Upload>
           
           {imageUrl && (
-            <div style={{ 
-              marginTop: '16px', 
-              border: '2px solid #f0f0f0',
-              borderRadius: '8px',
-              overflow: 'hidden'
-            }}>
+            <div className="activity-form-image-preview">
               <img 
                 src={imageUrl} 
-                alt="Preview" 
-                style={{ 
-                  width: '100%', 
-                  maxHeight: '300px', 
-                  objectFit: 'cover',
-                  display: 'block'
-                }} 
+                alt="Preview"
               />
-              <div style={{ 
-                padding: '12px', 
-                background: '#fafafa',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <span style={{ fontSize: '12px', color: '#8c8c8c' }}>✓ Imagem carregada</span>
+              <div className="activity-form-image-info">
+                <span className="activity-form-image-success">✓ Imagem carregada</span>
                 <Button 
                   type="link" 
                   danger 
@@ -326,13 +311,13 @@ const ActivityForm: React.FC = () => {
 
         {/* Materiais */}
         <Card 
+          className="activity-form-card"
           title={
             <Space>
               <ToolOutlined style={{ color: '#fa8c16' }} />
-              <span>Materiais Necessários</span>
+              <span className="activity-form-card-title">Materiais Necessários</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Form.Item>
             <Form.List name="materials">
@@ -340,18 +325,7 @@ const ActivityForm: React.FC = () => {
                 <>
                   {fields.map((field, index) => (
                     <Space key={field.key} style={{ display: 'flex', marginBottom: 12, width: '100%' }} align="start">
-                      <div style={{ 
-                        width: '32px', 
-                        height: '32px', 
-                        background: '#f0f0f0', 
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 'bold',
-                        color: '#8c8c8c',
-                        flexShrink: 0
-                      }}>
+                      <div className="activity-form-material-number">
                         {index + 1}
                       </div>
                       <Form.Item
@@ -390,13 +364,13 @@ const ActivityForm: React.FC = () => {
 
         {/* Passos */}
         <Card 
+          className="activity-form-card"
           title={
             <Space>
               <OrderedListOutlined style={{ color: '#13c2c2' }} />
-              <span>Passo a Passo</span>
+              <span className="activity-form-card-title">Passo a Passo</span>
             </Space>
           }
-          style={{ marginBottom: '24px' }}
         >
           <Alert
             message="Instruções"
@@ -413,19 +387,7 @@ const ActivityForm: React.FC = () => {
                 <>
                   {fields.map((field, index) => (
                     <Space key={field.key} style={{ display: 'flex', marginBottom: 16, width: '100%' }} align="start">
-                      <div style={{ 
-                        width: '36px', 
-                        height: '36px', 
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 'bold',
-                        color: '#fff',
-                        fontSize: '16px',
-                        flexShrink: 0
-                      }}>
+                      <div className="activity-form-step-number">
                         {index + 1}
                       </div>
                       <Form.Item
@@ -468,8 +430,10 @@ const ActivityForm: React.FC = () => {
 
         {/* Conteúdo Adicional */}
         <Card 
-          title="Informações Complementares"
-          style={{ marginBottom: '24px' }}
+          className="activity-form-card"
+          title={
+            <span className="activity-form-card-title">Informações Complementares</span>
+          }
         >
           <Form.Item
             name="content"
@@ -486,11 +450,11 @@ const ActivityForm: React.FC = () => {
         </Card>
 
         {/* Publicação */}
-        <Card style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontWeight: '500', marginBottom: '4px' }}>Status de Publicação</div>
-              <div style={{ fontSize: '13px', color: '#8c8c8c' }}>
+        <Card className="activity-form-card">
+          <div className="activity-form-publish-section">
+            <div className="activity-form-publish-info">
+              <div className="activity-form-publish-title">Status de Publicação</div>
+              <div className="activity-form-publish-desc">
                 Atividades em rascunho só são visíveis para você
               </div>
             </div>
@@ -509,8 +473,8 @@ const ActivityForm: React.FC = () => {
         </Card>
 
         {/* Botões de Ação */}
-        <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Card className="activity-form-card">
+          <div className="activity-form-actions">
             <Button 
               onClick={() => navigate('/professional/atividades')}
               size="large"

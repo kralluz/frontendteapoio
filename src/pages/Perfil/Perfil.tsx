@@ -158,13 +158,11 @@ const Perfil: React.FC = () => {
       {/* Perfis dos Filhos */}
       <Card
         title={
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
             <span><TeamOutlined /> Perfis de Autistas</span>
-            {profiles.length > 0 && (
-              <Button type="dashed" icon={<PlusOutlined />} onClick={() => showModal()}>
-                Adicionar Perfil
-              </Button>
-            )}
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal()}>
+              Adicionar Perfil
+            </Button>
           </div>
         }
         style={{ marginBottom: '24px' }}
@@ -245,9 +243,6 @@ const Perfil: React.FC = () => {
             <Paragraph type="secondary">
               Adicione um perfil para receber recomendações personalizadas de atividades e conteúdos.
             </Paragraph>
-            <Button type="dashed" icon={<PlusOutlined />} onClick={() => showModal()}>
-              Criar Primeiro Perfil
-            </Button>
           </div>
         )}
       </Card>
@@ -260,6 +255,9 @@ const Perfil: React.FC = () => {
         footer={null}
         width={800}
         style={{ top: 20 }}
+        destroyOnClose={true}
+        maskClosable={false}
+        keyboard={true}
       >
         <Form
           form={form}

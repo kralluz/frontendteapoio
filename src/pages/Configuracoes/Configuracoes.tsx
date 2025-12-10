@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card, Button, Modal, Form, Input, Avatar, Space, Typography,
-  Divider, Popconfirm, message, Row, Col, Switch, Select
+  Button, Modal, Form, Input, Avatar, Space, Typography,
+  Divider, Popconfirm, message, Switch, Select
 } from 'antd';
 import {
   LockOutlined, DeleteOutlined, LogoutOutlined,
   SettingOutlined, BellOutlined,
-  EditOutlined, MailOutlined, MessageOutlined, BulbOutlined
+  EditOutlined, MailOutlined, MessageOutlined, BulbOutlined, 
+  SafetyOutlined, UserOutlined, WarningOutlined
 } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { userService } from '../../services/userService';
+import './Configuracoes.css';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -42,8 +44,16 @@ const Configuracoes: React.FC = () => {
   const [settings, setSettings] = useState({
     notifications: true,
     emailUpdates: false,
-    darkTheme: false
+    darkTheme: localStorage.getItem('darkTheme') === 'true' || false
   });
+
+  // Aplicar tema escuro ao carregar a página
+  useEffect(() => {
+    const isDark = localStorage.getItem('darkTheme') === 'true';
+    if (isDark) {
+      document.body.classList.add('dark-theme');
+    }
+  }, []);
 
   // Handlers
   const handlePasswordChange = async (values: any) => {
@@ -95,6 +105,18 @@ const Configuracoes: React.FC = () => {
 
   const handleSettingChange = (key: string, value: any) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+    
+    // Tratamento especial para tema escuro
+    if (key === 'darkTheme') {
+      if (value) {
+        document.body.classList.add('dark-theme');
+        localStorage.setItem('darkTheme', 'true');
+      } else {
+        document.body.classList.remove('dark-theme');
+        localStorage.setItem('darkTheme', 'false');
+      }
+    }
+    
     message.success('Configuração atualizada!');
   };
 
@@ -110,135 +132,189 @@ const Configuracoes: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <Title level={2} style={{ marginBottom: '24px' }}>
-        <SettingOutlined /> Configurações
-      </Title>
+    <div className="settings-container">
+      {/* Header com gradiente */}
+      <div className="settings-header">
+        <div className="settings-header-content">
+          <Title className="settings-title">
+            <SettingOutlined style={{ marginRight: '16px' }} />
+            Configurações
+          </Title>
+          <Paragraph className="settings-subtitle">
+            Gerencie suas preferências, segurança e informações da conta
+          </Paragraph>
+        </div>
+      </div>
 
-      <Row gutter={24}>
-        {/* Perfil e Conta */}
-        <Col xs={24} lg={16} style={{ margin: '0 auto' }}>
-          <Card title="Perfil e Conta" style={{ marginBottom: '24px' }}>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                <Avatar 
-                  size={64} 
-                  src={userData?.avatar}
-                  style={{ 
-                    marginRight: '16px',
-                    backgroundColor: userData?.avatar ? undefined : '#667eea',
-                    fontSize: '24px'
-                  }}
-                >
-                  {!userData?.avatar && userData?.name ? userData.name.charAt(0).toUpperCase() : null}
-                </Avatar>
-                <div>
-                  <Title level={4} style={{ margin: 0 }}>{userData?.name}</Title>
-                  <Text type="secondary">{userData?.email}</Text>
-                </div>
+      {/* Conteúdo */}
+      <div className="settings-content">
+        {/* Card de Perfil */}
+        <div className="settings-card">
+          <div className="settings-card-title">
+            <UserOutlined />
+            Meu Perfil
+          </div>
+          
+          <div className="profile-section">
+            <Avatar 
+              size={80} 
+              src={userData?.avatar}
+              className="profile-avatar"
+              style={{ 
+                backgroundColor: userData?.avatar ? undefined : '#667eea',
+                fontSize: '32px'
+              }}
+            >
+              {!userData?.avatar && userData?.name ? userData.name.charAt(0).toUpperCase() : null}
+            </Avatar>
+            <div className="profile-info">
+              <h3>{userData?.name}</h3>
+              <p><MailOutlined style={{ marginRight: '8px' }} />{userData?.email}</p>
+            </div>
+          </div>
+
+          <Space size="middle" wrap>
+            <Button
+              type="primary"
+              icon={<EditOutlined />}
+              onClick={() => setProfileModalVisible(true)}
+              className="action-button"
+              size="large"
+            >
+              Editar Perfil
+            </Button>
+            <Button
+              icon={<LockOutlined />}
+              onClick={() => setPasswordModalVisible(true)}
+              className="action-button"
+              size="large"
+            >
+              Alterar Senha
+            </Button>
+          </Space>
+        </div>
+
+        {/* Card de Preferências */}
+        <div className="settings-card">
+          <div className="settings-card-title">
+            <BellOutlined />
+            Preferências
+          </div>
+          
+          <div className="settings-item">
+            <div className="settings-item-label">
+              <BellOutlined />
+              <div>
+                <div className="label-text">Notificações Push</div>
+                <div className="label-description">Receba notificações sobre novos conteúdos</div>
               </div>
+            </div>
+            <Switch
+              checked={settings.notifications}
+              onChange={(checked) => handleSettingChange('notifications', checked)}
+              size="default"
+            />
+          </div>
 
-              <Space wrap>
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  onClick={() => setProfileModalVisible(true)}
-                >
-                  Editar Perfil
-                </Button>
-                <Button
-                  icon={<LockOutlined />}
-                  onClick={() => setPasswordModalVisible(true)}
-                >
-                  Alterar Senha
-                </Button>
-              </Space>
-            </Space>
-          </Card>
-
-          {/* Configurações Gerais */}
-          <Card title="Configurações Gerais" style={{ marginBottom: '24px' }}>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <BellOutlined style={{ marginRight: '8px' }} />
-                  <Text>Notificações</Text>
-                </div>
-                <Switch
-                  checked={settings.notifications}
-                  onChange={(checked) => handleSettingChange('notifications', checked)}
-                />
+          <div className="settings-item">
+            <div className="settings-item-label">
+              <MailOutlined />
+              <div>
+                <div className="label-text">Atualizações por Email</div>
+                <div className="label-description">Receba novidades e dicas semanais</div>
               </div>
+            </div>
+            <Switch
+              checked={settings.emailUpdates}
+              onChange={(checked) => handleSettingChange('emailUpdates', checked)}
+              size="default"
+            />
+          </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <MailOutlined style={{ marginRight: '8px' }} />
-                  <Text>Atualizações por Email</Text>
-                </div>
-                <Switch
-                  checked={settings.emailUpdates}
-                  onChange={(checked) => handleSettingChange('emailUpdates', checked)}
-                />
+          <div className="settings-item">
+            <div className="settings-item-label">
+              <BulbOutlined />
+              <div>
+                <div className="label-text">Tema Escuro</div>
+                <div className="label-description">Interface em modo escuro</div>
               </div>
+            </div>
+            <Switch
+              checked={settings.darkTheme}
+              onChange={(checked) => handleSettingChange('darkTheme', checked)}
+              size="default"
+            />
+          </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <BulbOutlined style={{ marginRight: '8px' }} />
-                  <Text>Tema Escuro</Text>
-                </div>
-                <Switch
-                  checked={settings.darkTheme}
-                  onChange={(checked) => handleSettingChange('darkTheme', checked)}
-                />
-              </div>
+          <Divider style={{ margin: '24px 0' }} />
 
-              <Divider />
+          <Button
+            type="default"
+            icon={<MessageOutlined />}
+            onClick={() => setFeedbackModalVisible(true)}
+            className="action-button"
+            size="large"
+            block
+          >
+            Enviar Feedback ou Sugestão
+          </Button>
+        </div>
 
-              <Button
-                type="default"
-                icon={<MessageOutlined />}
-                onClick={() => setFeedbackModalVisible(true)}
-                block
-              >
-                Enviar Feedback
-              </Button>
-            </Space>
-          </Card>
+        {/* Card de Segurança e Sessão */}
+        <div className="settings-card">
+          <div className="settings-card-title">
+            <SafetyOutlined />
+            Segurança e Sessão
+          </div>
+          
+          <Button
+            type="default"
+            icon={<LogoutOutlined />}
+            onClick={handleLogout}
+            className="action-button"
+            size="large"
+            block
+            style={{ marginBottom: '12px' }}
+          >
+            Sair da Conta
+          </Button>
 
-          {/* Ações da Conta */}
-          <Card title="Ações da Conta">
-            <Space direction="vertical" style={{ width: '100%' }}>
-              <Button
-                type="default"
-                icon={<LogoutOutlined />}
-                onClick={handleLogout}
-                block
-              >
-                Fazer Logout
-              </Button>
+          <Text type="secondary" style={{ fontSize: '13px', display: 'block', textAlign: 'center' }}>
+            Você será desconectado de todos os dispositivos
+          </Text>
+        </div>
 
-              <Divider />
+        {/* Card de Zona de Perigo */}
+        <div className="settings-card danger-zone">
+          <div className="settings-card-title">
+            <WarningOutlined />
+            Zona de Perigo
+          </div>
+          
+          <Paragraph type="secondary" style={{ marginBottom: '16px' }}>
+            A exclusão da conta é permanente e não pode ser desfeita. Todos os seus dados serão perdidos.
+          </Paragraph>
 
-              <Popconfirm
-                title="Tem certeza que deseja excluir sua conta?"
-                description="Esta ação não pode ser desfeita. Todos os seus dados serão perdidos."
-                onConfirm={() => setDeleteAccountModalVisible(true)}
-                okText="Sim, excluir"
-                cancelText="Cancelar"
-                okButtonProps={{ danger: true }}
-              >
-                <Button
-                  danger
-                  icon={<DeleteOutlined />}
-                  block
-                >
-                  Excluir Conta
-                </Button>
-              </Popconfirm>
-            </Space>
-          </Card>
-        </Col>
-      </Row>
+          <Popconfirm
+            title="Tem certeza que deseja excluir sua conta?"
+            description="Esta ação é irreversível. Todos os seus dados serão perdidos permanentemente."
+            onConfirm={() => setDeleteAccountModalVisible(true)}
+            okText="Sim, excluir"
+            cancelText="Cancelar"
+            okButtonProps={{ danger: true }}
+          >
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              className="action-button"
+              size="large"
+              block
+            >
+              Excluir Conta Permanentemente
+            </Button>
+          </Popconfirm>
+        </div>
+      </div>
 
       {/* Modal Enviar Feedback */}
       <Modal

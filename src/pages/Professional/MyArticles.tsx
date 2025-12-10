@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Button, Space, Modal, message, Tag, Typography, Spin } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, BookOutlined, HeartOutlined, MessageOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { articleService, Article } from '../../services/articleService';
+import './MyArticles.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -49,23 +50,23 @@ const MyArticles: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+      <div className="my-articles-loading">
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="my-articles-page">
       {/* Page Header */}
-      <div style={{ background: '#fff', padding: '24px', borderRadius: '8px', marginBottom: '24px', border: '1px solid #f0f0f0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+      <div className="my-articles-header">
+        <div className="my-articles-header-content">
           <div>
-            <Title level={2} style={{ marginBottom: '8px' }}>
+            <Title level={2} className="my-articles-title">
               <BookOutlined style={{ marginRight: '12px', color: '#1890ff' }} />
               Meus Artigos
             </Title>
-            <Paragraph type="secondary" style={{ fontSize: '16px', marginBottom: 0 }}>
+            <Paragraph type="secondary" className="my-articles-count">
               {articles.length} {articles.length === 1 ? 'artigo publicado' : 'artigos publicados'}
             </Paragraph>
           </div>
@@ -159,8 +160,8 @@ const MyArticles: React.FC = () => {
           ))}
         </Row>
       ) : (
-        <div style={{ textAlign: 'center', padding: '48px 0' }}>
-          <BookOutlined style={{ fontSize: '48px', color: '#d9d9d9', marginBottom: '16px' }} />
+        <div className="my-articles-empty">
+          <BookOutlined className="my-articles-empty-icon" />
           <Title level={4} type="secondary">Nenhum artigo criado</Title>
           <Paragraph type="secondary">Comece criando seu primeiro artigo!</Paragraph>
           <Button
