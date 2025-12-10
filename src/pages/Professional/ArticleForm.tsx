@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Typography, Row, Col, Alert } from 'antd';
+import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Typography, Row, Col, Alert, InputNumber } from 'antd';
 import { UploadOutlined, SaveOutlined, ArrowLeftOutlined, InfoCircleOutlined, FileImageOutlined, FileTextOutlined } from '@ant-design/icons';
 import { articleService } from '../../services/articleService';
 import api from '../../services/api';
@@ -209,11 +209,10 @@ const ArticleForm: React.FC = () => {
                 rules={[{ required: true, message: 'Insira' }]}
                 tooltip="Tempo estimado em minutos"
               >
-                <Input 
-                  type="number" 
-                  min={1} 
-                  placeholder="5" 
-                  suffix="min"
+                <InputNumber
+                  min={1}
+                  placeholder="5"
+                  style={{ width: '100%' }}
                   size="large"
                 />
               </Form.Item>
