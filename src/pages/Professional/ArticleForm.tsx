@@ -4,13 +4,14 @@ import { Form, Input, Select, Button, Upload, Switch, message, Card, Space, Typo
 import { UploadOutlined, SaveOutlined, ArrowLeftOutlined, InfoCircleOutlined, FileImageOutlined, FileTextOutlined } from '@ant-design/icons';
 import { articleService } from '../../services/articleService';
 import api from '../../services/api';
+import ArticleFormMobile from './ArticleFormMobile';
 import './ArticleForm.css';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title } = Typography;
 
-const ArticleForm: React.FC = () => {
+const ArticleFormDesktop: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [form] = Form.useForm();
@@ -359,6 +360,21 @@ const ArticleForm: React.FC = () => {
       </Form>
     </div>
   );
+};
+
+// Wrapper que decide qual versão renderizar
+const ArticleForm: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return isMobile ? <ArticleFormMobile /> : <ArticleFormDesktop />;
 };
 
 export default ArticleForm;
